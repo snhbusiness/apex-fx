@@ -1866,11 +1866,38 @@
     <!-- ═══════════════ CALENDAR TV WIDGET ═══════════════ -->
     <section class="page" data-page="cal-tv">
       <div class="page-title">
-        <div><h1>Calendrier <em>FX</em> · TradingView</h1>
-          <p>Calendrier économique TradingView intégré. Filtré sur pays G10 et impact moyen/élevé.</p></div>
+        <div><h1>Calendrier <em>économique FX</em></h1>
+          <p>3 calendriers de référence du marché. Investing.com (le plus utilisé), TradingView et Myfxbook pour double-check.</p></div>
       </div>
-      <div class="card c-12">
-        <div class="tv-box" style="height:720px" id="cal-widget"></div>
+      <div class="grid">
+        <div class="card c-12">
+          <div class="card-head"><div class="card-title"><span class="dot live"></span><h3>Investing.com · Calendrier économique pro</h3>
+            <span class="card-sub">— filtre G10 + impact élevé, le plus utilisé par les traders FX retail/pro</span>
+          </div></div>
+          <iframe src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&category=_employment,_economicActivity,_inflation,_credit,_centralBanks,_confidenceIndex,_balance,_Bonds&importance=2,3&features=datepicker,timezone&countries=25,32,6,37,72,22,17,39,14,10,35,43,56,36,110,11,26,5,12,4,178&calType=week&timeZone=58&lang=5"
+                  style="width:100%;height:680px;border:0;border-radius:6px;background:#0a0a0a"
+                  frameborder="0" allowtransparency="true"></iframe>
+          <div style="font-size:10px;color:var(--text-mute);text-align:right;padding:6px 4px 0 0">
+            Source : <a href="https://www.investing.com/economic-calendar/" target="_blank" style="color:var(--amber)">Investing.com Economic Calendar</a>
+          </div>
+        </div>
+        <div class="card c-6">
+          <div class="card-head"><div class="card-title"><span class="dot"></span><h3>TradingView · Calendrier intégré</h3></div></div>
+          <div class="tv-box" style="height:520px" id="cal-widget"></div>
+        </div>
+        <div class="card c-6">
+          <div class="card-head"><div class="card-title"><span class="dot"></span><h3>Myfxbook · Le préféré des traders forex</h3>
+            <span class="card-sub">— ouvre dans un nouvel onglet</span>
+          </div></div>
+          <div style="padding:16px;text-align:center">
+            <a href="https://www.myfxbook.com/forex-economic-calendar" target="_blank" class="brief-btn primary" style="display:inline-block;padding:12px 24px;text-decoration:none;font-family:'JetBrains Mono',monospace;letter-spacing:1.5px">
+              📅 OUVRIR MYFXBOOK CALENDAR
+            </a>
+            <p style="color:var(--text-dim);font-size:11.5px;margin-top:16px;line-height:1.6">
+              <b>Pourquoi Myfxbook ?</b> Le standard des traders forex pour vérifier les events à venir. Plus précis sur les heures UTC que les autres calendars, et présente clairement la volatilité historique de chaque event sur EUR/USD, GBP/USD, etc.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -3394,10 +3421,14 @@ async function loadFrankfurterPrices(){
       console.log('[FX-Spot] prix chargés via',src.name,'· EUR/USD:',(1/rates.EUR).toFixed(4),'· USD/JPY:',rates.JPY?.toFixed(2));
       return;
     }catch(e){
-      console.warn('[FX-Spot]',src.name,'échec:',e.message);
+      if(window.APEX_DEBUG_FX)console.warn('[FX-Spot]',src.name,'échec:',e.message);
     }
   }
-  console.error('[FX-Spot] toutes les sources de prix spot ont échoué');
+  /* Si Twelve Data est configurée, ces fallbacks legacy ne sont même pas nécessaires —
+     pas d'erreur visible si tout marche derrière */
+  if(!getTdKey()&&window.APEX_DEBUG_FX){
+    console.error('[FX-Spot] toutes les sources de prix spot ont échoué');
+  }
 }
 
 /* DXY · Twelve Data en priorité, Yahoo en fallback, hardcoded en dernier recours */
@@ -4272,14 +4303,11 @@ function renderCorrel(){
 pageInits.correl=renderCorrel;
 
 /* ════════ NEWS ════════ */
+/* Liste optimisée : 3 feeds qui passent généralement le mieux via proxies CORS publics.
+   Si tu veux ajouter d'autres sources, ajoute-les ici et active window.APEX_DEBUG_RSS=true
+   dans la console pour voir lesquelles passent ou échouent. */
 const FR_FEEDS=[
-  /* Sources françaises */
-  {url:'https://www.lesechos.fr/finance-marches/marches-financiers/rss.xml',name:'Les Échos'},
   {url:'https://www.boursorama.com/rss/actualites.xml',name:'Boursorama'},
-  {url:'https://www.zonebourse.com/rss/news.xml',name:'Zonebourse'},
-  /* Sources internationales macro/FX — meilleure couverture politique (Trump, Powell, etc.) */
-  {url:'https://feeds.reuters.com/news/wealth',name:'Reuters'},
-  {url:'https://www.investing.com/rss/news_25.rss',name:'Investing'},
   {url:'https://www.fxstreet.com/rss/news',name:'FXStreet'},
   {url:'https://www.forexlive.com/feed/news/',name:'ForexLive'},
 ];
@@ -4308,7 +4336,9 @@ async function fetchRss(rssUrl){
       };
     }).filter(it=>it.title);
   }catch(e){
-    console.warn('[RSS] failed for',rssUrl,e.message);
+    /* RSS feeds échouent souvent (proxies CORS publics instables) — silencieux par défaut.
+       Pour debug, taper window.APEX_DEBUG_RSS=true dans la console */
+    if(window.APEX_DEBUG_RSS)console.warn('[RSS] failed for',rssUrl,e.message);
     return [];
   }
 }
@@ -4682,7 +4712,8 @@ pageInits.settings=()=>{
   if(k&&input)input.value='sk-ant-•••••••••••••••••'+k.slice(-6);
   const apiSave=document.getElementById('api-key-save');
   if(apiSave)apiSave.onclick=()=>{
-    const v=input.value.trim();
+    /* Nettoyage : retire tous les caractères non-ASCII (espaces invisibles, BOM, retours à la ligne) */
+    let v=input.value.replace(/[^\x20-\x7E]/g,'').trim();
     if(!v.startsWith('sk-ant-')){toast('Clé invalide','La clé doit commencer par sk-ant-','danger');return;}
     setApiKey(v);
     input.value='sk-ant-•••••••••••••••••'+v.slice(-6);
@@ -4700,7 +4731,8 @@ pageInits.settings=()=>{
   if(tdK&&tdInput)tdInput.value='•••••••••••••••••'+tdK.slice(-6);
   const tdSave=document.getElementById('td-key-save');
   if(tdSave)tdSave.onclick=()=>{
-    const v=tdInput.value.trim().replace(/[•\s]/g,'');
+    /* Nettoyage agressif : retire points fantômes, espaces invisibles, caractères non-ASCII */
+    let v=tdInput.value.replace(/[•\s]/g,'').replace(/[^\x20-\x7E]/g,'').trim();
     if(v.length<10){toast('Clé invalide','La clé Twelve Data fait environ 32 caractères','danger');return;}
     setTdKey(v);
     tdInput.value='•••••••••••••••••'+v.slice(-6);
@@ -5088,8 +5120,22 @@ function renderBriefContext(ctx){
 }
 
 async function callAnthropic(userPrompt,systemPrompt){
-  const key=getApiKey();
+  let key=getApiKey();
   if(!key)throw new Error('Pas de clé API. Va dans Paramètres.');
+
+  /* Sanitization : retire tous les caractères non-ASCII qui pourraient
+     avoir été collés avec la clé (espaces invisibles, BOM, etc.) */
+  const cleanKey=key.replace(/[^\x20-\x7E]/g,'').trim();
+  if(cleanKey!==key){
+    /* La clé contenait des caractères bizarres → on la nettoie et la sauve */
+    console.warn('[Anthropic] clé contenait des caractères non-ASCII, nettoyage automatique');
+    setApiKey(cleanKey);
+    key=cleanKey;
+  }
+
+  if(!key.startsWith('sk-ant-')){
+    throw new Error('Format de clé invalide. La clé doit commencer par "sk-ant-". Va dans Paramètres pour la recoller proprement.');
+  }
 
   /* Détection : appel depuis file:// (protocole local) */
   if(location.protocol==='file:'){
@@ -7822,24 +7868,23 @@ async function generateTradePlans(){
 
 Aujourd'hui : ${todayStr}.
 
-Pour CHAQUE paire fournie, tu produis 2 scénarios opposés (Long et Short), même si l'un est plus probable que l'autre. Tu indiques explicitement lequel est recommandé.
-
 ═══════════════════════════════════════════════════════
-STRUCTURE OBLIGATOIRE : tu retournes UNIQUEMENT un bloc JSON entre balises <PLANS_JSON>...</PLANS_JSON>.
+INSTRUCTION CRITIQUE : tu réponds UNIQUEMENT avec un tableau JSON brut.
+Pas de texte avant. Pas de texte après. Pas de markdown. Pas de balise.
+Ta réponse commence par "[" et finit par "]".
 ═══════════════════════════════════════════════════════
 
-Format :
-<PLANS_JSON>
+Format exact :
 [
   {
     "pair": "EUR/USD",
     "spot": 1.16046,
-    "context": "1 phrase dense sur le bias actuel : sous VWAP, proche du PDL, après stop hunt à 12h UTC, hors killzone maintenant.",
+    "context": "Sous VWAP, proche du PDL, après stop hunt à 12h UTC. Bias bearish.",
     "recommended": "short",
     "scenarios": {
       "short": {
         "label": "CONTINUATION BEARISH",
-        "logic": "1 phrase : pourquoi le short marche (suis la tendance, vends à la résistance VWAP)",
+        "logic": "Suis la tendance, vends à la résistance VWAP.",
         "entry": 1.16209,
         "sl": 1.16310,
         "tp1": 1.16000,
@@ -7849,11 +7894,11 @@ Format :
         "tp2_pips": 359,
         "rr1": 2.1,
         "rr2": 3.6,
-        "why": "Phrase explicative : tu vends à la résistance VWAP (où les acheteurs perdants vont sortir), SL au-dessus du round number 1.16300."
+        "why": "Vendre à la résistance VWAP où les acheteurs perdants vont sortir."
       },
       "long": {
-        "label": "REBOND TECHNIQUE DEPUIS PDL",
-        "logic": "1 phrase : pourquoi le long marche (PDL tient, rebond technique possible avant continuation)",
+        "label": "REBOND TECHNIQUE",
+        "logic": "PDL tient, rebond possible avant continuation.",
         "entry": 1.16080,
         "sl": 1.15980,
         "tp1": 1.16209,
@@ -7863,23 +7908,24 @@ Format :
         "tp2_pips": 217,
         "rr1": 1.3,
         "rr2": 2.2,
-        "why": "Trade contre-tendance, plus risqué. À faire uniquement si bougie confirmation visible sur 30M."
+        "why": "Trade contre-tendance, attendre bougie confirmation 30M."
       }
     }
-  },
-  { ...autres paires... }
+  }
 ]
-</PLANS_JSON>
 
-Contraintes :
-- PAIRES À COUVRIR : EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD, XAU/USD (toutes celles avec spot fourni)
-- Les niveaux DOIVENT être réalistes par rapport au spot fourni (entry à ±50 pips du spot pour majors, ±100 pips JPY)
-- R:R MINIMUM 1:1.3 pour TP1, idéalement 1:2+ pour TP2
-- "recommended" = "short" ou "long" selon le bias dominant
-- "context" : 1 phrase courte (max 25 mots) avec vocab pro
-- "why" : 1 phrase explicative (max 30 mots) avec logique institutionnelle
+PAIRES À COUVRIR (8 paires, toutes obligatoires) : EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD, XAU/USD.
+
+CONTRAINTES :
+- Les niveaux DOIVENT être à ±50 pips du spot pour les majors (±100 pips JPY, ±500 ticks XAU)
+- R:R MINIMUM 1:1.3 pour TP1
+- "recommended" = "short" ou "long"
+- "context" : max 25 mots
+- "why" : max 30 mots
 - Décimales : 5 pour majors (1.16209), 3 pour JPY (158.450), 2 pour XAU (3201.50)
-- Cohérence absolue : si direction=short → sl > entry > tp1 > tp2 ; si long → tp2 > tp1 > entry > sl`;
+- Logique : si short → sl > entry > tp1 > tp2 ; si long → tp2 > tp1 > entry > sl
+
+RAPPEL : ta réponse est UNIQUEMENT le JSON, rien d'autre.`;
 
   const userPrompt=`Génère les plans de trade actionnables pour ce ${todayStr}.
 
@@ -7892,20 +7938,47 @@ Pour chaque paire, livre 2 scénarios Long/Short avec niveaux précis basés sur
 
   try{
     const text=await callAnthropic(userPrompt,systemPrompt);
-    let plans;
-    /* Extraction JSON */
-    const m=text.match(/<PLANS_JSON>([\s\S]*?)<\/PLANS_JSON>/);
-    if(m){
-      plans=JSON.parse(m[1].trim());
-    }else{
-      const m2=text.match(/```json\s*([\s\S]*?)\s*```/);
-      if(m2)plans=JSON.parse(m2[1].trim());
-      else{
-        const m3=text.match(/\[\s*\{[\s\S]*?\}\s*\]/);
-        if(m3)plans=JSON.parse(m3[0]);
-      }
+    let plans=null;
+
+    /* Extraction robuste en 4 tentatives successives */
+    const tries=[
+      /* 1. Balises <PLANS_JSON> */
+      ()=>{const m=text.match(/<PLANS_JSON>([\s\S]*?)<\/PLANS_JSON>/);return m?m[1]:null;},
+      /* 2. Bloc code ```json ... ``` */
+      ()=>{const m=text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);return m?m[1]:null;},
+      /* 3. Array JSON entier (du premier [ au dernier ]) */
+      ()=>{const start=text.indexOf('[');const end=text.lastIndexOf(']');return (start>=0&&end>start)?text.slice(start,end+1):null;},
+      /* 4. Si la réponse est déjà du JSON pur */
+      ()=>text.trim().startsWith('[')?text.trim():null,
+    ];
+
+    for(const tryFn of tries){
+      const candidate=tryFn();
+      if(!candidate)continue;
+      try{
+        const parsed=JSON.parse(candidate.trim());
+        if(Array.isArray(parsed)&&parsed.length>0){
+          plans=parsed;
+          break;
+        }
+      }catch(e){/* tente la suivante */}
     }
-    if(!Array.isArray(plans))throw new Error('Format JSON invalide');
+
+    if(!plans||!Array.isArray(plans)||plans.length===0){
+      console.error('[Plans] parsing échec, réponse Claude :',text.slice(0,500));
+      throw new Error('Claude n\'a pas renvoyé un JSON valide. Clique "Régénérer" pour réessayer.');
+    }
+
+    /* Validation des plans (structure minimale obligatoire) */
+    plans=plans.filter(p=>{
+      return p&&p.pair&&typeof p.spot==='number'&&
+        p.scenarios&&(p.scenarios.short||p.scenarios.long);
+    });
+
+    if(plans.length===0){
+      throw new Error('Plans générés mais structure invalide. Régénère.');
+    }
+
     renderTradePlans(plans);
     localStorage.setItem(PLANS_KEY,JSON.stringify({plans,timestamp:Date.now()}));
     toast('✓ Plans générés',plans.length+' paires analysées');
@@ -8072,26 +8145,18 @@ const DEFAULTS_MACRO_EVENTS=JSON.parse(JSON.stringify(MACRO_EVENTS));
 
 /* Chargement des données cached au démarrage */
 function loadCachedMacroData(){
+  /* DÉSACTIVÉ — l'auto-refresh IA était dangereux : Claude pouvait halluciner
+     des taux comme Fed 4.50% au lieu de 3.75% et écraser les vraies données.
+     On purge l'ancien cache pourri et on garde les données hardcodées vérifiées. */
   try{
-    const banks=localStorage.getItem(AUTODATA_CACHE_KEYS.banks);
-    if(banks){
-      const parsed=JSON.parse(banks);
-      if(validatePolicyRates(parsed))Object.assign(POLICY_RATES,parsed);
-    }
-    const rr=localStorage.getItem(AUTODATA_CACHE_KEYS.realrates);
-    if(rr){
-      const parsed=JSON.parse(rr);
-      if(validateRealRates(parsed))Object.assign(REAL_RATES_DATA,parsed);
-    }
-    const cal=localStorage.getItem(AUTODATA_CACHE_KEYS.calendar);
-    if(cal){
-      const parsed=JSON.parse(cal);
-      if(Array.isArray(parsed)&&parsed.length>0&&parsed.length<200){
-        MACRO_EVENTS.length=0;
-        parsed.forEach(e=>MACRO_EVENTS.push(e));
-      }
-    }
-  }catch(e){console.warn('[AutoData] failed to load cache:',e);}
+    localStorage.removeItem(AUTODATA_CACHE_KEYS.banks);
+    localStorage.removeItem(AUTODATA_CACHE_KEYS.realrates);
+    localStorage.removeItem(AUTODATA_CACHE_KEYS.calendar);
+    localStorage.removeItem(AUTODATA_KEY);
+    localStorage.removeItem(AUTODATA_LAST_KEY);
+  }catch(e){}
+  /* Force autoDataEnabled à false pour ne plus jamais relancer ce système */
+  autoDataEnabled=false;
 }
 
 /* Validation stricte des données reçues — protection contre les hallucinations */
@@ -8383,11 +8448,9 @@ function bindAutoDataSettings(){
 /* ─── Démarrage : charger cache + check si refresh nécessaire ─── */
 loadCachedMacroData();
 
-/* check toutes les heures si on doit auto-refresher */
-setInterval(checkAutoRefreshData,3600000);
-
-/* check 5 secondes après le démarrage de l'app */
-setTimeout(checkAutoRefreshData,5000);
+/* auto-refresh IA DÉSACTIVÉ — trop risqué (hallucinations) */
+/* setInterval(checkAutoRefreshData,3600000); */
+/* setTimeout(checkAutoRefreshData,5000); */
 
 /* init journal count badge */
 document.getElementById('journal-count').textContent=journal.length;
