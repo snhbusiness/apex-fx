@@ -2941,6 +2941,69 @@
 <script>
 /* ════════ CONFIG ════════ */
 const CCYS=['USD','EUR','GBP','JPY','CHF','AUD','CAD','NZD'];
+
+/* ════════ TWELVE DATA API (déclaré tôt pour éviter les TDZ errors) ════════ */
+const TD_KEY='apex_fx_td_key_v7';
+function getTdKey(){return localStorage.getItem(TD_KEY)||'';}
+function setTdKey(k){if(k)localStorage.setItem(TD_KEY,k);else localStorage.removeItem(TD_KEY);updateTdStatus();}
+function updateTdStatus(){
+  const el=document.getElementById('td-api-status');
+  if(!el)return;
+  if(getTdKey()){el.textContent='configurée ✓';el.className='api-status ok';}
+  else{el.textContent='non configurée';el.className='api-status ko';}
+}
+async function fetchTwelveData(symbol){
+  const key=getTdKey();
+  if(!key)throw new Error('Pas de clé Twelve Data');
+  const url=`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}&apikey=${key}`;
+  const resp=await fetch(url);
+  if(!resp.ok)throw new Error('Twelve Data API '+resp.status);
+  const data=await resp.json();
+  if(data.code&&data.code!==200)throw new Error(data.message||'Twelve Data error');
+  return data;
+}
+async function fetchTwelveDataBatch(symbols){
+  const key=getTdKey();
+  if(!key)throw new Error('Pas de clé Twelve Data');
+  const url=`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbols.join(','))}&apikey=${key}`;
+  const resp=await fetch(url);
+  if(!resp.ok)throw new Error('Twelve Data API '+resp.status);
+  const data=await resp.json();
+  if(symbols.length===1){return {[symbols[0]]:data};}
+  return data;
+}
+async function testTwelveData(){
+  const result=document.getElementById('td-test-result');
+  if(!getTdKey()){
+    if(result)result.innerHTML='<span style="color:var(--red)">⚠ Aucune clé configurée</span>';
+    return;
+  }
+  if(result)result.innerHTML='<span style="color:var(--amber)">⏳ test en cours…</span>';
+  try{
+    const data=await fetchTwelveData('DXY');
+    if(data.close){
+      if(result)result.innerHTML=`<span style="color:var(--green)">✓ Connecté · DXY = ${parseFloat(data.close).toFixed(2)}</span>`;
+    }else if(data.price){
+      if(result)result.innerHTML=`<span style="color:var(--green)">✓ Connecté · DXY = ${parseFloat(data.price).toFixed(2)}</span>`;
+    }else{
+      if(result)result.innerHTML='<span style="color:var(--amber)">⚠ Réponse inattendue (vérifie ta clé)</span>';
+    }
+  }catch(e){
+    if(result)result.innerHTML=`<span style="color:var(--red)">✕ Erreur : ${e.message.replace(/[<>]/g,'')}</span>`;
+  }
+}
+
+/* ════════ ANTHROPIC API KEY (déclaré tôt aussi) ════════ */
+const APIKEY_KEY='apex_fx_anthropic_key_v7';
+function getApiKey(){return localStorage.getItem(APIKEY_KEY)||'';}
+function setApiKey(k){if(k)localStorage.setItem(APIKEY_KEY,k);else localStorage.removeItem(APIKEY_KEY);updateApiStatus();}
+function updateApiStatus(){
+  const el=document.getElementById('api-status');
+  if(!el)return;
+  if(getApiKey()){el.textContent='configurée ✓';el.className='api-status ok';}
+  else{el.textContent='non configurée';el.className='api-status ko';}
+}
+
 const CCY_NAMES={USD:'Dollar US',EUR:'Euro',GBP:'Livre Sterling',JPY:'Yen',CHF:'Franc Suisse',AUD:'Dollar Australien',CAD:'Dollar Canadien',NZD:'Dollar NZ'};
 const CCY_FULL={USD:'Federal Reserve',EUR:'BCE',GBP:'BoE',JPY:'Bank of Japan',CHF:'SNB',AUD:'RBA',CAD:'BoC',NZD:'RBNZ'};
 
@@ -4596,7 +4659,6 @@ if(!getTdKey()){loadFrankfurterPrices();}
    ═══════════════════════════════════════════════════════════════ */
 
 const JOURNAL_KEY='apex_fx_journal_v7';
-const APIKEY_KEY='apex_fx_anthropic_key_v7';
 const BRIEF_KEY='apex_fx_brief_v7';
 
 let journal=JSON.parse(localStorage.getItem(JOURNAL_KEY)||'[]');
@@ -4610,75 +4672,8 @@ function saveJournal(){
   document.getElementById('journal-count').textContent=journal.length;
 }
 
-/* ════════ API KEY MANAGEMENT ════════ */
-function getApiKey(){return localStorage.getItem(APIKEY_KEY)||'';}
-function setApiKey(k){if(k)localStorage.setItem(APIKEY_KEY,k);else localStorage.removeItem(APIKEY_KEY);updateApiStatus();}
-function updateApiStatus(){
-  const el=document.getElementById('api-status');
-  if(!el)return;
-  if(getApiKey()){el.textContent='configurée ✓';el.className='api-status ok';}
-  else{el.textContent='non configurée';el.className='api-status ko';}
-}
-
-/* ════════ TWELVE DATA API ════════ */
-const TD_KEY='apex_fx_td_key_v7';
-function getTdKey(){return localStorage.getItem(TD_KEY)||'';}
-function setTdKey(k){if(k)localStorage.setItem(TD_KEY,k);else localStorage.removeItem(TD_KEY);updateTdStatus();}
-function updateTdStatus(){
-  const el=document.getElementById('td-api-status');
-  if(!el)return;
-  if(getTdKey()){el.textContent='configurée ✓';el.className='api-status ok';}
-  else{el.textContent='non configurée';el.className='api-status ko';}
-}
-
-/* Fetch un quote depuis Twelve Data (CORS natif, pas besoin de proxy) */
-async function fetchTwelveData(symbol){
-  const key=getTdKey();
-  if(!key)throw new Error('Pas de clé Twelve Data');
-  const url=`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}&apikey=${key}`;
-  const resp=await fetch(url);
-  if(!resp.ok)throw new Error('Twelve Data API '+resp.status);
-  const data=await resp.json();
-  if(data.code&&data.code!==200)throw new Error(data.message||'Twelve Data error');
-  return data;
-}
-
-/* Fetch plusieurs symboles en batch (Twelve Data accepte les listes séparées par virgules) */
-async function fetchTwelveDataBatch(symbols){
-  const key=getTdKey();
-  if(!key)throw new Error('Pas de clé Twelve Data');
-  const url=`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbols.join(','))}&apikey=${key}`;
-  const resp=await fetch(url);
-  if(!resp.ok)throw new Error('Twelve Data API '+resp.status);
-  const data=await resp.json();
-  /* Si un seul symbole, l'API retourne directement l'objet ; si plusieurs, un objet avec les symboles en clés */
-  if(symbols.length===1){
-    return {[symbols[0]]:data};
-  }
-  return data;
-}
-
-/* Test de la connexion Twelve Data */
-async function testTwelveData(){
-  const result=document.getElementById('td-test-result');
-  if(!getTdKey()){
-    result.innerHTML='<span style="color:var(--red)">⚠ Aucune clé configurée</span>';
-    return;
-  }
-  result.innerHTML='<span style="color:var(--amber)">⏳ test en cours…</span>';
-  try{
-    const data=await fetchTwelveData('DXY');
-    if(data.close){
-      result.innerHTML=`<span style="color:var(--green)">✓ Connecté · DXY = ${parseFloat(data.close).toFixed(2)}</span>`;
-    }else if(data.price){
-      result.innerHTML=`<span style="color:var(--green)">✓ Connecté · DXY = ${parseFloat(data.price).toFixed(2)}</span>`;
-    }else{
-      result.innerHTML='<span style="color:var(--amber)">⚠ Réponse inattendue (vérifie ta clé)</span>';
-    }
-  }catch(e){
-    result.innerHTML=`<span style="color:var(--red)">✕ Erreur : ${escapeHTML(e.message)}</span>`;
-  }
-}
+/* (Les fonctions getApiKey/setApiKey/updateApiStatus et celles de Twelve Data
+   sont maintenant déclarées tout en haut du script pour éviter les TDZ errors) */
 
 pageInits.settings=()=>{
   updateApiStatus();
