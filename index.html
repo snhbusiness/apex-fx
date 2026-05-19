@@ -5119,7 +5119,7 @@ function renderBriefContext(ctx){
   `;
 }
 
-async function callAnthropic(userPrompt,systemPrompt){
+async function callAnthropic(userPrompt,systemPrompt,maxTokens){
   let key=getApiKey();
   if(!key)throw new Error('Pas de clé API. Va dans Paramètres.');
 
@@ -5155,7 +5155,7 @@ async function callAnthropic(userPrompt,systemPrompt){
       },
       body:JSON.stringify({
         model:'claude-sonnet-4-6',
-        max_tokens:3000,
+        max_tokens:maxTokens||3000,
         system:systemPrompt,
         messages:[{role:'user',content:userPrompt}]
       })
@@ -7937,7 +7937,8 @@ Contexte macro mai 2026 : Fed à 3.50-3.75% (Warsh Chair), BCE pause 2.00%, BoJ 
 Pour chaque paire, livre 2 scénarios Long/Short avec niveaux précis basés sur le spot ci-dessus.`;
 
   try{
-    const text=await callAnthropic(userPrompt,systemPrompt);
+    const text=await callAnthropic(userPrompt,systemPrompt,8000);
+    console.log('[Plans] réponse Claude (',text.length,'chars) :',text.slice(0,300)+'…');
     let plans=null;
 
     /* Extraction robuste en 4 tentatives successives */
@@ -7952,6 +7953,7 @@ Pour chaque paire, livre 2 scénarios Long/Short avec niveaux précis basés sur
       ()=>text.trim().startsWith('[')?text.trim():null,
     ];
 
+    let lastError=null;
     for(const tryFn of tries){
       const candidate=tryFn();
       if(!candidate)continue;
@@ -7961,12 +7963,17 @@ Pour chaque paire, livre 2 scénarios Long/Short avec niveaux précis basés sur
           plans=parsed;
           break;
         }
-      }catch(e){/* tente la suivante */}
+      }catch(e){
+        lastError=e.message;
+        console.warn('[Plans] tentative parse échec :',e.message,'sur',candidate.slice(0,100));
+      }
     }
 
     if(!plans||!Array.isArray(plans)||plans.length===0){
-      console.error('[Plans] parsing échec, réponse Claude :',text.slice(0,500));
-      throw new Error('Claude n\'a pas renvoyé un JSON valide. Clique "Régénérer" pour réessayer.');
+      console.error('[Plans] parsing total échec. Réponse complète Claude :',text);
+      /* Affiche un preview de la réponse pour aider le debug */
+      const preview=text.slice(0,300).replace(/[<>]/g,'').trim();
+      throw new Error('Claude n\'a pas renvoyé un JSON parsable. Régénère pour réessayer. (Aperçu réponse : "'+preview+'…")');
     }
 
     /* Validation des plans (structure minimale obligatoire) */
