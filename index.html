@@ -4684,15 +4684,17 @@ pageInits.settings=()=>{
   updateApiStatus();
   const input=document.getElementById('api-key-input');
   const k=getApiKey();
-  if(k)input.value='sk-ant-•••••••••••••••••'+k.slice(-6);
-  document.getElementById('api-key-save').onclick=()=>{
+  if(k&&input)input.value='sk-ant-•••••••••••••••••'+k.slice(-6);
+  const apiSave=document.getElementById('api-key-save');
+  if(apiSave)apiSave.onclick=()=>{
     const v=input.value.trim();
     if(!v.startsWith('sk-ant-')){toast('Clé invalide','La clé doit commencer par sk-ant-','danger');return;}
     setApiKey(v);
     input.value='sk-ant-•••••••••••••••••'+v.slice(-6);
     toast('Clé enregistrée','L\'assistant IA est prêt');
   };
-  document.getElementById('api-key-clear').onclick=()=>{
+  const apiClear=document.getElementById('api-key-clear');
+  if(apiClear)apiClear.onclick=()=>{
     if(confirm('Effacer la clé API ?')){setApiKey('');input.value='';toast('Clé effacée','');}
   };
 
@@ -4708,7 +4710,6 @@ pageInits.settings=()=>{
     setTdKey(v);
     tdInput.value='•••••••••••••••••'+v.slice(-6);
     toast('Clé Twelve Data enregistrée','Prix FX live activés');
-    /* Trigger un refresh immédiat de TOUS les prix (FX + DXY + rates) */
     setTimeout(()=>{loadFXData();loadDXY();loadRates();},500);
   };
   const tdClear=document.getElementById('td-key-clear');
@@ -4717,6 +4718,11 @@ pageInits.settings=()=>{
   };
   const tdTest=document.getElementById('td-test');
   if(tdTest)tdTest.onclick=testTwelveData;
+
+  /* Toggles ajoutés par les modules suivants (auto-refresh brief, popups, auto-data) */
+  if(typeof bindAutoRefreshToggles==='function')bindAutoRefreshToggles();
+  if(typeof bindPopupToggles==='function')bindPopupToggles();
+  if(typeof bindAutoDataSettings==='function')bindAutoDataSettings();
 };
 
 /* ════════ JOURNAL DE TRADING ════════ */
@@ -6336,10 +6342,8 @@ function checkAutoRefresh(){
 
 setInterval(checkAutoRefresh,60000); /* check toutes les minutes */
 
-/* hook page settings pour brancher les toggles */
-const _origSettingsInit=pageInits.settings;
-pageInits.settings=()=>{
-  _origSettingsInit();
+/* hook page settings pour brancher les toggles auto-refresh brief */
+function bindAutoRefreshToggles(){
   ['london','ny','wrap'].forEach(key=>{
     const tog=document.querySelector(`[data-key="${key}"]`);
     if(!tog)return;
@@ -6354,7 +6358,7 @@ pageInits.settings=()=>{
       toast('Auto-refresh '+(autoRefresh[key]?'activé':'désactivé'),key.toUpperCase()+' '+AUTOREFRESH_HOURS[key]+'h UTC');
     };
   });
-};
+}
 
 /* badge alerts au démarrage */
 document.getElementById('briefalerts-count').textContent=briefAlerts.length;
@@ -7017,9 +7021,7 @@ setInterval(()=>{
    SETTINGS · branchement des toggles popup
    ═══════════════════════════════════════════════════════════════ */
 
-const _origSettingsInitPopups=pageInits.settings;
-pageInits.settings=()=>{
-  _origSettingsInitPopups();
+function bindPopupToggles(){
   ['macro','news','trade'].forEach(key=>{
     const tog=document.querySelector(`[data-popkey="${key}"]`);
     if(!tog)return;
@@ -7031,7 +7033,7 @@ pageInits.settings=()=>{
       toast('Popup '+(popupPrefs[key]?'activé':'désactivé'),({macro:'Events macro',news:'Breaking news',trade:'Setups touchés'})[key]);
     };
   });
-};
+}
 
 /* ═══════════════════════════════════════════════════════════════
    Init badge cal-today au démarrage
@@ -8345,11 +8347,8 @@ function resetMacroDataToDefaults(){
   if(document.querySelector('[data-page="calendar"]')?.classList.contains('active'))renderCalendar();
 }
 
-/* ─── Branchement des toggles et boutons Settings ─── */
-const _origSettingsAutoData=pageInits.settings;
-pageInits.settings=()=>{
-  _origSettingsAutoData();
-
+/* ─── Branchement des toggles et boutons Settings Auto-Data ─── */
+function bindAutoDataSettings(){
   const tog=document.querySelector('[data-autodata="on"]');
   if(tog){
     tog.classList.toggle('on',autoDataEnabled);
@@ -8359,7 +8358,6 @@ pageInits.settings=()=>{
       tog.classList.toggle('on',autoDataEnabled);
       if(autoDataEnabled){
         toast('Auto-refresh activé','Actualisation chaque matin à 7h UTC');
-        /* trigger immédiat la première fois */
         if(!localStorage.getItem(AUTODATA_LAST_KEY)){
           setTimeout(()=>refreshAllMacroData(false),500);
         }
@@ -8385,7 +8383,7 @@ pageInits.settings=()=>{
   if(btnReset)btnReset.onclick=resetMacroDataToDefaults;
 
   updateLastRefreshDisplay();
-};
+}
 
 /* ─── Démarrage : charger cache + check si refresh nécessaire ─── */
 loadCachedMacroData();
