@@ -1028,6 +1028,49 @@
   .liq-section{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.5px;color:var(--text-mute);text-transform:uppercase;margin:10px 0 6px;padding-left:4px}
   .liq-warning{margin-top:10px;padding:9px 11px;background:rgba(233,110,221,.06);border-left:2px solid var(--magenta);border-radius:4px;font-size:11px;color:var(--text-dim);line-height:1.5}
   .liq-warning b{color:var(--magenta);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:3px}
+
+  /* ═══ TRADE PLANS (LONG vs SHORT) ═══ */
+  .plans-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:14px;margin-top:10px}
+  .plan-pair{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .plan-pair-head{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;background:var(--bg-2)}
+  .plan-pair-name{font-family:'Fraunces',serif;font-size:18px;font-weight:500;color:var(--text)}
+  .plan-pair-spot{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--amber);font-weight:700;letter-spacing:.5px}
+  .plan-pair-context{padding:10px 16px;background:rgba(93,214,224,.04);border-bottom:1px solid var(--line);font-size:11.5px;color:var(--text-dim);line-height:1.5;font-family:Manrope,sans-serif}
+  .plan-pair-context b{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:3px}
+
+  .plan-scenario{padding:13px 16px;border-bottom:1px solid var(--line)}
+  .plan-scenario:last-child{border-bottom:none}
+  .plan-scenario.short{background:linear-gradient(180deg,rgba(255,90,82,.04) 0%,transparent 100%);border-left:3px solid var(--red)}
+  .plan-scenario.long{background:linear-gradient(180deg,rgba(62,207,142,.04) 0%,transparent 100%);border-left:3px solid var(--green)}
+  .plan-scenario.recommended{box-shadow:inset 3px 0 0 var(--amber)}
+
+  .plan-scenario-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .plan-scenario-title{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700}
+  .plan-scenario.short .plan-scenario-title{color:var(--red)}
+  .plan-scenario.long .plan-scenario-title{color:var(--green)}
+  .plan-recommended-badge{font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:1.5px;color:#080a0c;background:var(--amber);padding:2px 6px;border-radius:3px;font-weight:700}
+
+  .plan-logic{font-size:11.5px;color:var(--text-dim);line-height:1.5;margin-bottom:11px;font-style:italic}
+
+  .plan-levels{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:10px}
+  .plan-level{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--bg-2);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px}
+  .plan-level .lbl{color:var(--text-mute);font-size:9.5px;letter-spacing:1px;text-transform:uppercase}
+  .plan-level .val{color:var(--text);font-weight:700}
+  .plan-level.entry .val{color:var(--cyan)}
+  .plan-level.sl .val{color:var(--red)}
+  .plan-level.tp .val{color:var(--green)}
+
+  .plan-stats{display:flex;gap:14px;padding:8px 11px;background:var(--bg-2);border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text-dim);margin-bottom:10px}
+  .plan-stats span{flex:1}
+  .plan-stats b{color:var(--text);font-weight:700}
+  .plan-stats .rr{color:var(--amber);font-weight:700}
+  .plan-stats .rr.excellent{color:var(--green)}
+
+  .plan-actions{display:flex;gap:6px;flex-wrap:wrap}
+  .plan-btn{flex:1;min-width:100px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;padding:7px 10px;border-radius:5px;border:1px solid var(--line-2);background:var(--bg-2);color:var(--text-dim);cursor:pointer;transition:.15s;text-decoration:none;text-align:center;display:inline-block}
+  .plan-btn:hover{border-color:var(--amber);color:var(--amber)}
+  .plan-btn.primary{background:var(--amber);color:#080a0c;border-color:var(--amber);font-weight:700}
+  .plan-btn.primary:hover{background:#ffc933;color:#080a0c}
 </style>
 </head>
 <body>
@@ -2496,100 +2539,66 @@
     <!-- ═══════════════ NIVEAUX DE LIQUIDITÉ ═══════════════ -->
     <section class="page" data-page="liquidity">
       <div class="page-title"><div>
-        <h1>Niveaux de <em>liquidité</em></h1>
-        <p>Les zones où les institutionnels vont chercher les stops. Comprendre la liquidité = anticiper où le marché va vraiment aller, pas où il "devrait" aller selon la technique classique.</p>
+        <h1>Plans de <em>trade</em></h1>
+        <p>Scénarios actionnables Long / Short générés par IA pour chaque paire majeure. Entry, SL, TP1, TP2, R:R — tout est précalculé. Tu n'as qu'à choisir le scénario et placer l'ordre sur TradingView.</p>
       </div></div>
 
       <div class="grid">
 
-        <!-- LESSON 1 : Concept -->
-        <div class="card c-12 lesson-card lesson-blue">
-          <div class="lesson-tag">📖 Pourquoi les niveaux de liquidité comptent</div>
-          <h2>Le marché ne suit pas la technique — il suit la liquidité</h2>
-          <p class="lesson-lead">Les desks pros n'achètent/ne vendent pas n'importe où. Ils ont besoin de <b>contrepartie pour exécuter leurs gros ordres</b>. Cette contrepartie se trouve dans les zones où les retails ont leurs stops.</p>
-          <p>C'est pour ça que tu vois constamment :</p>
-          <ul class="lesson-list">
-            <li><b>Le prix qui wick juste sous un swing low</b> → puis remonte violemment = <em>stop hunt + retournement</em></li>
-            <li><b>Le prix qui casse un niveau "évident"</b> → puis revient = <em>faux breakout = liquidity grab</em></li>
-            <li><b>Les nombres ronds (1.10, 150.00) qui agissent comme des aimants</b> = <em>concentration de stops retail</em></li>
-          </ul>
-          <p>Les institutionnels ne sont pas méchants — ils <b>ont besoin</b> de cette liquidité pour exécuter des ordres de plusieurs milliards. Sans ces stops, ils ne pourraient pas trader sans bouger le marché contre eux.</p>
-        </div>
-
-        <!-- LIQUIDITY MAP PAR PAIRE -->
+        <!-- TRADE PLANS IA -->
         <div class="card c-12">
           <div class="card-head">
-            <div class="card-title"><span class="dot live"></span><h3>Carte des liquidités · paires majeures</h3>
-              <span class="card-sub">— niveaux calculés depuis les spots live et patterns institutionnels</span>
+            <div class="card-title"><span class="dot live"></span><h3>Plans de trade actionnables · Long vs Short</h3>
+              <span class="card-sub">— l'IA analyse les niveaux et te propose 2 scénarios par paire</span>
+            </div>
+            <button class="brief-btn" id="plans-generate">
+              <span id="plans-gen-icon">⚡</span>
+              <span id="plans-gen-text">Générer les plans</span>
+            </button>
+          </div>
+          <div id="plans-content">
+            <div class="brief-empty">
+              <div class="icon">⚡</div>
+              <h3>Aucun plan généré pour l'instant</h3>
+              <p>Clique sur "Générer les plans" pour que Claude analyse les niveaux de liquidité actuels et te livre <b>2 scénarios actionnables (Long / Short) par paire majeure</b> avec Entry, SL, TP1, TP2 et R:R calculés.<br><br>Coût : ~0,03 € · Cache : 6h</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIQUIDITY MAP PAR PAIRE (raw data, sous le bloc plans) -->
+        <div class="card c-12">
+          <div class="card-head">
+            <div class="card-title"><span class="dot"></span><h3>Données brutes · niveaux de liquidité</h3>
+              <span class="card-sub">— niveaux calculés depuis les spots live (pour les puristes qui veulent les chiffres)</span>
             </div>
             <button class="brief-btn secondary" id="liq-refresh-btn">↻ Actualiser</button>
+          </div>
+          <div style="padding:11px 14px;background:rgba(245,180,0,.06);border-left:3px solid var(--amber);border-radius:5px;margin-bottom:14px;font-size:11.5px;line-height:1.55;color:var(--text-dim);font-family:Manrope,sans-serif">
+            <b style="color:var(--text)">📌 Méthodologie :</b> les PDH/PDL et Weekly High/Low sont <b>estimés</b> depuis le spot live + un ATR moyen typique (±20 pips d'erreur). Pour les <b>vrais niveaux exacts</b>, utilise TradingView avec l'indicateur APEX FX Pro ou regarde tes charts D1. Ce qu'on te donne ici est le <b>framework de lecture institutionnelle</b>.
           </div>
           <div id="liquidity-map"></div>
         </div>
 
-        <!-- LESSON 2 : Types de niveaux -->
+        <!-- LESSON : Comment utiliser les plans -->
         <div class="card c-12 lesson-card lesson-green">
-          <div class="lesson-tag">🎯 Les 5 types de zones de liquidité</div>
-          <h2>Où les institutionnels visent les stops</h2>
+          <div class="lesson-tag">📖 Comment utiliser ces plans</div>
+          <h2>Du plan IA à l'exécution sur ton broker</h2>
           <div class="lesson-grid">
             <div class="lesson-box">
-              <h4>1. PDH / PDL (Previous Day High/Low)</h4>
-              <p>Les <b>plus hauts/bas de la veille</b>. Stops accumulés juste au-dessus du PDH (longs retail) et juste sous le PDL (shorts retail). <b>~70% des chasses de stops se font sur ces niveaux dans les 24h suivantes.</b></p>
+              <h4>1. Choisir le scénario</h4>
+              <p>L'IA recommande <b>Scénario A (Short)</b> ou <b>Scénario B (Long)</b> selon le contexte. Si tu doutes : suis la recommandation IA. Si tu as une conviction perso différente : suis-la, mais reste discipliné.</p>
             </div>
             <div class="lesson-box">
-              <h4>2. Weekly High/Low</h4>
-              <p>Plus haut/bas de la semaine. Niveau majeur de référence. Quand le prix s'en approche en fin de semaine (jeudi-vendredi), <b>80% des chasses se font avant le close NY vendredi</b>.</p>
+              <h4>2. Calculer la taille</h4>
+              <p>Va dans <b>Position Sizing</b> sur Apex FX, entre ton capital + risque% + Entry + SL du plan. Tu obtiens le <b>nombre exact de lots</b> à trader.</p>
             </div>
             <div class="lesson-box">
-              <h4>3. Asia Session High/Low</h4>
-              <p>Plus haut/bas pendant la session asiatique (23h-7h UTC). <b>L'ouverture Londres (7h-10h UTC) cible ces niveaux 60% du temps</b>, souvent en chasse de stops avant le vrai mouvement.</p>
+              <h4>3. Placer l'ordre sur TradingView</h4>
+              <p>Bouton "Trade" → Sell Limit ou Buy Limit selon le scénario. Entre Entry, SL, TP1 (TP2 en option). Valide. <b>Walk away</b> — ne reste pas devant l'écran.</p>
             </div>
             <div class="lesson-box">
-              <h4>4. Round Numbers (00, 50)</h4>
-              <p>Niveaux psychologiques : 1.1000, 1.1500, 150.00, 200.00. Concentration massive de <b>stops retail + ordres pendants</b>. Le marché les visite presque systématiquement quand il s'en approche à ±20 pips.</p>
-            </div>
-            <div class="lesson-box">
-              <h4>5. Swing Highs/Lows récents</h4>
-              <p>Les <b>pivot points visibles à l'œil nu sur le chart H4/D1</b>. Tous les traders chartistes mettent leurs stops juste au-delà. Niveau prioritaire pour les liquidity grabs.</p>
-            </div>
-            <div class="lesson-box">
-              <h4>6. Bonus · Equal Highs/Lows</h4>
-              <p>Quand 2-3 sommets/creux sont au même niveau exact = <b>double/triple top</b>. Les desks savent que les retails attendent la "confirmation" → ils cassent juste pour grab les stops puis retournent.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- LESSON 3 : Comment trader -->
-        <div class="card c-12 lesson-card lesson-amber">
-          <div class="lesson-tag">⚡ Comment exploiter les niveaux de liquidité</div>
-          <h2>Trader avec les institutionnels, pas contre eux</h2>
-          <p class="lesson-lead">Le bon trade n'est pas <em>"casser un niveau"</em>, c'est <em>"attendre le retour après que les stops ont été pris"</em>.</p>
-          <div class="lesson-grid">
-            <div class="lesson-box">
-              <h4>Setup classique : Stop Hunt + Reversal</h4>
-              <p><b>1.</b> Identifie un swing low majeur (ex EUR/USD à 1.0850)<br>
-              <b>2.</b> Attends que le prix wick sous 1.0850 (souvent 10-30 pips sous)<br>
-              <b>3.</b> Si retour rapide au-dessus de 1.0850 dans la même bougie H1 → <b>liquidity grab confirmé</b><br>
-              <b>4.</b> Entry long au retour au-dessus, SL sous le wick low, target = swing high récent</p>
-            </div>
-            <div class="lesson-box">
-              <h4>Setup : Faux Breakout sur Round Number</h4>
-              <p><b>1.</b> EUR/USD approche 1.1000 (round number majeur)<br>
-              <b>2.</b> Si cassure mais sans suivi (pas de continuation 30+ pips) → <b>faux breakout</b><br>
-              <b>3.</b> Entry short à 1.0995-1.1005, SL à 1.1025 (au-delà du wick), target 1.0950</p>
-            </div>
-            <div class="lesson-box">
-              <h4>Setup : Asia Range Hunt (London Open)</h4>
-              <p><b>1.</b> Note l'Asia high et low (ex USD/JPY Asia high 154.20, low 153.80)<br>
-              <b>2.</b> À l'ouverture Londres (7h-9h UTC), le prix va souvent chercher l'un des deux<br>
-              <b>3.</b> Si cassure avec rejet (mèche puis retour dans le range) → fade dans l'autre sens</p>
-            </div>
-            <div class="lesson-box">
-              <h4>Règles de prudence</h4>
-              <p>• Ne jamais shorter un round number en cassure forte avec volume<br>
-              • Toujours attendre la <b>réaction du prix</b>, pas juste la cassure<br>
-              • Confluence obligatoire : niveau de liquidité + killzone active + thèse macro alignée<br>
-              • Sortir avant le London Fix 16h UTC pour éviter les squeezes</p>
+              <h4>4. Suivi & ajustement</h4>
+              <p>Si TP1 atteint → déplace SL au breakeven et laisse courir vers TP2. Si le marché casse ta thèse (cassure SL clair) → accepte la perte, ne moyenne pas à la baisse.</p>
             </div>
           </div>
         </div>
@@ -3232,6 +3241,42 @@ const fxData={};  // {pair:'EURUSD':{price,chg}}
 const rateData={};  // {US10Y, DE10Y,...}
 
 async function loadFXData(){
+  /* 1. Essai Twelve Data en premier (live, fiable) */
+  if(getTdKey()){
+    try{
+      /* Symboles Twelve Data pour les paires FX : EUR/USD, USD/JPY, etc. */
+      const tdSymbols=['EUR/USD','GBP/USD','USD/JPY','USD/CHF','USD/CAD','AUD/USD','NZD/USD','EUR/JPY','EUR/GBP','EUR/CHF','GBP/JPY','AUD/JPY','XAU/USD'];
+      const batch=await fetchTwelveDataBatch(tdSymbols);
+      let okCount=0;
+      tdSymbols.forEach(sym=>{
+        const d=batch[sym];
+        if(d&&!d.code){
+          const price=parseFloat(d.close||d.price);
+          const chg=parseFloat(d.percent_change||0);
+          if(!isNaN(price)&&price>0){
+            const key=sym.replace('/','');
+            fxData[key]={price:price,chg:chg,ma50:price,chg30d:0};
+            okCount++;
+          }
+        }
+      });
+      if(okCount>=8){
+        /* Twelve Data a marché → on update l'UI et on sort */
+        const e=fxData['EURUSD'];
+        if(e){const x=document.getElementById('hs-eurusd');if(x){x.textContent=fmtNum(e.price,4);x.className='hs-val '+(e.chg>=0?'up':'dn');}}
+        const j=fxData['USDJPY'];
+        if(j){const x=document.getElementById('hs-usdjpy');if(x){x.textContent=fmtNum(j.price,2);x.className='hs-val '+(j.chg>=0?'up':'dn');}}
+        setDot('s-yahoo',true);
+        renderVol();
+        const ls=document.getElementById('lastsync');if(ls)ls.textContent=new Date().toLocaleTimeString('fr-FR')+' · Twelve Data';
+        console.log('[FX-Spot] Twelve Data OK ·',okCount,'paires · EUR/USD:',fxData['EURUSD']?.price.toFixed(5));
+        return;
+      }
+      console.warn('[Twelve Data FX] seulement',okCount,'paires reçues, fallback Yahoo');
+    }catch(e){console.warn('[Twelve Data FX] échec:',e.message);}
+  }
+
+  /* 2. Fallback Yahoo via proxy CORS */
   try{
     const data=await fetchYahoo(YPAIRS);
     if(!data||!data.length){setDot('s-yahoo',false);return;}
@@ -4531,11 +4576,19 @@ document.addEventListener('keydown',e=>{
 });
 
 /* ════════ INIT ════════ */
-loadFXData();loadFrankfurterPrices();loadDXY();loadRates();loadNews();loadSquawk();
-setInterval(()=>{loadFXData();loadFrankfurterPrices();loadDXY();},10000);
-setInterval(loadRates,30000);
+loadFXData();loadDXY();loadRates();loadNews();loadSquawk();
+/* Si Twelve Data configurée : 30 sec (limite 8 req/min, paires consomme 1 req groupée).
+   Si pas de Twelve Data : Frankfurter en backup + 10 sec */
+setInterval(()=>{
+  loadFXData();
+  loadDXY();
+  if(!getTdKey()){loadFrankfurterPrices();}
+},30000);
+setInterval(loadRates,60000);
 setInterval(loadNews,15000);
 setInterval(loadSquawk,12000);
+/* Premier appel Frankfurter si pas de Twelve Data */
+if(!getTdKey()){loadFrankfurterPrices();}
 
 
 /* ═══════════════════════════════════════════════════════════════
@@ -4654,9 +4707,9 @@ pageInits.settings=()=>{
     if(v.length<10){toast('Clé invalide','La clé Twelve Data fait environ 32 caractères','danger');return;}
     setTdKey(v);
     tdInput.value='•••••••••••••••••'+v.slice(-6);
-    toast('Clé Twelve Data enregistrée','Les données live sont maintenant disponibles');
-    /* Trigger un refresh immédiat des données */
-    setTimeout(()=>{loadDXY();loadRates();},500);
+    toast('Clé Twelve Data enregistrée','Prix FX live activés');
+    /* Trigger un refresh immédiat de TOUS les prix (FX + DXY + rates) */
+    setTimeout(()=>{loadFXData();loadDXY();loadRates();},500);
   };
   const tdClear=document.getElementById('td-key-clear');
   if(tdClear)tdClear.onclick=()=>{
@@ -7723,7 +7776,271 @@ pageInits.liquidity=()=>{
   renderLiquidityMap();
   const btn=document.getElementById('liq-refresh-btn');
   if(btn)btn.onclick=renderLiquidityMap;
+  /* Plans IA */
+  loadCachedPlans();
+  const genBtn=document.getElementById('plans-generate');
+  if(genBtn)genBtn.onclick=generateTradePlans;
 };
+
+/* ═══════════════════════════════════════════════════════════════
+   PLANS DE TRADE ACTIONNABLES (LONG vs SHORT par paire)
+   - Format inspiré "Scénario A : SHORT | Scénario B : LONG"
+   - Chaque plan : Entry, SL, TP1, TP2, R:R, recommandation IA
+   ═══════════════════════════════════════════════════════════════ */
+
+const PLANS_KEY='apex_fx_plans_v7';
+
+async function generateTradePlans(){
+  const key=getApiKey();
+  if(!key){
+    toast('Clé API manquante','Configure ta clé Anthropic dans Paramètres','danger');
+    go('settings');
+    return;
+  }
+
+  const btn=document.getElementById('plans-generate');
+  btn.disabled=true;
+  document.getElementById('plans-gen-text').textContent='Génération…';
+  document.getElementById('plans-gen-icon').innerHTML='<span class="loader"></span>';
+
+  document.getElementById('plans-content').innerHTML=`<div class="brief-loading">
+    <div class="pulse"></div>
+    <div>Claude analyse les niveaux et construit les plans Long/Short pour chaque paire…</div>
+  </div>`;
+
+  /* Récupération des spots actuels pour donner du contexte */
+  const spotData=['EURUSD','GBPUSD','USDJPY','USDCHF','AUDUSD','USDCAD','NZDUSD','XAUUSD']
+    .map(p=>{
+      const d=fxData[p];
+      if(!d||!d.price)return null;
+      const display=p.slice(0,3)+'/'+p.slice(3);
+      const isJpy=p.includes('JPY');
+      const isXau=p.includes('XAU');
+      return `${display}: ${isXau?d.price.toFixed(2):(isJpy?d.price.toFixed(3):d.price.toFixed(5))} (chg ${d.chg>=0?'+':''}${(d.chg||0).toFixed(2)}%)`;
+    }).filter(Boolean).join('\n');
+
+  const todayStr=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+
+  const systemPrompt=`Tu es le trader senior d'un trading desk forex institutionnel à Londres. Tu construis des plans de trade actionnables pour les paires majeures, basés sur les niveaux de liquidité, le contexte macro et la lecture institutionnelle (ICT/SMC + Murphy + Donnelly).
+
+Aujourd'hui : ${todayStr}.
+
+Pour CHAQUE paire fournie, tu produis 2 scénarios opposés (Long et Short), même si l'un est plus probable que l'autre. Tu indiques explicitement lequel est recommandé.
+
+═══════════════════════════════════════════════════════
+STRUCTURE OBLIGATOIRE : tu retournes UNIQUEMENT un bloc JSON entre balises <PLANS_JSON>...</PLANS_JSON>.
+═══════════════════════════════════════════════════════
+
+Format :
+<PLANS_JSON>
+[
+  {
+    "pair": "EUR/USD",
+    "spot": 1.16046,
+    "context": "1 phrase dense sur le bias actuel : sous VWAP, proche du PDL, après stop hunt à 12h UTC, hors killzone maintenant.",
+    "recommended": "short",
+    "scenarios": {
+      "short": {
+        "label": "CONTINUATION BEARISH",
+        "logic": "1 phrase : pourquoi le short marche (suis la tendance, vends à la résistance VWAP)",
+        "entry": 1.16209,
+        "sl": 1.16310,
+        "tp1": 1.16000,
+        "tp2": 1.15850,
+        "risk_pips": 100,
+        "tp1_pips": 209,
+        "tp2_pips": 359,
+        "rr1": 2.1,
+        "rr2": 3.6,
+        "why": "Phrase explicative : tu vends à la résistance VWAP (où les acheteurs perdants vont sortir), SL au-dessus du round number 1.16300."
+      },
+      "long": {
+        "label": "REBOND TECHNIQUE DEPUIS PDL",
+        "logic": "1 phrase : pourquoi le long marche (PDL tient, rebond technique possible avant continuation)",
+        "entry": 1.16080,
+        "sl": 1.15980,
+        "tp1": 1.16209,
+        "tp2": 1.16297,
+        "risk_pips": 100,
+        "tp1_pips": 129,
+        "tp2_pips": 217,
+        "rr1": 1.3,
+        "rr2": 2.2,
+        "why": "Trade contre-tendance, plus risqué. À faire uniquement si bougie confirmation visible sur 30M."
+      }
+    }
+  },
+  { ...autres paires... }
+]
+</PLANS_JSON>
+
+Contraintes :
+- PAIRES À COUVRIR : EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD, XAU/USD (toutes celles avec spot fourni)
+- Les niveaux DOIVENT être réalistes par rapport au spot fourni (entry à ±50 pips du spot pour majors, ±100 pips JPY)
+- R:R MINIMUM 1:1.3 pour TP1, idéalement 1:2+ pour TP2
+- "recommended" = "short" ou "long" selon le bias dominant
+- "context" : 1 phrase courte (max 25 mots) avec vocab pro
+- "why" : 1 phrase explicative (max 30 mots) avec logique institutionnelle
+- Décimales : 5 pour majors (1.16209), 3 pour JPY (158.450), 2 pour XAU (3201.50)
+- Cohérence absolue : si direction=short → sl > entry > tp1 > tp2 ; si long → tp2 > tp1 > entry > sl`;
+
+  const userPrompt=`Génère les plans de trade actionnables pour ce ${todayStr}.
+
+Spots actuels (référence obligatoire) :
+${spotData}
+
+Contexte macro mai 2026 : Fed à 3.50-3.75% (Warsh Chair), BCE pause 2.00%, BoJ hawkish (hike 0.75%), US10Y à 4.68%, oil shock Iran (Brent >110$). Bias USD haussier court terme.
+
+Pour chaque paire, livre 2 scénarios Long/Short avec niveaux précis basés sur le spot ci-dessus.`;
+
+  try{
+    const text=await callAnthropic(userPrompt,systemPrompt);
+    let plans;
+    /* Extraction JSON */
+    const m=text.match(/<PLANS_JSON>([\s\S]*?)<\/PLANS_JSON>/);
+    if(m){
+      plans=JSON.parse(m[1].trim());
+    }else{
+      const m2=text.match(/```json\s*([\s\S]*?)\s*```/);
+      if(m2)plans=JSON.parse(m2[1].trim());
+      else{
+        const m3=text.match(/\[\s*\{[\s\S]*?\}\s*\]/);
+        if(m3)plans=JSON.parse(m3[0]);
+      }
+    }
+    if(!Array.isArray(plans))throw new Error('Format JSON invalide');
+    renderTradePlans(plans);
+    localStorage.setItem(PLANS_KEY,JSON.stringify({plans,timestamp:Date.now()}));
+    toast('✓ Plans générés',plans.length+' paires analysées');
+  }catch(e){
+    document.getElementById('plans-content').innerHTML=`<div class="brief-empty">
+      <div class="icon" style="color:var(--red)">⚠</div>
+      <h3>Erreur de génération</h3>
+      <p>${escapeHTML(e.message)}</p>
+    </div>`;
+  }finally{
+    btn.disabled=false;
+    document.getElementById('plans-gen-text').textContent='Régénérer';
+    document.getElementById('plans-gen-icon').textContent='⚡';
+  }
+}
+
+function renderTradePlans(plans){
+  const cards=plans.map(p=>renderPlanCard(p)).join('');
+  document.getElementById('plans-content').innerHTML=`<div class="plans-grid">${cards}</div>`;
+}
+
+function renderPlanCard(plan){
+  const isJpy=plan.pair.includes('JPY');
+  const isXau=plan.pair.includes('XAU');
+  const decimals=isXau?2:(isJpy?3:5);
+  const fmt=v=>typeof v==='number'?v.toFixed(decimals):'--';
+  const sym=plan.pair.replace('/','');
+  const tvUrl=`https://www.tradingview.com/chart/?symbol=FX:${sym}`;
+
+  const renderScenario=(type,sc)=>{
+    if(!sc)return '';
+    const isRec=plan.recommended===type;
+    const rrCls1=sc.rr1>=2?'excellent':'';
+    const rrCls2=sc.rr2>=3?'excellent':'';
+    return `<div class="plan-scenario ${type} ${isRec?'recommended':''}">
+      <div class="plan-scenario-head">
+        <div class="plan-scenario-title">
+          ${type==='short'?'🔴':'🟢'} Scénario ${type==='short'?'A':'B'} · ${sc.label||(type.toUpperCase())}
+        </div>
+        ${isRec?'<span class="plan-recommended-badge">★ Recommandé</span>':''}
+      </div>
+      <div class="plan-logic">${escapeHTML(sc.logic||'')}</div>
+      <div class="plan-levels">
+        <div class="plan-level entry">
+          <span class="lbl">📍 Entry</span>
+          <span class="val">${fmt(sc.entry)}</span>
+        </div>
+        <div class="plan-level sl">
+          <span class="lbl">🛑 Stop Loss</span>
+          <span class="val">${fmt(sc.sl)}</span>
+        </div>
+        <div class="plan-level tp">
+          <span class="lbl">🎯 TP1</span>
+          <span class="val">${fmt(sc.tp1)}</span>
+        </div>
+        <div class="plan-level tp">
+          <span class="lbl">🎯 TP2</span>
+          <span class="val">${fmt(sc.tp2)}</span>
+        </div>
+      </div>
+      <div class="plan-stats">
+        <span>Risque <b>${sc.risk_pips}p</b></span>
+        <span>TP1 <b>+${sc.tp1_pips}p</b> · <b class="rr ${rrCls1}">R:R 1:${(sc.rr1||0).toFixed(1)}</b></span>
+        <span>TP2 <b>+${sc.tp2_pips}p</b> · <b class="rr ${rrCls2}">R:R 1:${(sc.rr2||0).toFixed(1)}</b></span>
+      </div>
+      ${sc.why?`<div style="font-size:11px;color:var(--text-mute);line-height:1.45;margin-bottom:10px;padding:7px 10px;background:var(--bg-2);border-radius:4px"><b style="color:var(--text-dim)">💡 Logique :</b> ${escapeHTML(sc.why)}</div>`:''}
+      <div class="plan-actions">
+        <a class="plan-btn primary" href="${tvUrl}" target="_blank" rel="noopener">📊 Ouvrir TradingView</a>
+        <button class="plan-btn" onclick='openSizingFromPlan(${JSON.stringify(plan.pair)},${sc.entry},${sc.sl},"${type}")'>⚖ Sizing</button>
+        <button class="plan-btn" onclick='addPlanToJournal(${JSON.stringify(plan.pair)},${JSON.stringify(type)},${sc.entry},${sc.sl},${sc.tp1})'>+ Journal</button>
+      </div>
+    </div>`;
+  };
+
+  return `<div class="plan-pair">
+    <div class="plan-pair-head">
+      <span class="plan-pair-name">${plan.pair}</span>
+      <span class="plan-pair-spot">${fmt(plan.spot)}</span>
+    </div>
+    ${plan.context?`<div class="plan-pair-context"><b>📌 Contexte</b>${escapeHTML(plan.context)}</div>`:''}
+    ${renderScenario('short',plan.scenarios?.short)}
+    ${renderScenario('long',plan.scenarios?.long)}
+  </div>`;
+}
+
+/* Helpers pour les boutons d'action */
+function openSizingFromPlan(pair,entry,sl,type){
+  /* Pré-remplit la page Position Sizing */
+  go('sizing');
+  setTimeout(()=>{
+    const psPair=document.getElementById('ps-pair');
+    const psEntry=document.getElementById('ps-entry');
+    const psSl=document.getElementById('ps-sl');
+    if(psPair)psPair.value=pair;
+    if(psEntry)psEntry.value=entry;
+    if(psSl)psSl.value=sl;
+    if(typeof calcPositionSize==='function')calcPositionSize();
+  },200);
+}
+
+function addPlanToJournal(pair,direction,entry,sl,tp){
+  /* Pré-ouvre le modal Journal avec les infos */
+  go('journal');
+  setTimeout(()=>{
+    const addBtn=document.getElementById('journal-add-btn');
+    if(addBtn)addBtn.click();
+    setTimeout(()=>{
+      const fPair=document.getElementById('j-pair');
+      const fDir=document.getElementById('j-direction');
+      const fEntry=document.getElementById('j-entry');
+      const fSl=document.getElementById('j-sl');
+      const fTp=document.getElementById('j-tp');
+      if(fPair)fPair.value=pair;
+      if(fDir)fDir.value=direction;
+      if(fEntry)fEntry.value=entry;
+      if(fSl)fSl.value=sl;
+      if(fTp)fTp.value=tp;
+    },300);
+  },200);
+}
+
+function loadCachedPlans(){
+  const cached=localStorage.getItem(PLANS_KEY);
+  if(!cached)return;
+  try{
+    const {plans,timestamp}=JSON.parse(cached);
+    const hoursOld=(Date.now()-timestamp)/3600000;
+    if(hoursOld<6&&Array.isArray(plans)){
+      renderTradePlans(plans);
+    }
+  }catch(e){console.warn('[Plans] failed to load cache:',e);}
+}
 
 /* Re-render auto toutes les 30 sec si on est sur la page */
 setInterval(()=>{
