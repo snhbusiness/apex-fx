@@ -7848,148 +7848,197 @@ async function generateTradePlans(){
 
   document.getElementById('plans-content').innerHTML=`<div class="brief-loading">
     <div class="pulse"></div>
-    <div>Claude analyse les niveaux et construit les plans Long/Short pour chaque paire…</div>
+    <div>Claude analyse les niveaux et construit les plans Long/Short…</div>
   </div>`;
 
-  /* Récupération des spots actuels pour donner du contexte */
-  const spotData=['EURUSD','GBPUSD','USDJPY','USDCHF','AUDUSD','USDCAD','NZDUSD','XAUUSD']
-    .map(p=>{
-      const d=fxData[p];
-      if(!d||!d.price)return null;
-      const display=p.slice(0,3)+'/'+p.slice(3);
-      const isJpy=p.includes('JPY');
-      const isXau=p.includes('XAU');
-      return `${display}: ${isXau?d.price.toFixed(2):(isJpy?d.price.toFixed(3):d.price.toFixed(5))} (chg ${d.chg>=0?'+':''}${(d.chg||0).toFixed(2)}%)`;
-    }).filter(Boolean).join('\n');
+  /* Récupération des vrais spots Twelve Data — sans ça, on ne génère rien */
+  const PAIRS=['EURUSD','GBPUSD','USDJPY','USDCHF','AUDUSD','USDCAD','NZDUSD','XAUUSD'];
+  const realSpots={};
+  PAIRS.forEach(p=>{
+    const d=fxData[p];
+    if(d&&d.price&&d.price>0){
+      realSpots[p]={price:d.price,chg:d.chg||0};
+    }
+  });
+
+  if(Object.keys(realSpots).length<4){
+    document.getElementById('plans-content').innerHTML=`<div class="brief-empty">
+      <div class="icon" style="color:var(--red)">⚠</div>
+      <h3>Prix indisponibles</h3>
+      <p>Pas assez de prix FX live chargés (${Object.keys(realSpots).length}/8). Configure ta clé Twelve Data dans Paramètres et attends 30 sec que les prix se chargent, puis réessaie.</p>
+    </div>`;
+    btn.disabled=false;
+    document.getElementById('plans-gen-text').textContent='Régénérer';
+    document.getElementById('plans-gen-icon').textContent='⚡';
+    return;
+  }
 
   const todayStr=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
 
-  const systemPrompt=`Tu es le trader senior d'un trading desk forex institutionnel à Londres. Tu construis des plans de trade actionnables pour les paires majeures, basés sur les niveaux de liquidité, le contexte macro et la lecture institutionnelle (ICT/SMC + Murphy + Donnelly).
+  /* On envoie à Claude les vrais spots et on lui demande UNIQUEMENT des écarts en pips,
+     pas des prix absolus. Les vrais prix seront calculés en JS après. */
+  const spotsListStr=Object.entries(realSpots).map(([p,d])=>{
+    const display=p.slice(0,3)+'/'+p.slice(3);
+    return `${display}: spot=${d.price} (${d.chg>=0?'+':''}${d.chg.toFixed(2)}%)`;
+  }).join('\n');
 
-Aujourd'hui : ${todayStr}.
+  const systemPrompt=`Tu es le trader senior d'un trading desk forex institutionnel à Londres. Tu construis des plans de trade actionnables (Long et Short) pour les paires majeures.
+
+Date : ${todayStr}.
 
 ═══════════════════════════════════════════════════════
-INSTRUCTION CRITIQUE : tu réponds UNIQUEMENT avec un tableau JSON brut.
-Pas de texte avant. Pas de texte après. Pas de markdown. Pas de balise.
-Ta réponse commence par "[" et finit par "]".
+RÈGLE ABSOLUE : tu travailles UNIQUEMENT en PIPS RELATIFS au spot, JAMAIS en prix absolus.
 ═══════════════════════════════════════════════════════
 
-Format exact :
+Tu réponds UNIQUEMENT avec ce JSON pur (commence par [, finit par ]) :
+
 [
   {
     "pair": "EUR/USD",
-    "spot": 1.16046,
-    "context": "Sous VWAP, proche du PDL, après stop hunt à 12h UTC. Bias bearish.",
+    "context": "Phrase de 15-25 mots sur le bias.",
     "recommended": "short",
     "scenarios": {
       "short": {
         "label": "CONTINUATION BEARISH",
-        "logic": "Suis la tendance, vends à la résistance VWAP.",
-        "entry": 1.16209,
-        "sl": 1.16310,
-        "tp1": 1.16000,
-        "tp2": 1.15850,
-        "risk_pips": 100,
-        "tp1_pips": 209,
-        "tp2_pips": 359,
-        "rr1": 2.1,
-        "rr2": 3.6,
-        "why": "Vendre à la résistance VWAP où les acheteurs perdants vont sortir."
+        "logic": "Phrase courte expliquant le scénario.",
+        "entry_pips": 50,
+        "sl_pips": 120,
+        "tp1_pips": -100,
+        "tp2_pips": -200,
+        "why": "Explication 20-30 mots de la logique institutionnelle."
       },
       "long": {
-        "label": "REBOND TECHNIQUE",
-        "logic": "PDL tient, rebond possible avant continuation.",
-        "entry": 1.16080,
-        "sl": 1.15980,
-        "tp1": 1.16209,
-        "tp2": 1.16297,
-        "risk_pips": 100,
-        "tp1_pips": 129,
-        "tp2_pips": 217,
-        "rr1": 1.3,
-        "rr2": 2.2,
-        "why": "Trade contre-tendance, attendre bougie confirmation 30M."
+        "label": "REBOND SUPPORT",
+        "logic": "Phrase courte.",
+        "entry_pips": -30,
+        "sl_pips": -100,
+        "tp1_pips": 80,
+        "tp2_pips": 150,
+        "why": "Explication 20-30 mots."
       }
     }
   }
 ]
 
-PAIRES À COUVRIR (8 paires, toutes obligatoires) : EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD, XAU/USD.
+CONVENTIONS PIPS (tous les chiffres sont des entiers positifs ou négatifs) :
+- "entry_pips" : où placer l'entrée par rapport au spot. POSITIF = au-dessus du spot, NÉGATIF = en-dessous.
+- "sl_pips" : où placer le stop loss par rapport au spot. POSITIF = au-dessus du spot, NÉGATIF = en-dessous.
+- "tp1_pips", "tp2_pips" : take profits, même convention.
 
-CONTRAINTES :
-- Les niveaux DOIVENT être à ±50 pips du spot pour les majors (±100 pips JPY, ±500 ticks XAU)
-- R:R MINIMUM 1:1.3 pour TP1
-- "recommended" = "short" ou "long"
-- "context" : max 25 mots
-- "why" : max 30 mots
-- Décimales : 5 pour majors (1.16209), 3 pour JPY (158.450), 2 pour XAU (3201.50)
-- Logique : si short → sl > entry > tp1 > tp2 ; si long → tp2 > tp1 > entry > sl
+COHÉRENCE OBLIGATOIRE :
+- Pour un SHORT : entry > 0 (vendre au-dessus du spot), sl > entry, tp1 et tp2 négatifs (en-dessous du spot)
+- Pour un LONG : entry < 0 (acheter sous le spot), sl < entry, tp1 et tp2 positifs
 
-RAPPEL : ta réponse est UNIQUEMENT le JSON, rien d'autre.`;
+RANGE TYPIQUES :
+- Majors (EURUSD, GBPUSD, etc.) : entry à 30-80 pips du spot, SL à 80-150 pips, TP1 à 100-200 pips, TP2 à 250-400 pips
+- JPY pairs (USDJPY) : ranges similaires en pips mais représentent des centièmes de Yen
+- XAU/USD : pips = 0.10$ (donc 100 pips = 10$), entry 200-500, SL 500-800, TP 600-1500
 
-  const userPrompt=`Génère les plans de trade actionnables pour ce ${todayStr}.
+PAIRES OBLIGATOIRES (toutes les 8) : EUR/USD, GBP/USD, USD/JPY, USD/CHF, AUD/USD, USD/CAD, NZD/USD, XAU/USD
 
-Spots actuels (référence obligatoire) :
-${spotData}
+RAPPEL : ta réponse est UNIQUEMENT le tableau JSON, rien d'autre. Pas de markdown. Pas de balise.`;
 
-Contexte macro mai 2026 : Fed à 3.50-3.75% (Warsh Chair), BCE pause 2.00%, BoJ hawkish (hike 0.75%), US10Y à 4.68%, oil shock Iran (Brent >110$). Bias USD haussier court terme.
+  const userPrompt=`Génère les plans de trade pour le ${todayStr}.
 
-Pour chaque paire, livre 2 scénarios Long/Short avec niveaux précis basés sur le spot ci-dessus.`;
+Spots actuels (info contextuelle, tu ne les utilises pas dans la réponse) :
+${spotsListStr}
+
+Contexte macro mai 2026 :
+- Fed à 3.75% (Warsh Chair depuis 15 mai), markets price 40% chance hike avant déc
+- BCE pause à 2.00% (dovish)
+- BoJ hawkish (0.75%, hike vers 1% attendu juillet)
+- US10Y à 4.68% (plus haut 16 mois)
+- Oil shock Iran : Brent >110$
+- Bias USD haussier court terme
+
+Pour chaque paire, donne 2 scénarios (Long et Short) avec les pips relatifs au spot.`;
 
   try{
     const text=await callAnthropic(userPrompt,systemPrompt,8000);
-    console.log('[Plans] réponse Claude (',text.length,'chars) :',text.slice(0,300)+'…');
-    let plans=null;
+    console.log('[Plans] réponse Claude (',text.length,'chars) :',text.slice(0,400));
 
-    /* Extraction robuste en 4 tentatives successives */
+    let plansRaw=null;
     const tries=[
-      /* 1. Balises <PLANS_JSON> */
       ()=>{const m=text.match(/<PLANS_JSON>([\s\S]*?)<\/PLANS_JSON>/);return m?m[1]:null;},
-      /* 2. Bloc code ```json ... ``` */
       ()=>{const m=text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);return m?m[1]:null;},
-      /* 3. Array JSON entier (du premier [ au dernier ]) */
       ()=>{const start=text.indexOf('[');const end=text.lastIndexOf(']');return (start>=0&&end>start)?text.slice(start,end+1):null;},
-      /* 4. Si la réponse est déjà du JSON pur */
       ()=>text.trim().startsWith('[')?text.trim():null,
     ];
 
-    let lastError=null;
     for(const tryFn of tries){
       const candidate=tryFn();
       if(!candidate)continue;
       try{
         const parsed=JSON.parse(candidate.trim());
         if(Array.isArray(parsed)&&parsed.length>0){
-          plans=parsed;
+          plansRaw=parsed;
           break;
         }
-      }catch(e){
-        lastError=e.message;
-        console.warn('[Plans] tentative parse échec :',e.message,'sur',candidate.slice(0,100));
-      }
+      }catch(e){console.warn('[Plans] parse tentative échec :',e.message);}
     }
 
-    if(!plans||!Array.isArray(plans)||plans.length===0){
-      console.error('[Plans] parsing total échec. Réponse complète Claude :',text);
-      /* Affiche un preview de la réponse pour aider le debug */
-      const preview=text.slice(0,300).replace(/[<>]/g,'').trim();
-      throw new Error('Claude n\'a pas renvoyé un JSON parsable. Régénère pour réessayer. (Aperçu réponse : "'+preview+'…")');
+    if(!plansRaw||plansRaw.length===0){
+      console.error('[Plans] parsing total échec. Réponse complète :',text);
+      throw new Error('Claude n\'a pas renvoyé un JSON parsable. Régénère.');
     }
 
-    /* Validation des plans (structure minimale obligatoire) */
-    plans=plans.filter(p=>{
-      return p&&p.pair&&typeof p.spot==='number'&&
-        p.scenarios&&(p.scenarios.short||p.scenarios.long);
-    });
+    /* === CALCUL DES VRAIS PRIX EN JS DEPUIS LES PIPS === */
+    const finalPlans=plansRaw.map(p=>{
+      const pairKey=p.pair.replace('/','');
+      const spotInfo=realSpots[pairKey];
+      if(!spotInfo)return null; /* skip paires non chargées */
+      const spot=spotInfo.price;
+      const isJpy=pairKey.includes('JPY');
+      const isXau=pairKey.includes('XAU');
+      /* Pip value selon paire : majors = 0.0001, JPY = 0.01, XAU = 0.10 */
+      const pipValue=isXau?0.10:(isJpy?0.01:0.0001);
 
-    if(plans.length===0){
-      throw new Error('Plans générés mais structure invalide. Régénère.');
+      const calcLevels=(sc)=>{
+        if(!sc)return null;
+        const entry=spot+(sc.entry_pips||0)*pipValue;
+        const sl=spot+(sc.sl_pips||0)*pipValue;
+        const tp1=spot+(sc.tp1_pips||0)*pipValue;
+        const tp2=spot+(sc.tp2_pips||0)*pipValue;
+        const riskPips=Math.abs(sc.sl_pips-sc.entry_pips);
+        const tp1AbsPips=Math.abs(sc.tp1_pips-sc.entry_pips);
+        const tp2AbsPips=Math.abs(sc.tp2_pips-sc.entry_pips);
+        return {
+          label:sc.label||'',
+          logic:sc.logic||'',
+          entry:entry,
+          sl:sl,
+          tp1:tp1,
+          tp2:tp2,
+          risk_pips:riskPips,
+          tp1_pips:tp1AbsPips,
+          tp2_pips:tp2AbsPips,
+          rr1:riskPips>0?+(tp1AbsPips/riskPips).toFixed(2):0,
+          rr2:riskPips>0?+(tp2AbsPips/riskPips).toFixed(2):0,
+          why:sc.why||''
+        };
+      };
+
+      return {
+        pair:p.pair,
+        spot:spot,
+        context:p.context||'',
+        recommended:p.recommended||'short',
+        scenarios:{
+          short:calcLevels(p.scenarios?.short),
+          long:calcLevels(p.scenarios?.long)
+        }
+      };
+    }).filter(Boolean);
+
+    if(finalPlans.length===0){
+      throw new Error('Aucun plan généré. Vérifie que tu as les prix chargés.');
     }
 
-    renderTradePlans(plans);
-    localStorage.setItem(PLANS_KEY,JSON.stringify({plans,timestamp:Date.now()}));
-    toast('✓ Plans générés',plans.length+' paires analysées');
+    renderTradePlans(finalPlans);
+    localStorage.setItem(PLANS_KEY,JSON.stringify({plans:finalPlans,timestamp:Date.now()}));
+    toast('✓ Plans générés',finalPlans.length+' paires · prix calculés depuis Twelve Data live');
   }catch(e){
+    console.error('[Plans] erreur :',e);
     document.getElementById('plans-content').innerHTML=`<div class="brief-empty">
       <div class="icon" style="color:var(--red)">⚠</div>
       <h3>Erreur de génération</h3>
@@ -8001,6 +8050,7 @@ Pour chaque paire, livre 2 scénarios Long/Short avec niveaux précis basés sur
     document.getElementById('plans-gen-icon').textContent='⚡';
   }
 }
+
 
 function renderTradePlans(plans){
   const cards=plans.map(p=>renderPlanCard(p)).join('');
