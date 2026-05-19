@@ -634,6 +634,14 @@
   .setup-trigger b{color:var(--amber);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.5px;display:block;margin-bottom:3px;text-transform:uppercase}
   .setup-invalid{padding:9px 12px;background:rgba(255,90,82,.05);border-left:2px solid var(--red);border-radius:4px;font-size:11.5px;line-height:1.5;color:var(--text-dim)}
   .setup-invalid b{color:var(--red);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.5px;display:block;margin-bottom:3px;text-transform:uppercase}
+  .setup-ict{padding:9px 12px;border-radius:4px;font-size:11.5px;line-height:1.5;color:var(--text-dim);margin-top:6px}
+  .setup-ict b{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.5px;display:block;margin-bottom:3px;text-transform:uppercase}
+  .setup-ict.killzone{background:rgba(93,214,224,.06);border-left:2px solid var(--cyan)}
+  .setup-ict.killzone b{color:var(--cyan)}
+  .setup-ict.liquidity{background:rgba(233,110,221,.06);border-left:2px solid var(--magenta)}
+  .setup-ict.liquidity b{color:var(--magenta)}
+  .setup-ict.instread{background:rgba(62,207,142,.06);border-left:2px solid var(--green)}
+  .setup-ict.instread b{color:var(--green)}
 
   .setup-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
   .setup-btn{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
@@ -1099,6 +1107,7 @@
       <a class="nav-link" data-page="stats"><span class="ico">▤</span> Stats performance</a>
       <a class="nav-link" data-page="sizing"><span class="ico">⚖</span> Position sizing</a>
       <a class="nav-link" data-page="alerts-brief"><span class="ico">🔔</span> Alertes setups <span class="badge" id="briefalerts-count">0</span></a>
+      <a class="nav-link" data-page="flows"><span class="ico">💼</span> Flux corporates <span class="pill" style="font-size:8px;padding:1px 5px;margin-left:4px;background:var(--amber);color:#080a0c;font-weight:700">NEW</span></a>
     </nav>
     <h6>Analyse avancée</h6>
     <nav class="nav">
@@ -2133,7 +2142,7 @@
 
           <div class="lesson-callout">
             <h4>💡 Le contexte macro de fond (19 mai 2026)</h4>
-            <p>Inflation US re-accélère (CPI 3.8% en avril, plus haut depuis mai 2023). Guerre Iran fait remonter le brut au-dessus de 110$/baril. Kevin Warsh vient d'être confirmé Chair Fed le 15 mai — sa première décision sera le 17 juin. Les fed funds futures pricent désormais ~25% de chance de <em>hausse</em> de taux avant décembre (cas contrarien). BoJ hawkish (rates à 0.75%, JGB 10Y à 2.75%, plus haut depuis 1997).</p>
+            <p>Inflation US re-accélère (CPI 3.8% en avril, plus haut depuis mai 2023). Guerre Iran fait remonter le brut au-dessus de 110$/baril. Kevin Warsh vient d'être confirmé Chair Fed le 15 mai — sa première décision sera le 17 juin. Les fed funds futures pricent désormais ~40% de chance de <em>hausse</em> de taux avant décembre (US10Y à 4.68%, plus haut depuis 16 mois). BoJ hawkish (rates à 0.75%, JGB 10Y à 2.75%, plus haut depuis 1997).</p>
             <p style="margin-top:10px"><b>Le grand thème</b> : <em>"Higher for longer"</em> revient en force après l'épisode désinflationniste 2024-2025. Les taux réels USD sont au plus haut de 18 ans — c'est l'aimant principal qui soutient le dollar contre EUR et que la BoJ essaie de combattre via hike vers 1%.</p>
           </div>
         </div>
@@ -2345,6 +2354,95 @@
       </div>
     </section>
 
+    <!-- ═══════════════ FLUX CORPORATES ═══════════════ -->
+    <section class="page" data-page="flows">
+      <div class="page-title"><div>
+        <h1>Flux <em>corporates</em></h1>
+        <p>Analyse IA des grosses commandes industrielles, M&A, earnings et événements corporates qui font bouger le forex. <b>40-60% du volume FX quotidien</b> provient des entreprises qui hedgent leurs devises — comprendre ces flux, c'est anticiper les mouvements macro.</p>
+      </div></div>
+
+      <div class="grid">
+
+        <!-- LESSON 1 : Concept -->
+        <div class="card c-12 lesson-card lesson-blue">
+          <div class="lesson-tag">📖 Pourquoi suivre les flux corporates</div>
+          <h2>Quand une entreprise change de devise, le marché bouge</h2>
+          <p class="lesson-lead">Quand <b>Lufthansa achète 50 Boeing pour 5 milliards USD</b>, elle doit convertir des euros en dollars sur plusieurs semaines. Cette conversion massive se voit dans les prix.</p>
+          <p>Les 6 grandes sources de flux corporates :</p>
+          <ul class="lesson-list">
+            <li><b>Énergie</b> : pétrole/gaz payés en USD → quand le Brent monte, demande USD plus forte</li>
+            <li><b>Aéronautique & Défense</b> : Boeing/Airbus commandes 1-10 milliards$ → mouvements sur 2-3 mois</li>
+            <li><b>Tech & Software</b> : Apple, Microsoft rapatrient les bénéfices mondiaux en USD (surtout Q1, Q4)</li>
+            <li><b>Pharma</b> : Pfizer, Roche, Novartis rapatriement trimestriel des profits</li>
+            <li><b>Automotive</b> : Toyota/VW vendent en USD, doivent reconvertir en JPY/EUR</li>
+            <li><b>M&A cross-border</b> : acquisitions >1B$ = mouvements ponctuels violents</li>
+          </ul>
+          <p>L'exécution se fait principalement au <b>WMR London Fix à 16h00 UTC</b> (~50% du volume corporate quotidien). C'est l'heure clé du day-trading FX institutionnel.</p>
+        </div>
+
+        <!-- ANALYSE IA DES FLUX DU JOUR -->
+        <div class="card c-12">
+          <div class="card-head">
+            <div class="card-title"><span class="dot live"></span><h3>Analyse IA des flux corporates · résumé "action → conséquence"</h3>
+              <span class="card-sub">— l'IA analyse les news corporates des 72h et donne le verdict FX</span>
+            </div>
+            <button class="brief-btn" id="flows-generate">
+              <span id="flows-gen-icon">💼</span>
+              <span id="flows-gen-text">Générer l'analyse</span>
+            </button>
+          </div>
+          <div id="flows-content">
+            <div class="brief-empty">
+              <div class="icon">💼</div>
+              <h3>Pas encore d'analyse aujourd'hui</h3>
+              <p>Clique sur "Générer l'analyse" pour que Claude scanne les commandes industrielles, M&A et earnings des dernières 72h, et te donne un résumé <b>action → conséquence marché</b> pour chaque devise. Coût : ~0,03 €.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- LESSON 2 : Le London Fix -->
+        <div class="card c-12 lesson-card lesson-amber">
+          <div class="lesson-tag">⏰ Le London Fix (16h00 UTC)</div>
+          <h2>L'heure clé du forex institutionnel</h2>
+          <p class="lesson-lead">Le <b>WMR London Fix</b> est le bench officiel auquel ~50% du volume corporate FX quotidien s'exécute. C'est <b>5 minutes (15h57-16h02 UTC)</b> où les volumes peuvent être 5-10× la moyenne.</p>
+          <div class="lesson-grid">
+            <div class="lesson-box">
+              <h4>Pourquoi c'est important</h4>
+              <p>Les corporates et fonds de pension placent leurs ordres au "Fix" pour avoir un prix de référence reconnu. Les desks doivent exécuter avant 16h00 → ils achètent/vendent en masse dans les 5 min précédentes.</p>
+            </div>
+            <div class="lesson-box">
+              <h4>Comment l'exploiter</h4>
+              <p>Si une <b>tendance forte</b> est en place (ex EUR/USD baissier toute la journée), le Fix amplifie souvent le mouvement entre 15h45-16h00. <b>Trading idée</b> : entrer dans le sens de la tendance vers 15h30-15h45.</p>
+            </div>
+            <div class="lesson-box">
+              <h4>Le piège classique</h4>
+              <p>Beaucoup de retours à la moyenne se produisent <b>juste après 16h00</b>. Les market makers profitent du déséquilibre temporaire pour squeezer dans l'autre sens. Sortir avant 16h05 si possible.</p>
+            </div>
+            <div class="lesson-box">
+              <h4>Vérification sur TradingView</h4>
+              <p>Active le <b>Volume Profile session</b> sur EUR/USD H1. Tu verras systématiquement un POC ou des spikes de volume à 15h-16h UTC.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- LESSON 3 : Repatriation Patterns -->
+        <div class="card c-12 lesson-card lesson-green">
+          <div class="lesson-tag">📅 Patterns saisonniers de rapatriement</div>
+          <h2>Les flux corporates ont un calendrier</h2>
+          <p class="lesson-lead">Les rapatriements de bénéfices suivent des patterns trimestriels prévisibles. Comprendre ce calendrier = anticipation macro 3-6 mois à l'avance.</p>
+          <ul class="lesson-list">
+            <li><b>Fin Q1 (mars)</b> : rapatriement bonus + fin d'exercice fiscal Japon → <b>USD/JPY baissier</b> typiquement</li>
+            <li><b>Fin Q2 (juin)</b> : dividendes US versés en USD → demande USD forte → <b>EUR/USD pression</b></li>
+            <li><b>Q3 (juillet-septembre)</b> : période plus calme, sauf earnings tech (août)</li>
+            <li><b>Q4 (oct-déc)</b> : <b>Apple iPhone launch + Noël</b> → repatriement massif US tech → USD bullish déc-jan</li>
+            <li><b>Fin d'année fiscale Japon (31 mars)</b> : repatriement majeur JPY → USD/JPY toujours sous pression</li>
+          </ul>
+          <p>Ces patterns ne sont pas garantis chaque année, mais ont une <b>fiabilité statistique de 60-70%</b> sur 20 ans de données.</p>
+        </div>
+
+      </div>
+    </section>
+
     <!-- ═══════════════ WATCHLIST ═══════════════ -->
     <section class="page" data-page="watchlist">
       <div class="page-title">
@@ -2385,6 +2483,36 @@
             <h4>Modèle utilisé</h4>
             <p>Claude Sonnet 4.6 (<code>claude-sonnet-4-6</code>) — le modèle Anthropic le plus récent à ce prix, meilleur rapport vitesse/qualité pour les briefings. Coût indicatif : ~0,01 € par brief généré.</p>
           </div>
+        </div>
+
+        <div class="card c-12">
+          <div class="card-head"><div class="card-title"><span class="dot"></span><h3>Données live · clé API Twelve Data</h3></div>
+            <span class="api-status ko" id="td-api-status">non configurée</span>
+          </div>
+          <div class="settings-row">
+            <h4>Clé API Twelve Data</h4>
+            <p>Remplace Yahoo Finance (qui bloque le scraping depuis 2023). Tu obtiens <b>DXY, US10Y, VIX, Or et autres indices en temps réel sans proxy CORS</b>. Plan gratuit : 8 requêtes/min, ~800/jour. Inscription gratuite sur <a href="https://twelvedata.com/register" target="_blank" style="color:var(--amber)">twelvedata.com</a>. La clé reste dans ton navigateur uniquement.</p>
+            <div class="api-key-input">
+              <input type="password" id="td-key-input" placeholder="ta clé Twelve Data (32 caractères)" autocomplete="off" />
+              <button class="brief-btn" id="td-key-save">Enregistrer</button>
+              <button class="brief-btn secondary" id="td-key-clear">Effacer</button>
+            </div>
+            <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <button class="brief-btn secondary" id="td-test">🧪 Tester la connexion</button>
+              <span id="td-test-result" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-mute);letter-spacing:.3px"></span>
+            </div>
+          </div>
+          <div class="settings-row">
+            <h4>Données récupérées (toutes les 30 sec)</h4>
+            <p style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7">
+              • <b style="color:var(--amber)">DXY</b> · indice dollar US<br>
+              • <b style="color:var(--amber)">US10Y, US30Y, US5Y</b> · yields treasuries<br>
+              • <b style="color:var(--amber)">VIX</b> · volatilité S&P 500<br>
+              • <b style="color:var(--amber)">XAU/USD</b> · or<br>
+              • <b style="color:var(--amber)">SPX</b> · S&P 500
+            </p>
+          </div>
+        </div>
           <div class="settings-row">
             <h4>Génération automatique du Morning Brief</h4>
             <p>Le brief sera régénéré automatiquement aux horaires clés des sessions FX, sans que tu aies à cliquer. Coût estimé : ~0,03 €/jour si tu actives tous les créneaux.</p>
@@ -2670,7 +2798,7 @@ const YPAIRS=[
    Guerre Iran fait remonter inflation (CPI US 3.8%), markets prient ~25% chance de hike Fed avant déc. */
 const POLICY_RATES={
   USD:{rate:3.75,bias:'neutral',label:'Fed Funds upper',next:'17 juin 2026',
-       note:'Maintenu à 3.50-3.75% le 29 avril. Warsh nouveau Chair. Markets pricent 0% cut, 25% hike avant déc.'},
+       note:'Maintenu à 3.50-3.75% le 29 avril. Warsh Chair depuis 15 mai. Markets pricent 0% cut, 40% hike avant déc. US10Y à 4.68% (plus haut 16 mois).'},
   EUR:{rate:2.00,bias:'dovish',label:'Deposit rate',next:'11 juin 2026',
        note:'En pause à 2.00% depuis fin 2025. ECB "in a good place" selon Lagarde. ING ne voit pas de cut.'},
   GBP:{rate:4.25,bias:'neutral',label:'Bank Rate',next:'19 juin 2026',
@@ -2883,34 +3011,75 @@ async function loadFrankfurterPrices(){
   console.error('[FX-Spot] toutes les sources de prix spot ont échoué');
 }
 
-/* DXY · avec fallback hardcodé mai 2026 si Yahoo échoue */
-const DXY_FALLBACK={price:99.08,chg:-0.18};
+/* DXY · Twelve Data en priorité, Yahoo en fallback, hardcoded en dernier recours */
+const DXY_FALLBACK={price:99.08,chg:+0.09};
 async function loadDXY(){
   const x=document.getElementById('hs-dxy');
   if(!x)return;
+
+  /* 1. Essai Twelve Data (si clé configurée) */
+  if(getTdKey()){
+    try{
+      const d=await fetchTwelveData('DXY');
+      const price=parseFloat(d.close||d.price);
+      const chg=parseFloat(d.percent_change||0);
+      if(!isNaN(price)){
+        x.textContent=fmtNum(price,2);
+        x.className='hs-val '+(chg>=0?'up':'dn');
+        x.title=`Twelve Data live · ${chg>=0?'+':''}${chg.toFixed(2)}%`;
+        return;
+      }
+    }catch(e){console.warn('[Twelve Data DXY] failed:',e.message);}
+  }
+
+  /* 2. Fallback Yahoo via proxy */
   try{
     const data=await fetchYahoo(['DX-Y.NYB']);
     const d=data[0];
     if(d&&d.regularMarketPrice){
       x.textContent=fmtNum(d.regularMarketPrice,2);
       x.className='hs-val '+(d.regularMarketChangePercent>=0?'up':'dn');
+      x.title='Yahoo Finance via proxy';
       return;
     }
     throw new Error('no data');
   }catch(e){
-    /* fallback : valeur connue mai 2026, pas d'indicateur d'erreur */
+    /* 3. Dernier recours : valeur hardcodée 19 mai 2026 */
     x.textContent=fmtNum(DXY_FALLBACK.price,2);
     x.className='hs-val '+(DXY_FALLBACK.chg>=0?'up':'dn');
-    x.title='Valeur hardcodée mai 2026 — Yahoo Finance indisponible via proxy';
+    x.title='Fallback hardcodé 19 mai 2026 — configure Twelve Data dans Paramètres pour avoir le live';
   }
 }
 
-/* RATES (10Y et 2Y des G10) · avec fallback hardcodé mai 2026 */
-const RATES_FALLBACK={US10Y:4.59,US3M:4.13,US5Y:4.20,US30Y:5.12};
+/* RATES (US 10Y, 30Y, 5Y, 3M) · Twelve Data → Yahoo → hardcoded
+   Pour US10Y on utilise TVC:US10Y sur Twelve Data, ou ^TNX sur Yahoo */
+const RATES_FALLBACK={US10Y:4.68,US3M:4.13,US5Y:4.32,US30Y:5.20};
 async function loadRates(){
+  let gotData=false;
+
+  /* 1. Twelve Data si clé */
+  if(getTdKey()){
+    try{
+      /* Twelve Data utilise les symboles TradingView : TVC:US10Y, TVC:US30Y, TVC:US05Y, TVC:US03MY */
+      const batch=await fetchTwelveDataBatch(['TVC:US10Y','TVC:US30Y','TVC:US05Y','TVC:US03MY']);
+      const map={'TVC:US10Y':'US10Y','TVC:US30Y':'US30Y','TVC:US05Y':'US5Y','TVC:US03MY':'US3M'};
+      for(const [tdSym,localKey] of Object.entries(map)){
+        const d=batch[tdSym];
+        if(d&&!d.code){
+          const price=parseFloat(d.close||d.price);
+          if(!isNaN(price)){
+            rateData[localKey]=price;
+            gotData=true;
+          }
+        }
+      }
+      if(gotData){renderRateDiffs();return;}
+    }catch(e){console.warn('[Twelve Data rates] failed:',e.message);}
+  }
+
+  /* 2. Fallback Yahoo */
   try{
     const data=await fetchYahoo(['^TNX','^IRX','^FVX','^TYX']);
-    let gotData=false;
     data.forEach(q=>{
       if(q&&q.regularMarketPrice){
         gotData=true;
@@ -2923,7 +3092,7 @@ async function loadRates(){
     if(!gotData)throw new Error('no rates data');
     renderRateDiffs();
   }catch(e){
-    /* fallback hardcodé */
+    /* 3. Dernier recours : hardcoded */
     if(!rateData.US10Y)rateData.US10Y=RATES_FALLBACK.US10Y;
     if(!rateData.US3M)rateData.US3M=RATES_FALLBACK.US3M;
     if(!rateData.US5Y)rateData.US5Y=RATES_FALLBACK.US5Y;
@@ -4117,6 +4286,66 @@ function updateApiStatus(){
   else{el.textContent='non configurée';el.className='api-status ko';}
 }
 
+/* ════════ TWELVE DATA API ════════ */
+const TD_KEY='apex_fx_td_key_v7';
+function getTdKey(){return localStorage.getItem(TD_KEY)||'';}
+function setTdKey(k){if(k)localStorage.setItem(TD_KEY,k);else localStorage.removeItem(TD_KEY);updateTdStatus();}
+function updateTdStatus(){
+  const el=document.getElementById('td-api-status');
+  if(!el)return;
+  if(getTdKey()){el.textContent='configurée ✓';el.className='api-status ok';}
+  else{el.textContent='non configurée';el.className='api-status ko';}
+}
+
+/* Fetch un quote depuis Twelve Data (CORS natif, pas besoin de proxy) */
+async function fetchTwelveData(symbol){
+  const key=getTdKey();
+  if(!key)throw new Error('Pas de clé Twelve Data');
+  const url=`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbol)}&apikey=${key}`;
+  const resp=await fetch(url);
+  if(!resp.ok)throw new Error('Twelve Data API '+resp.status);
+  const data=await resp.json();
+  if(data.code&&data.code!==200)throw new Error(data.message||'Twelve Data error');
+  return data;
+}
+
+/* Fetch plusieurs symboles en batch (Twelve Data accepte les listes séparées par virgules) */
+async function fetchTwelveDataBatch(symbols){
+  const key=getTdKey();
+  if(!key)throw new Error('Pas de clé Twelve Data');
+  const url=`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbols.join(','))}&apikey=${key}`;
+  const resp=await fetch(url);
+  if(!resp.ok)throw new Error('Twelve Data API '+resp.status);
+  const data=await resp.json();
+  /* Si un seul symbole, l'API retourne directement l'objet ; si plusieurs, un objet avec les symboles en clés */
+  if(symbols.length===1){
+    return {[symbols[0]]:data};
+  }
+  return data;
+}
+
+/* Test de la connexion Twelve Data */
+async function testTwelveData(){
+  const result=document.getElementById('td-test-result');
+  if(!getTdKey()){
+    result.innerHTML='<span style="color:var(--red)">⚠ Aucune clé configurée</span>';
+    return;
+  }
+  result.innerHTML='<span style="color:var(--amber)">⏳ test en cours…</span>';
+  try{
+    const data=await fetchTwelveData('DXY');
+    if(data.close){
+      result.innerHTML=`<span style="color:var(--green)">✓ Connecté · DXY = ${parseFloat(data.close).toFixed(2)}</span>`;
+    }else if(data.price){
+      result.innerHTML=`<span style="color:var(--green)">✓ Connecté · DXY = ${parseFloat(data.price).toFixed(2)}</span>`;
+    }else{
+      result.innerHTML='<span style="color:var(--amber)">⚠ Réponse inattendue (vérifie ta clé)</span>';
+    }
+  }catch(e){
+    result.innerHTML=`<span style="color:var(--red)">✕ Erreur : ${escapeHTML(e.message)}</span>`;
+  }
+}
+
 pageInits.settings=()=>{
   updateApiStatus();
   const input=document.getElementById('api-key-input');
@@ -4132,6 +4361,28 @@ pageInits.settings=()=>{
   document.getElementById('api-key-clear').onclick=()=>{
     if(confirm('Effacer la clé API ?')){setApiKey('');input.value='';toast('Clé effacée','');}
   };
+
+  /* Twelve Data */
+  updateTdStatus();
+  const tdInput=document.getElementById('td-key-input');
+  const tdK=getTdKey();
+  if(tdK&&tdInput)tdInput.value='•••••••••••••••••'+tdK.slice(-6);
+  const tdSave=document.getElementById('td-key-save');
+  if(tdSave)tdSave.onclick=()=>{
+    const v=tdInput.value.trim().replace(/[•\s]/g,'');
+    if(v.length<10){toast('Clé invalide','La clé Twelve Data fait environ 32 caractères','danger');return;}
+    setTdKey(v);
+    tdInput.value='•••••••••••••••••'+v.slice(-6);
+    toast('Clé Twelve Data enregistrée','Les données live sont maintenant disponibles');
+    /* Trigger un refresh immédiat des données */
+    setTimeout(()=>{loadDXY();loadRates();},500);
+  };
+  const tdClear=document.getElementById('td-key-clear');
+  if(tdClear)tdClear.onclick=()=>{
+    if(confirm('Effacer la clé Twelve Data ?')){setTdKey('');tdInput.value='';toast('Clé effacée','');}
+  };
+  const tdTest=document.getElementById('td-test');
+  if(tdTest)tdTest.onclick=testTwelveData;
 };
 
 /* ════════ JOURNAL DE TRADING ════════ */
@@ -4571,7 +4822,12 @@ async function generateBrief(){
     <div>Claude analyse le contexte macro · CFTC · sessions · taux</div>
   </div>`;
 
-  const systemPrompt=`Tu es l'analyste senior d'un trading desk forex institutionnel à Londres. Tu rédiges chaque matin un brief macro court, dense, sans bullshit, à destination d'un trader pro. Style : direct, technique, vocabulaire institutionnel (carry, basis, spread, positioning, flows), pas de disclaimer générique, pas de "souvenez-vous de gérer votre risque". Tu écris en français. Tu utilises le framework John Murphy d'analyse intermarché.
+  const systemPrompt=`Tu es l'analyste senior d'un trading desk forex institutionnel à Londres. Tu rédiges chaque matin un brief macro court, dense, sans bullshit, à destination d'un trader pro. Style : direct, technique, vocabulaire institutionnel (carry, basis, spread, positioning, flows, liquidity grab, order block, fair value gap), pas de disclaimer générique. Tu écris en français.
+
+Tu utilises 3 frameworks complémentaires :
+1. **John Murphy** — analyse intermarché (rates, FX, commodities, equities)
+2. **Brent Donnelly** — 5 Stars setup (catalyst, cross-asset, positioning, technicals, vol/seasonality)
+3. **ICT/SMC** — Smart Money Concepts (killzones, liquidity grabs, order blocks, fair value gaps)
 
 ═══════════════════════════════════════════════════════
 RÈGLE ABSOLUE : tu DOIS impérativement structurer ta réponse en 3 sections markdown ET inclure un bloc JSON. Aucune exception possible. Si tu oublies le JSON, l'app ne pourra pas générer les graphiques.
@@ -4595,23 +4851,16 @@ STRUCTURE OBLIGATOIRE :
     "tp": 142.50,
     "rationale": "Une phrase courte expliquant la logique du setup (intermarché, positionnement, technique).",
     "trigger": "L'événement précis qui déclenche le trade (data macro, niveau cassé, etc.)",
-    "invalidation": "Le niveau ou condition qui annule le setup"
-  },
-  {
-    "pair": "EUR/USD",
-    "direction": "short",
-    "entry": 1.0850,
-    "sl": 1.0950,
-    "tp": 1.0680,
-    "rationale": "...",
-    "trigger": "...",
-    "invalidation": "..."
+    "invalidation": "Le niveau ou condition qui annule le setup",
+    "killzone": "London open (7h-10h UTC) | NY open (12h30-15h UTC) | NY-London overlap (13h-16h UTC)",
+    "liquidity": "Niveau de liquidité visé (PDH/PDL, weekly high/low, round number, swing high/low)",
+    "institutional_read": "Lecture institutionnelle en 1 phrase : 'Stop hunt probable au-dessus de X.XX avant retournement' ou 'Order block H4 à Y.YY défendu par les desks'"
   }
 ]
 </SETUPS_JSON>
 
 ## RISQUES & CATALYSEURS
-[Events à venir, niveaux critiques, crowded trades à surveiller pour squeeze]
+[Events à venir, niveaux critiques, crowded trades à surveiller pour squeeze, faux breakouts probables]
 
 ═══════════════════════════════════════════════════════
 SPÉCIFICATIONS DU JSON :
@@ -4864,6 +5113,9 @@ function renderSetupCard(s,idx){
       <div class="setup-rationale">${formatInline(s.rationale||'')}</div>
       ${s.trigger?`<div class="setup-trigger"><b>⚡ Déclencheur</b>${formatInline(s.trigger)}</div>`:''}
       ${s.invalidation?`<div class="setup-invalid"><b>✕ Invalidation</b>${formatInline(s.invalidation)}</div>`:''}
+      ${s.killzone?`<div class="setup-ict killzone"><b>🎯 Killzone optimale</b>${formatInline(s.killzone)}</div>`:''}
+      ${s.liquidity?`<div class="setup-ict liquidity"><b>💧 Liquidité visée</b>${formatInline(s.liquidity)}</div>`:''}
+      ${s.institutional_read?`<div class="setup-ict instread"><b>🏦 Lecture institutionnelle</b>${formatInline(s.institutional_read)}</div>`:''}
       <div class="setup-actions">
         <button class="setup-btn primary" data-setup-add="${idx}">+ Ajouter au journal</button>
         <a class="setup-btn" href="https://www.tradingview.com/chart/?symbol=${tvSym}" target="_blank" rel="noopener">📊 Voir sur TradingView</a>
@@ -5948,19 +6200,19 @@ const MACRO_EVENTS=[
   {date:'2026-06-05',time:'12:30',ccy:'USD',impact:'high',title:'NFP — Non-Farm Payrolls (mai)',context:'LE chiffre du mois aux US. Volatilité 50-150 pips garantie sur USD pairs. Consensus ~150k jobs créés.'},
   {date:'2026-06-05',time:'12:30',ccy:'USD',impact:'high',title:'Taux de chômage US (mai)',context:'Publié simultanément avec NFP. Consensus 4.2%.'},
   {date:'2026-06-05',time:'12:30',ccy:'USD',impact:'high',title:'Average Hourly Earnings (mai)',context:'Salaires horaires US. Composante inflation, importante pour la Fed.'},
-  {date:'2026-06-11',time:'12:15',ccy:'EUR',impact:'high',title:'ECB Rate Decision',context:'Décision BCE. Marché price ~30bp de cut pricé sur les 6 mois.'},
-  {date:'2026-06-11',time:'12:45',ccy:'EUR',impact:'high',title:'ECB Press Conference (Lagarde)',context:'Conférence de presse Lagarde. Volatilité EUR pendant 1h.'},
+  {date:'2026-06-11',time:'12:15',ccy:'EUR',impact:'high',title:'ECB Rate Decision',context:'Décision BCE. Marché price 92% probabilité de hold à 2.00%. Focus sur la statement et le ton Lagarde.'},
+  {date:'2026-06-11',time:'12:45',ccy:'EUR',impact:'high',title:'ECB Press Conference (Lagarde)',context:'Conférence de presse Lagarde. ECB "in a good place" — chercher signaux de tightening (MUFG voit 50bp hike à partir de juin).'},
   {date:'2026-06-12',time:'12:30',ccy:'USD',impact:'high',title:'CPI US (mai)',context:'Inflation US, mois précédent FOMC. Critique pour le pricing rate cuts.'},
   {date:'2026-06-13',time:'12:30',ccy:'USD',impact:'high',title:'PPI US (mai)',context:'Prix producteurs, indicateur avancé du CPI.'},
   {date:'2026-06-13',time:'06:00',ccy:'GBP',impact:'high',title:'GDP UK (avril)',context:'PIB mensuel UK. Important pour la prochaine décision BoE.'},
   {date:'2026-06-16',time:'00:50',ccy:'JPY',impact:'high',title:'BoJ Rate Decision (premier jour)',context:'Premier jour du meeting BoJ. Décision le lendemain.'},
   {date:'2026-06-17',time:'04:00',ccy:'JPY',impact:'high',title:'BoJ Decision + Outlook',context:'Décision finale BoJ + outlook. Volatilité JPY pairs 100+ pips.'},
   {date:'2026-06-17',time:'18:00',ccy:'USD',impact:'high',title:'FOMC Rate Decision + Dot Plot',context:'Décision Fed + Summary of Economic Projections (dot plot). Top event du mois pour USD.'},
-  {date:'2026-06-17',time:'18:30',ccy:'USD',impact:'high',title:'FOMC Press Conference (Powell)',context:'Press conf Powell. Marché digère le dot plot et la guidance.'},
+  {date:'2026-06-17',time:'18:30',ccy:'USD',impact:'high',title:'FOMC Press Conference (Warsh)',context:'Première press conf de Kevin Warsh en tant que Chair Fed. Marché ultra-attentif à son ton — il a la réputation d\'être plus hawkish que Powell.'},
   {date:'2026-06-19',time:'11:00',ccy:'GBP',impact:'high',title:'BoE Rate Decision',context:'Décision Bank of England. Marché price ~10bp de cut.'},
   {date:'2026-06-19',time:'08:30',ccy:'CHF',impact:'high',title:'SNB Rate Decision',context:'Décision Swiss National Bank. Faible volume mais peut mover CHF brutalement.'},
   {date:'2026-06-20',time:'12:30',ccy:'CAD',impact:'high',title:'CPI Canada (mai)',context:'Inflation Canada. Important pour la trajectoire BoC.'},
-  {date:'2026-06-27',time:'12:30',ccy:'USD',impact:'high',title:'Core PCE (mai)',context:'PCE post-FOMC. Confirme ou infirme la guidance Powell.'},
+  {date:'2026-06-27',time:'12:30',ccy:'USD',impact:'high',title:'Core PCE (mai)',context:'PCE post-FOMC. Confirme ou infirme la guidance Warsh.'},
 
   /* ───── JUILLET 2026 ───── */
   {date:'2026-07-03',time:'12:30',ccy:'USD',impact:'high',title:'NFP — Non-Farm Payrolls (juin)',context:'NFP du mois — attention : publié le jeudi avant le 4 juillet (Independence Day).'},
@@ -6472,8 +6724,8 @@ setTimeout(()=>{
    policy = taux directeur banque centrale
    bias = orientation BC : "hawk" | "neutral" | "dove" | "hike" | "cut" | "hold" */
 const REAL_RATES_DATA={
-  USD:{name:'Dollar US',nominal:4.59,breakeven:2.52,policy:3.75,policyLabel:'3.50-3.75%',bias:'hold',
-       note:'Fed maintient à 3.50-3.75% (FOMC 29 avril). Inflation re-accélère (CPI 3.8% avril). Warsh confirmé Chair le 15 mai. Marchés pricent 25% chance hike avant déc.'},
+  USD:{name:'Dollar US',nominal:4.68,breakeven:2.55,policy:3.75,policyLabel:'3.50-3.75%',bias:'hold',
+       note:'US10Y à 4.68% au 19 mai 2026, plus haut depuis 16 mois. 30Y à 5.20%, plus haut depuis 18 ans. Fed maintient à 3.50-3.75%. Warsh Chair depuis 15 mai. Marchés pricent 40% chance hike avant déc (oil shock Iran).'},
   EUR:{name:'Euro',nominal:3.13,breakeven:2.20,policy:2.00,policyLabel:'2.00%',bias:'hold',
        note:'BCE en pause à 2.00% depuis fin 2025. Bund 10Y à 3.13%, plus haut depuis 2011. ECB "in a good place".'},
   GBP:{name:'Livre Sterling',nominal:4.56,breakeven:3.10,policy:4.25,policyLabel:'4.25%',bias:'hold',
@@ -6849,6 +7101,164 @@ function renderCorrMatrixPro(){
 pageInits.correlations=()=>{
   renderCorrelationsPage();
   renderCorrMatrixPro();
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   FLUX CORPORATES IA · résumé "action → conséquence"
+   ═══════════════════════════════════════════════════════════════ */
+
+const FLOWS_KEY='apex_fx_flows_v7';
+
+async function generateFlowsAnalysis(){
+  const key=getApiKey();
+  if(!key){
+    toast('Clé API manquante','Configure ta clé Anthropic dans Paramètres','danger');
+    go('settings');
+    return;
+  }
+
+  const btn=document.getElementById('flows-generate');
+  btn.disabled=true;
+  document.getElementById('flows-gen-text').textContent='Analyse en cours…';
+  document.getElementById('flows-gen-icon').innerHTML='<span class="loader"></span>';
+
+  document.getElementById('flows-content').innerHTML=`<div class="brief-loading">
+    <div class="pulse"></div>
+    <div>Claude analyse les commandes industrielles, M&A et earnings des 72h…</div>
+  </div>`;
+
+  const todayStr=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+
+  const systemPrompt=`Tu es le strategist FX d'un grand hedge fund macro à Londres. Ton expertise : suivre les flux corporates (commandes industrielles, M&A, earnings, repatriations) et estimer leur impact sur le forex.
+
+Aujourd'hui : ${todayStr}.
+
+Ta mission : produire un résumé "ACTION → CONSÉQUENCE MARCHÉ" pour les flux corporates des 72 dernières heures, en couvrant :
+
+1. Grosses commandes industrielles (Boeing, Airbus, défense, infrastructure énergétique)
+2. M&A cross-border > 500M$
+3. Earnings des big caps qui impactent les flux (Apple, Microsoft, Toyota, Roche, etc.)
+4. Annonces tarifaires/sanctions qui modifient les flux de commerce
+5. Mouvements souverains (sovereign wealth funds, banques centrales achats devises)
+6. Events énergétiques majeurs (variation Brent, sanctions Iran/Russie)
+
+═══════════════════════════════════════════════════════
+STRUCTURE OBLIGATOIRE EN MARKDOWN :
+═══════════════════════════════════════════════════════
+
+## SYNTHÈSE DU JOUR
+[2-3 phrases sur le thème dominant des flux corporates : qui achète quoi, qui vend quoi, où va l'argent]
+
+## ACTIONS → CONSÉQUENCES
+
+[Pour chaque flux identifié, format strict :]
+
+**ACTION** : [description de l'event corporate, en 1 phrase max 25 mots]
+→ **CONSÉQUENCE FX** : [paires impactées, direction, magnitude estimée, timing]
+→ **EXPLOITATION** : [comment trader ça : entry zone, timing, paires à privilégier]
+
+[Faire ça pour 3-6 flux maximum, les plus impactants]
+
+## DEVISES À SURVEILLER
+
+**USD** : [biais court terme basé sur flux + 1 phrase d'explication]
+**EUR** : [biais court terme + explication]
+**JPY** : [biais court terme + explication]
+**GBP** : [biais court terme + explication]
+**AUD** : [biais court terme + explication]
+**CHF** : [biais court terme + explication]
+
+## RISQUES & SURPRISES POSSIBLES
+
+[2-3 events corporates à venir cette semaine qui pourraient surprendre + comment réagir]
+
+═══════════════════════════════════════════════════════
+STYLE :
+- Direct, technique, jamais vague
+- Vocabulaire institutionnel (carry, basis, hedging flow, FX repatriation, M&A target premium)
+- Pas de disclaimer
+- En français
+- Utilise **gras** pour les chiffres et noms d'entreprises
+- Magnitude estimée en pips ou % (ex : "50-80 pips de pression baissière sur 2-3 semaines")`;
+
+  const userPrompt=`Génère le résumé des flux corporates pour le ${todayStr}.
+
+Couvre les 72h précédentes : commandes industrielles, M&A annoncés, earnings importants, mouvements géopolitiques affectant les flux de commerce, annonces tarifaires Trump, sanctions, mouvements souverains.
+
+Utilise tes connaissances les plus récentes. Si tu n'as pas d'info spécifique sur les 72h, tire des conclusions à partir de ce que tu sais du contexte macro mai-juin 2026 (guerre Iran, oil shock, Warsh nouveau Chair Fed, BoJ hawkish).`;
+
+  try{
+    const text=await callAnthropic(userPrompt,systemPrompt);
+    renderFlowsAnalysis(text);
+    localStorage.setItem(FLOWS_KEY,JSON.stringify({text,timestamp:Date.now()}));
+  }catch(e){
+    document.getElementById('flows-content').innerHTML=`<div class="brief-empty">
+      <div class="icon" style="color:var(--red)">⚠</div>
+      <h3>Erreur de génération</h3>
+      <p>${escapeHTML(e.message)}</p>
+    </div>`;
+  }finally{
+    btn.disabled=false;
+    document.getElementById('flows-gen-text').textContent='Régénérer';
+    document.getElementById('flows-gen-icon').textContent='💼';
+  }
+}
+
+function renderFlowsAnalysis(text){
+  /* parsing markdown : on cherche les sections H2 */
+  const sections=text.split(/^##\s+/m).filter(Boolean);
+
+  const html=sections.map(sec=>{
+    const lines=sec.split('\n');
+    const title=lines.shift().trim();
+    const body=lines.join('\n').trim();
+
+    let cls='theme',label='SECTION',icon='';
+    if(/synth[èe]se/i.test(title)){cls='theme';label='SYNTHÈSE';icon='💼';}
+    else if(/action.*cons[ée]quence/i.test(title)){cls='setups';label='ACTIONS → IMPACT';icon='⚡';}
+    else if(/devises.*surveiller/i.test(title)){cls='theme';label='BIAS DEVISES';icon='💱';}
+    else if(/risque|surprise/i.test(title)){cls='risks';label='RISQUES';icon='⚠';}
+
+    return `<div class="brief-section ${cls}">
+      <span class="label">${icon} ${label}</span>
+      <h3>${title}</h3>
+      <div class="brief-body">${formatBriefBody(body)}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('flows-content').innerHTML=html;
+}
+
+/* Helper pour formater le body markdown */
+function formatBriefBody(body){
+  /* convertit les paragraphes et listes en HTML */
+  const blocks=body.split(/\n\n+/);
+  return blocks.map(b=>{
+    if(b.trim().startsWith('- ')||b.trim().startsWith('* ')){
+      const items=b.split(/\n/).filter(l=>l.trim()).map(l=>l.replace(/^[-*]\s+/,''));
+      return '<ul class="brief-list">'+items.map(i=>`<li>${formatInline(i)}</li>`).join('')+'</ul>';
+    }
+    return '<p>'+formatInline(b).replace(/\n/g,'<br>')+'</p>';
+  }).join('');
+}
+
+/* Charger le dernier flux généré au démarrage */
+function loadCachedFlows(){
+  const cached=localStorage.getItem(FLOWS_KEY);
+  if(!cached)return;
+  try{
+    const {text,timestamp}=JSON.parse(cached);
+    const hoursOld=(Date.now()-timestamp)/3600000;
+    if(hoursOld<24){
+      renderFlowsAnalysis(text);
+    }
+  }catch(e){console.warn('[Flows] failed to load cache:',e);}
+}
+
+pageInits.flows=()=>{
+  loadCachedFlows();
+  const btn=document.getElementById('flows-generate');
+  if(btn)btn.onclick=generateFlowsAnalysis;
 };
 
 /* ═══════════════════════════════════════════════════════════════
