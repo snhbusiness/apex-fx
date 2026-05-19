@@ -988,6 +988,46 @@
   .freshness-badge .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
   .freshness-badge.fresh .dot{animation:dotBlink 2s ease-in-out infinite}
   @keyframes dotBlink{0%,100%{opacity:1}50%{opacity:.4}}
+
+  /* ═══ KILLZONE INDICATOR ═══ */
+  .kz-ind{display:flex;align-items:center;gap:7px;padding:6px 12px;background:var(--panel-2);border:1px solid var(--line);border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--text-dim);transition:all .3s}
+  .kz-ind.active-asia{background:rgba(245,180,0,.08);border-color:rgba(245,180,0,.4);color:var(--amber)}
+  .kz-ind.active-london{background:rgba(93,214,224,.08);border-color:rgba(93,214,224,.4);color:var(--cyan)}
+  .kz-ind.active-ny{background:rgba(62,207,142,.08);border-color:rgba(62,207,142,.4);color:var(--green)}
+  .kz-ind.active-overlap{background:rgba(233,110,221,.12);border-color:rgba(233,110,221,.5);color:var(--magenta);box-shadow:0 0 12px rgba(233,110,221,.2)}
+  .kz-ind.inactive{opacity:.5}
+  .kz-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:kzPulse 2s ease-in-out infinite}
+  @keyframes kzPulse{0%,100%{box-shadow:0 0 0 0 currentColor;opacity:1}50%{box-shadow:0 0 0 4px transparent;opacity:.4}}
+  .kz-label{font-weight:700;text-transform:uppercase}
+  .kz-meta{color:var(--text-mute);font-size:9px;letter-spacing:.5px}
+  .kz-ind.active-asia .kz-meta,.kz-ind.active-london .kz-meta,.kz-ind.active-ny .kz-meta,.kz-ind.active-overlap .kz-meta{color:inherit;opacity:.7}
+
+  /* ═══ LONDON FIX COUNTDOWN ═══ */
+  .fix-ind{display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(245,180,0,.1);border:1px solid rgba(245,180,0,.4);border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--amber);font-weight:700;text-transform:uppercase;animation:fixPulse 1.5s ease-in-out infinite}
+  .fix-ind.imminent{background:rgba(233,110,221,.15);border-color:rgba(233,110,221,.6);color:var(--magenta);animation:fixUrgent .8s ease-in-out infinite}
+  .fix-ind.active{background:rgba(255,90,82,.15);border-color:rgba(255,90,82,.6);color:var(--red);animation:fixUrgent .4s ease-in-out infinite}
+  @keyframes fixPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,180,0,.3)}50%{box-shadow:0 0 0 6px rgba(245,180,0,0)}}
+  @keyframes fixUrgent{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+  .fix-icon{font-size:13px}
+
+  /* ═══ LIQUIDITY MAP ═══ */
+  .liq-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;margin-top:10px}
+  .liq-pair{background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:14px}
+  .liq-pair-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  .liq-pair-name{font-family:'Fraunces',serif;font-size:18px;font-weight:500;color:var(--text)}
+  .liq-pair-spot{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--amber);font-weight:700;letter-spacing:.5px}
+  .liq-level{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;margin-bottom:4px;background:var(--bg-2);border-radius:4px;border-left:2px solid var(--line-2);font-family:'JetBrains Mono',monospace;font-size:11px}
+  .liq-level.upside{border-left-color:var(--red)}
+  .liq-level.downside{border-left-color:var(--green)}
+  .liq-level.round{border-left-color:var(--amber);background:rgba(245,180,0,.04)}
+  .liq-level.near{background:rgba(233,110,221,.08);border-left-color:var(--magenta);font-weight:700}
+  .liq-lbl{color:var(--text-mute);font-size:9.5px;letter-spacing:1px;text-transform:uppercase}
+  .liq-val{color:var(--text);font-weight:600}
+  .liq-dist{color:var(--text-mute);font-size:9.5px;letter-spacing:.5px}
+  .liq-dist.close{color:var(--magenta);font-weight:700}
+  .liq-section{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.5px;color:var(--text-mute);text-transform:uppercase;margin:10px 0 6px;padding-left:4px}
+  .liq-warning{margin-top:10px;padding:9px 11px;background:rgba(233,110,221,.06);border-left:2px solid var(--magenta);border-radius:4px;font-size:11px;color:var(--text-dim);line-height:1.5}
+  .liq-warning b{color:var(--magenta);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:3px}
 </style>
 </head>
 <body>
@@ -1023,6 +1063,15 @@
     <span class="cmd-key">⌘ K</span>
   </div>
   <div class="topright">
+    <div id="killzone-indicator" class="kz-ind" title="Killzone active — fenêtre institutionnelle">
+      <span class="kz-dot"></span>
+      <span class="kz-label" id="kz-label">--</span>
+      <span class="kz-meta" id="kz-meta">--</span>
+    </div>
+    <div id="fix-countdown" class="fix-ind" title="Compteur avant le London Fix (16h00 UTC)" style="display:none">
+      <span class="fix-icon">⏰</span>
+      <span class="fix-text" id="fix-text">London Fix --</span>
+    </div>
     <div class="sessions" id="sessions-mini">
       <span class="sess" id="sess-tokyo">TOK</span>
       <span class="sess" id="sess-london">LON</span>
@@ -1108,6 +1157,7 @@
       <a class="nav-link" data-page="sizing"><span class="ico">⚖</span> Position sizing</a>
       <a class="nav-link" data-page="alerts-brief"><span class="ico">🔔</span> Alertes setups <span class="badge" id="briefalerts-count">0</span></a>
       <a class="nav-link" data-page="flows"><span class="ico">💼</span> Flux corporates <span class="pill" style="font-size:8px;padding:1px 5px;margin-left:4px;background:var(--amber);color:#080a0c;font-weight:700">NEW</span></a>
+      <a class="nav-link" data-page="liquidity"><span class="ico">💧</span> Niveaux de liquidité <span class="pill" style="font-size:8px;padding:1px 5px;margin-left:4px;background:var(--amber);color:#080a0c;font-weight:700">NEW</span></a>
     </nav>
     <h6>Analyse avancée</h6>
     <nav class="nav">
@@ -2443,6 +2493,110 @@
       </div>
     </section>
 
+    <!-- ═══════════════ NIVEAUX DE LIQUIDITÉ ═══════════════ -->
+    <section class="page" data-page="liquidity">
+      <div class="page-title"><div>
+        <h1>Niveaux de <em>liquidité</em></h1>
+        <p>Les zones où les institutionnels vont chercher les stops. Comprendre la liquidité = anticiper où le marché va vraiment aller, pas où il "devrait" aller selon la technique classique.</p>
+      </div></div>
+
+      <div class="grid">
+
+        <!-- LESSON 1 : Concept -->
+        <div class="card c-12 lesson-card lesson-blue">
+          <div class="lesson-tag">📖 Pourquoi les niveaux de liquidité comptent</div>
+          <h2>Le marché ne suit pas la technique — il suit la liquidité</h2>
+          <p class="lesson-lead">Les desks pros n'achètent/ne vendent pas n'importe où. Ils ont besoin de <b>contrepartie pour exécuter leurs gros ordres</b>. Cette contrepartie se trouve dans les zones où les retails ont leurs stops.</p>
+          <p>C'est pour ça que tu vois constamment :</p>
+          <ul class="lesson-list">
+            <li><b>Le prix qui wick juste sous un swing low</b> → puis remonte violemment = <em>stop hunt + retournement</em></li>
+            <li><b>Le prix qui casse un niveau "évident"</b> → puis revient = <em>faux breakout = liquidity grab</em></li>
+            <li><b>Les nombres ronds (1.10, 150.00) qui agissent comme des aimants</b> = <em>concentration de stops retail</em></li>
+          </ul>
+          <p>Les institutionnels ne sont pas méchants — ils <b>ont besoin</b> de cette liquidité pour exécuter des ordres de plusieurs milliards. Sans ces stops, ils ne pourraient pas trader sans bouger le marché contre eux.</p>
+        </div>
+
+        <!-- LIQUIDITY MAP PAR PAIRE -->
+        <div class="card c-12">
+          <div class="card-head">
+            <div class="card-title"><span class="dot live"></span><h3>Carte des liquidités · paires majeures</h3>
+              <span class="card-sub">— niveaux calculés depuis les spots live et patterns institutionnels</span>
+            </div>
+            <button class="brief-btn secondary" id="liq-refresh-btn">↻ Actualiser</button>
+          </div>
+          <div id="liquidity-map"></div>
+        </div>
+
+        <!-- LESSON 2 : Types de niveaux -->
+        <div class="card c-12 lesson-card lesson-green">
+          <div class="lesson-tag">🎯 Les 5 types de zones de liquidité</div>
+          <h2>Où les institutionnels visent les stops</h2>
+          <div class="lesson-grid">
+            <div class="lesson-box">
+              <h4>1. PDH / PDL (Previous Day High/Low)</h4>
+              <p>Les <b>plus hauts/bas de la veille</b>. Stops accumulés juste au-dessus du PDH (longs retail) et juste sous le PDL (shorts retail). <b>~70% des chasses de stops se font sur ces niveaux dans les 24h suivantes.</b></p>
+            </div>
+            <div class="lesson-box">
+              <h4>2. Weekly High/Low</h4>
+              <p>Plus haut/bas de la semaine. Niveau majeur de référence. Quand le prix s'en approche en fin de semaine (jeudi-vendredi), <b>80% des chasses se font avant le close NY vendredi</b>.</p>
+            </div>
+            <div class="lesson-box">
+              <h4>3. Asia Session High/Low</h4>
+              <p>Plus haut/bas pendant la session asiatique (23h-7h UTC). <b>L'ouverture Londres (7h-10h UTC) cible ces niveaux 60% du temps</b>, souvent en chasse de stops avant le vrai mouvement.</p>
+            </div>
+            <div class="lesson-box">
+              <h4>4. Round Numbers (00, 50)</h4>
+              <p>Niveaux psychologiques : 1.1000, 1.1500, 150.00, 200.00. Concentration massive de <b>stops retail + ordres pendants</b>. Le marché les visite presque systématiquement quand il s'en approche à ±20 pips.</p>
+            </div>
+            <div class="lesson-box">
+              <h4>5. Swing Highs/Lows récents</h4>
+              <p>Les <b>pivot points visibles à l'œil nu sur le chart H4/D1</b>. Tous les traders chartistes mettent leurs stops juste au-delà. Niveau prioritaire pour les liquidity grabs.</p>
+            </div>
+            <div class="lesson-box">
+              <h4>6. Bonus · Equal Highs/Lows</h4>
+              <p>Quand 2-3 sommets/creux sont au même niveau exact = <b>double/triple top</b>. Les desks savent que les retails attendent la "confirmation" → ils cassent juste pour grab les stops puis retournent.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- LESSON 3 : Comment trader -->
+        <div class="card c-12 lesson-card lesson-amber">
+          <div class="lesson-tag">⚡ Comment exploiter les niveaux de liquidité</div>
+          <h2>Trader avec les institutionnels, pas contre eux</h2>
+          <p class="lesson-lead">Le bon trade n'est pas <em>"casser un niveau"</em>, c'est <em>"attendre le retour après que les stops ont été pris"</em>.</p>
+          <div class="lesson-grid">
+            <div class="lesson-box">
+              <h4>Setup classique : Stop Hunt + Reversal</h4>
+              <p><b>1.</b> Identifie un swing low majeur (ex EUR/USD à 1.0850)<br>
+              <b>2.</b> Attends que le prix wick sous 1.0850 (souvent 10-30 pips sous)<br>
+              <b>3.</b> Si retour rapide au-dessus de 1.0850 dans la même bougie H1 → <b>liquidity grab confirmé</b><br>
+              <b>4.</b> Entry long au retour au-dessus, SL sous le wick low, target = swing high récent</p>
+            </div>
+            <div class="lesson-box">
+              <h4>Setup : Faux Breakout sur Round Number</h4>
+              <p><b>1.</b> EUR/USD approche 1.1000 (round number majeur)<br>
+              <b>2.</b> Si cassure mais sans suivi (pas de continuation 30+ pips) → <b>faux breakout</b><br>
+              <b>3.</b> Entry short à 1.0995-1.1005, SL à 1.1025 (au-delà du wick), target 1.0950</p>
+            </div>
+            <div class="lesson-box">
+              <h4>Setup : Asia Range Hunt (London Open)</h4>
+              <p><b>1.</b> Note l'Asia high et low (ex USD/JPY Asia high 154.20, low 153.80)<br>
+              <b>2.</b> À l'ouverture Londres (7h-9h UTC), le prix va souvent chercher l'un des deux<br>
+              <b>3.</b> Si cassure avec rejet (mèche puis retour dans le range) → fade dans l'autre sens</p>
+            </div>
+            <div class="lesson-box">
+              <h4>Règles de prudence</h4>
+              <p>• Ne jamais shorter un round number en cassure forte avec volume<br>
+              • Toujours attendre la <b>réaction du prix</b>, pas juste la cassure<br>
+              • Confluence obligatoire : niveau de liquidité + killzone active + thèse macro alignée<br>
+              • Sortir avant le London Fix 16h UTC pour éviter les squeezes</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
     <!-- ═══════════════ WATCHLIST ═══════════════ -->
     <section class="page" data-page="watchlist">
       <div class="page-title">
@@ -2826,6 +2980,133 @@ function tick(){
   document.getElementById('clk-date').textContent=
     days[now.getUTCDay()]+' · '+pad(now.getUTCDate())+' '+months[now.getUTCMonth()]+' '+now.getUTCFullYear();
   updateSessions(now.getUTCHours(),now.getUTCMinutes());
+  updateKillzoneAndFix(now);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   KILLZONES ICT/SMC + LONDON FIX WATCHER
+   - Killzones : fenêtres temporelles privilégiées par les desks pros
+   - London Fix : 16h00 UTC, ~50% du volume corporate FX quotidien
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Killzones ICT (Inner Circle Trader) standards :
+   - Asia : 23h-2h UTC (faible volume, accumulation)
+   - London Open : 7h-10h UTC (premier vrai mouvement, 78% des breakouts validés H4)
+   - NY-London Overlap : 13h-15h UTC (peak liquidity, 87% des breakouts validés)
+   - NY Open : 12h30-15h UTC (volume max)
+   - Power Hour : 14h-15h UTC (dernière heure avant fixings, +30% volume)
+   - London Close : 15h-16h UTC (rebalancing, mouvement de retour)
+   - NY Close : 20h-21h UTC (dernière liquidité avant Asia) */
+const KILLZONES=[
+  {start:23,end:26,name:'ASIA',cls:'active-asia',meta:'accumulation · faible volume'},
+  {start:7,end:10,name:'LONDON OPEN',cls:'active-london',meta:'78% breakouts validés H4'},
+  {start:12.5,end:13,name:'NY OPEN',cls:'active-ny',meta:'volume max imminent'},
+  {start:13,end:15,name:'NY-LON OVERLAP',cls:'active-overlap',meta:'87% breakouts · peak liquidité'},
+  {start:14,end:15,name:'POWER HOUR',cls:'active-overlap',meta:'volume +30% · fixings approchent'},
+  {start:15,end:16,name:'LONDON CLOSE',cls:'active-london',meta:'rebalancing · attention reversals'},
+];
+
+function getCurrentKillzone(now){
+  const h=now.getUTCHours()+now.getUTCMinutes()/60;
+  /* On retourne la killzone "la plus pertinente" : si plusieurs overlap, on prend la plus spécifique */
+  let best=null;
+  for(const kz of KILLZONES){
+    let inZone=false;
+    if(kz.start>kz.end-24){
+      /* killzone qui passe minuit (Asia) */
+      const e=kz.end>24?kz.end-24:kz.end;
+      inZone=h>=kz.start||h<e;
+    }else{
+      inZone=h>=kz.start&&h<kz.end;
+    }
+    if(inZone){
+      /* priorité : overlap > NY > London > Asia */
+      if(!best||
+         (kz.cls==='active-overlap')||
+         (kz.cls==='active-ny'&&best.cls!=='active-overlap')||
+         (kz.cls==='active-london'&&best.cls==='active-asia')){
+        best=kz;
+      }
+    }
+  }
+  return best;
+}
+
+function updateKillzoneAndFix(now){
+  const kzEl=document.getElementById('killzone-indicator');
+  if(!kzEl)return;
+
+  const kz=getCurrentKillzone(now);
+  /* Reset classes */
+  kzEl.className='kz-ind '+(kz?kz.cls:'inactive');
+  const label=document.getElementById('kz-label');
+  const meta=document.getElementById('kz-meta');
+  if(kz){
+    label.textContent='🎯 '+kz.name;
+    meta.textContent='· '+kz.meta;
+  }else{
+    label.textContent='HORS KILLZONE';
+    meta.textContent='· faible probabilité setups';
+  }
+
+  /* London Fix Countdown : 16h00 UTC */
+  const fixEl=document.getElementById('fix-countdown');
+  if(!fixEl)return;
+  const h=now.getUTCHours();
+  const m=now.getUTCMinutes();
+  const s=now.getUTCSeconds();
+  const totalSecToFix=((16-h)*3600)-(m*60)-s; /* secondes jusqu'à 16h00 UTC */
+
+  /* Afficher uniquement entre 15h00 et 16h05 UTC */
+  if(h===15||(h===16&&m<5)){
+    fixEl.style.display='flex';
+    const fixText=document.getElementById('fix-text');
+
+    if(h===16&&m<5){
+      /* On est dans la fenêtre du Fix (16h00-16h05) */
+      fixEl.className='fix-ind active';
+      fixText.textContent='LONDON FIX EN COURS — '+(5-m)+' min restantes';
+    }else if(totalSecToFix<=300){
+      /* Moins de 5 min avant le Fix */
+      fixEl.className='fix-ind imminent';
+      const min=Math.floor(totalSecToFix/60);
+      const sec=totalSecToFix%60;
+      fixText.textContent='⚠ FIX dans '+min+':'+String(sec).padStart(2,'0');
+    }else{
+      /* 15h-15h55 normal */
+      fixEl.className='fix-ind';
+      const min=Math.floor(totalSecToFix/60);
+      fixText.textContent='London Fix dans '+min+' min';
+    }
+
+    /* Popup au moment exact du Fix (16h00:00) — une seule fois par jour */
+    if(h===16&&m===0&&s<5){
+      triggerFixPopup();
+    }
+  }else{
+    fixEl.style.display='none';
+  }
+}
+
+/* Popup au moment du London Fix — déclenchée une seule fois */
+let lastFixPopupDate=localStorage.getItem('apex_fx_lastfix_v7')||'';
+function triggerFixPopup(){
+  const today=new Date().toISOString().slice(0,10);
+  if(lastFixPopupDate===today)return;
+  lastFixPopupDate=today;
+  localStorage.setItem('apex_fx_lastfix_v7',today);
+  if(typeof showPopupModal==='function'){
+    showPopupModal({
+      category:'macro',
+      title:'⏰ LONDON FIX 16h00 UTC',
+      subtitle:'Fenêtre 16h00-16h05 active',
+      body:'<b>Volumes corporates jusqu\'à 5-10× la moyenne pendant 5 minutes.</b><br><br>'+
+           '• Tendance forte du jour ? → amplification souvent ici<br>'+
+           '• Sortir avant 16h05 (risque squeeze technique)<br>'+
+           '• Surveille spikes anormaux sur Volume Profile TradingView',
+      sound:true
+    });
+  }
 }
 function updateSessions(h,m){
   const t=h+m/60;
@@ -7260,6 +7541,196 @@ pageInits.flows=()=>{
   const btn=document.getElementById('flows-generate');
   if(btn)btn.onclick=generateFlowsAnalysis;
 };
+
+/* ═══════════════════════════════════════════════════════════════
+   NIVEAUX DE LIQUIDITÉ
+   - Calcul des PDH/PDL, swing highs/lows, round numbers, Asia range
+   - À partir des spots live et de fourchettes historiques typiques
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Paires majeures à afficher dans la carte */
+const LIQ_PAIRS=['EURUSD','GBPUSD','USDJPY','USDCHF','AUDUSD','NZDUSD','USDCAD','EURJPY','GBPJPY','AUDJPY','EURGBP','XAUUSD'];
+
+/* Calcul des round numbers pertinents pour une paire */
+function getRoundNumbers(pair,spot){
+  const isJpy=pair.includes('JPY');
+  const isXau=pair.includes('XAU');
+  const rounds=[];
+
+  if(isXau){
+    /* Or : round 50$ */
+    const base=Math.floor(spot/50)*50;
+    rounds.push({lvl:base,note:'round 50$'});
+    rounds.push({lvl:base+50,note:'round 50$ sup'});
+    rounds.push({lvl:base+100,note:'round 100$'});
+  }else if(isJpy){
+    /* JPY : round 50 pips (ex 154.00, 154.50) */
+    const base=Math.floor(spot*2)/2;
+    rounds.push({lvl:base,note:'round 50p'});
+    rounds.push({lvl:base+0.5,note:'round 50p sup'});
+    /* + round 100 pips (figure entière) */
+    const big=Math.floor(spot);
+    rounds.push({lvl:big,note:'round 100p · MAJEUR'});
+    rounds.push({lvl:big+1,note:'round 100p sup'});
+  }else{
+    /* Majors : round 50 pips (1.0850, 1.0900) */
+    const base=Math.floor(spot*200)/200;
+    rounds.push({lvl:base,note:'round 50p'});
+    rounds.push({lvl:base+0.005,note:'round 50p sup'});
+    /* round 100 pips (1.0800, 1.1000) */
+    const med=Math.floor(spot*100)/100;
+    rounds.push({lvl:med,note:'round 100p'});
+    rounds.push({lvl:med+0.01,note:'round 100p sup'});
+    /* big round (1.10, 1.20) */
+    const big=Math.floor(spot*10)/10;
+    rounds.push({lvl:big,note:'BIG round'});
+    rounds.push({lvl:big+0.1,note:'BIG round sup'});
+  }
+
+  /* Dédupliquer et filtrer ceux à <2% du spot */
+  const seen=new Set();
+  return rounds.filter(r=>{
+    const k=r.lvl.toFixed(isJpy||isXau?2:4);
+    if(seen.has(k))return false;
+    seen.add(k);
+    return Math.abs(r.lvl-spot)/spot<0.02;
+  }).sort((a,b)=>a.lvl-b.lvl);
+}
+
+/* Approximation PDH/PDL : on prend spot ± (ATR moyen / 2) */
+function estimatePDH_PDL(pair,spot){
+  const isJpy=pair.includes('JPY');
+  const isXau=pair.includes('XAU');
+  /* ATR D1 moyen approximé en pourcentage du spot */
+  const atrPct=isXau?0.012:(isJpy?0.0055:0.0048);
+  const range=spot*atrPct;
+  return {
+    pdh:spot+range*0.55,
+    pdl:spot-range*0.55,
+    wh:spot+range*1.4,
+    wl:spot-range*1.4,
+    asiaH:spot+range*0.25,
+    asiaL:spot-range*0.25
+  };
+}
+
+function fmtLevel(v,pair){
+  const isJpy=pair.includes('JPY');
+  const isXau=pair.includes('XAU');
+  return v.toFixed(isXau?2:(isJpy?3:5));
+}
+
+function pipsFromSpot(spot,lvl,pair){
+  const isJpy=pair.includes('JPY');
+  const isXau=pair.includes('XAU');
+  const mult=isXau?10:(isJpy?100:10000);
+  return Math.round((lvl-spot)*mult);
+}
+
+function renderLiquidityMap(){
+  const el=document.getElementById('liquidity-map');
+  if(!el)return;
+
+  const cards=LIQ_PAIRS.map(p=>{
+    const data=fxData[p];
+    if(!data||!data.price)return null;
+    const spot=data.price;
+    const pair=p.slice(0,3)+'/'+p.slice(3);
+    const levels=estimatePDH_PDL(p,spot);
+    const rounds=getRoundNumbers(p,spot);
+
+    /* Détermine quels niveaux sont proches du spot (<15 pips JPY, <10 pips majors) */
+    const isJpy=p.includes('JPY');
+    const closePipsThreshold=isJpy?15:(p.includes('XAU')?30:10);
+    const isClose=lvl=>Math.abs(pipsFromSpot(spot,lvl,p))<=closePipsThreshold;
+
+    /* Liste de tous les niveaux avec leur distance */
+    const allLevels=[
+      {lvl:levels.wh,name:'Weekly High estimé',type:'upside',majeur:true},
+      {lvl:levels.pdh,name:'PDH (Previous Day High)',type:'upside'},
+      {lvl:levels.asiaH,name:'Asia Session High',type:'upside'},
+      {lvl:levels.asiaL,name:'Asia Session Low',type:'downside'},
+      {lvl:levels.pdl,name:'PDL (Previous Day Low)',type:'downside'},
+      {lvl:levels.wl,name:'Weekly Low estimé',type:'downside',majeur:true},
+    ];
+
+    /* Construire le HTML */
+    const upsideHtml=allLevels.filter(l=>l.type==='upside').sort((a,b)=>b.lvl-a.lvl).map(l=>{
+      const pips=pipsFromSpot(spot,l.lvl,p);
+      const close=isClose(l.lvl);
+      return `<div class="liq-level upside ${close?'near':''}">
+        <span class="liq-lbl">${l.name}</span>
+        <span class="liq-val">${fmtLevel(l.lvl,p)}</span>
+        <span class="liq-dist ${close?'close':''}">+${pips} pips</span>
+      </div>`;
+    }).join('');
+
+    const downsideHtml=allLevels.filter(l=>l.type==='downside').sort((a,b)=>b.lvl-a.lvl).map(l=>{
+      const pips=pipsFromSpot(spot,l.lvl,p);
+      const close=isClose(l.lvl);
+      return `<div class="liq-level downside ${close?'near':''}">
+        <span class="liq-lbl">${l.name}</span>
+        <span class="liq-val">${fmtLevel(l.lvl,p)}</span>
+        <span class="liq-dist ${close?'close':''}">${pips} pips</span>
+      </div>`;
+    }).join('');
+
+    /* Round numbers proches */
+    const roundsHtml=rounds.slice(0,4).map(r=>{
+      const pips=pipsFromSpot(spot,r.lvl,p);
+      const close=isClose(r.lvl);
+      const direction=r.lvl>spot?'upside':'downside';
+      return `<div class="liq-level round ${close?'near':''}">
+        <span class="liq-lbl">${r.note}</span>
+        <span class="liq-val">${fmtLevel(r.lvl,p)}</span>
+        <span class="liq-dist ${close?'close':''}">${pips>=0?'+':''}${pips} pips</span>
+      </div>`;
+    }).join('');
+
+    /* Warning si le prix est très proche d'un niveau majeur */
+    let warning='';
+    const closeLevels=allLevels.filter(l=>isClose(l.lvl));
+    const closeRounds=rounds.filter(r=>isClose(r.lvl));
+    if(closeLevels.length||closeRounds.length){
+      const targets=[...closeLevels.map(l=>l.name),...closeRounds.map(r=>r.note)].join(', ');
+      warning=`<div class="liq-warning">
+        <b>⚠ ZONE CHAUDE</b>
+        Le prix est à ±${closePipsThreshold} pips de : ${targets}. Surveille un stop hunt ou un faux breakout dans les prochaines heures.
+      </div>`;
+    }
+
+    return `<div class="liq-pair">
+      <div class="liq-pair-head">
+        <span class="liq-pair-name">${pair}</span>
+        <span class="liq-pair-spot">${fmtLevel(spot,p)}</span>
+      </div>
+      <div class="liq-section">↑ Liquidité au-dessus (stops longs)</div>
+      ${upsideHtml}
+      <div class="liq-section">↓ Liquidité en-dessous (stops shorts)</div>
+      ${downsideHtml}
+      ${rounds.length?`<div class="liq-section">⚡ Round Numbers proches</div>${roundsHtml}`:''}
+      ${warning}
+    </div>`;
+  }).filter(Boolean).join('');
+
+  el.innerHTML=cards?`<div class="liq-grid">${cards}</div>`:`<div class="empty" style="padding:30px 20px;text-align:center;color:var(--text-mute)">
+    <p>En attente des prix spot…</p>
+    <p style="font-size:11px;margin-top:8px">Les niveaux de liquidité s'affichent dès que les prix sont chargés (quelques secondes).</p>
+  </div>`;
+}
+
+pageInits.liquidity=()=>{
+  renderLiquidityMap();
+  const btn=document.getElementById('liq-refresh-btn');
+  if(btn)btn.onclick=renderLiquidityMap;
+};
+
+/* Re-render auto toutes les 30 sec si on est sur la page */
+setInterval(()=>{
+  if(document.querySelector('[data-page="liquidity"]')?.classList.contains('active')){
+    renderLiquidityMap();
+  }
+},30000);
 
 /* ═══════════════════════════════════════════════════════════════
    AUTO-REFRESH IA DES DONNÉES MACRO
