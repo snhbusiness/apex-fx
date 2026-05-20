@@ -3370,8 +3370,11 @@ const FRED_SERIES={
 async function fetchFredSeries(seriesId){
   const key=getFredKey();
   if(!key)throw new Error('Pas de clé FRED');
-  /* file_type=json + limit=1 + sort_order=desc → on chope juste la dernière valeur */
-  const url=`https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${key}&file_type=json&limit=1&sort_order=desc`;
+  /* file_type=json + limit=1 + sort_order=desc → on chope juste la dernière valeur.
+     IMPORTANT : on route via un proxy CORS car l'API FRED ne renvoie pas les headers
+     Access-Control-Allow-Origin nécessaires pour les requêtes navigateur. */
+  const fredUrl=`https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${key}&file_type=json&limit=1&sort_order=desc`;
+  const url=`https://corsproxy.io/?${encodeURIComponent(fredUrl)}`;
   const resp=await fetch(url);
   if(!resp.ok)throw new Error('FRED API '+resp.status);
   const data=await resp.json();
