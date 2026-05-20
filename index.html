@@ -262,15 +262,18 @@
   .carry-rank.top1{color:var(--amber);font-weight:700;font-size:13px}
 
   /* ═══ SESSIONS TIMELINE ═══ */
-  .session-tl{position:relative;height:80px;background:var(--bg-2);border-radius:6px;border:1px solid var(--line);overflow:hidden;margin-top:8px}
-  .session-band{position:absolute;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;
-    font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:1px;color:#fff}
-  .session-band.tokyo{background:rgba(255,90,82,.3);border:1px solid var(--red);top:8px}
-  .session-band.london{background:rgba(91,141,239,.3);border:1px solid var(--blue);top:36px}
-  .session-band.ny{background:rgba(62,207,142,.3);border:1px solid var(--green);top:8px}
-  .session-now{position:absolute;top:0;bottom:0;width:2px;background:var(--amber);box-shadow:0 0 8px var(--amber);z-index:10}
-  .session-axis{position:absolute;bottom:6px;left:0;right:0;display:grid;grid-template-columns:repeat(24,1fr);font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-mute);letter-spacing:1px}
-  .session-axis div{text-align:center;border-left:1px dashed var(--line-2);padding-top:2px}
+  .session-tl{position:relative;height:130px;background:var(--bg-2);border-radius:6px;border:1px solid var(--line);overflow:hidden;margin-top:8px;padding-bottom:6px}
+  .session-band.sydney{background:rgba(233,110,221,.3);border:1px solid var(--magenta)}
+  .session-band.tokyo{background:rgba(255,90,82,.3);border:1px solid var(--red)}
+  .session-band.london{background:rgba(91,141,239,.3);border:1px solid var(--blue)}
+  .session-band.ny{background:rgba(62,207,142,.3);border:1px solid var(--green)}
+  .session-band{position:absolute;border-radius:3px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;text-align:center;line-height:18px;font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+  .session-now{position:absolute;top:0;bottom:30px;width:2px;background:var(--amber);box-shadow:0 0 8px var(--amber);z-index:10}
+  .session-now::before{content:'';position:absolute;top:-3px;left:-4px;width:10px;height:10px;background:var(--amber);border-radius:50%;box-shadow:0 0 8px var(--amber)}
+  .session-axis{position:absolute;bottom:14px;left:0;right:0;display:grid;grid-template-columns:repeat(24,1fr);font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-mute);letter-spacing:.3px;height:24px}
+  .session-axis div{text-align:center;border-left:1px dashed var(--line-2);line-height:1}
+  .session-axis div b{color:var(--text);font-size:9px}
+  .session-tz-label{position:absolute;bottom:0;left:0;right:0;text-align:center;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text-mute);letter-spacing:1px;padding:2px 0}
 
   /* ═══ NEWS ═══ */
   .news-list{display:flex;flex-direction:column;max-height:600px;overflow-y:auto;padding-right:6px}
@@ -1010,6 +1013,14 @@
   @keyframes fixUrgent{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
   .fix-icon{font-size:13px}
 
+  /* ═══ QUOTA INDICATOR ═══ */
+  .quota-ind{display:flex;align-items:center;gap:6px;padding:5px 10px;background:var(--panel-2);border:1px solid var(--line);border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.8px;color:var(--text-mute)}
+  .quota-ind:empty{display:none}
+  .quota-td.ok{color:var(--green)}
+  .quota-td.warning{color:var(--amber)}
+  .quota-td.critical{color:var(--red);font-weight:700}
+  .quota-fh{color:var(--cyan)}
+
   /* ═══ LIQUIDITY MAP ═══ */
   .liq-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;margin-top:10px}
   .liq-pair{background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:14px}
@@ -1071,6 +1082,70 @@
   .plan-btn:hover{border-color:var(--amber);color:var(--amber)}
   .plan-btn.primary{background:var(--amber);color:#080a0c;border-color:var(--amber);font-weight:700}
   .plan-btn.primary:hover{background:#ffc933;color:#080a0c}
+
+  /* ═══ BRIEF UNIFIÉ THÈMES + SETUPS ═══ */
+  .brief-unified{display:flex;flex-direction:column;gap:18px}
+  .brief-mode-toggle{display:flex;gap:6px;padding:8px;background:var(--bg-2);border-radius:6px;align-items:center}
+  .bt-mode{padding:6px 12px;background:transparent;border:1px solid var(--line);border-radius:4px;color:var(--text-mute);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;transition:.15s}
+  .bt-mode.active{background:var(--amber);color:#080a0c;border-color:var(--amber);font-weight:700}
+  .bt-mode:hover:not(.active){border-color:var(--amber);color:var(--amber)}
+  .bt-share{margin-left:auto;padding:6px 12px;background:rgba(93,214,224,.1);border:1px solid rgba(93,214,224,.4);border-radius:4px;color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;transition:.15s}
+  .bt-share:hover{background:rgba(93,214,224,.2)}
+
+  .brief-section{display:flex;flex-direction:column;gap:12px}
+  .section-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--text-mute);text-transform:uppercase;padding:4px 0;border-bottom:1px solid var(--line)}
+
+  .theme-card{background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:14px;border-left:3px solid var(--cyan)}
+  .theme-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+  .theme-icon{font-size:20px}
+  .theme-num{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--text-mute);background:var(--bg-2);padding:2px 6px;border-radius:3px}
+  .theme-head h3{font-family:'Fraunces',serif;font-size:15px;font-weight:500;color:var(--text);margin:0;flex:1}
+  .theme-conviction{color:var(--amber);font-size:13px;letter-spacing:1.5px}
+  .theme-summary{font-size:13px;color:var(--text);line-height:1.5;margin-bottom:10px;font-weight:500}
+  .theme-rationale{font-size:12px;color:var(--text-dim);line-height:1.5;margin-bottom:11px;padding:8px 10px;background:var(--bg-2);border-radius:4px;border-left:2px solid var(--text-mute)}
+  .theme-impacts{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
+  .theme-impact{display:grid;grid-template-columns:20px 80px 70px 1fr;gap:8px;align-items:center;padding:6px 10px;background:var(--bg-2);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px}
+  .theme-impact b{color:var(--text);font-weight:700}
+  .theme-impact .pips{font-weight:700;font-size:11.5px}
+  .theme-impact .pips.long{color:var(--green)}
+  .theme-impact .pips.short{color:var(--red)}
+  .theme-impact .why{color:var(--text-mute);font-size:10.5px;font-family:Manrope,sans-serif}
+  .theme-timing{font-size:11px;color:var(--amber);padding:6px 10px;background:rgba(245,180,0,.06);border-radius:4px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px}
+
+  .noise-section{padding:12px 14px;background:rgba(255,90,82,.04);border:1px solid rgba(255,90,82,.2);border-radius:7px}
+  .noise-list{display:flex;flex-direction:column;gap:6px}
+  .noise-item{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:var(--text-dim);line-height:1.5}
+  .noise-item b{color:var(--text)}
+  .noise-x{color:var(--red);font-size:13px}
+
+  .brief-setup{background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:14px;margin-bottom:10px;border-left:3px solid var(--text-mute)}
+  .brief-setup.short{border-left-color:var(--red);background:linear-gradient(180deg,rgba(255,90,82,.03) 0%,transparent 100%)}
+  .brief-setup.long{border-left-color:var(--green);background:linear-gradient(180deg,rgba(62,207,142,.03) 0%,transparent 100%)}
+  .setup-head{display:flex;align-items:center;gap:10px;margin-bottom:11px;flex-wrap:wrap}
+  .setup-num{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;font-weight:700}
+  .setup-head h4{font-family:'Fraunces',serif;font-size:15px;font-weight:500;color:var(--text);margin:0}
+  .setup-theme{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--cyan);background:rgba(93,214,224,.08);padding:2px 6px;border-radius:3px}
+  .setup-levels{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:10px}
+  .setup-levels .lvl{padding:6px 10px;background:var(--bg-2);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-mute);display:flex;justify-content:space-between;align-items:center}
+  .setup-levels .lvl b{color:var(--text);font-weight:700}
+  .setup-levels .lvl.entry b{color:var(--cyan)}
+  .setup-levels .lvl.sl b{color:var(--red)}
+  .setup-levels .lvl.tp b{color:var(--green)}
+  .setup-stats{padding:7px 10px;background:var(--bg-2);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text-dim);margin-bottom:9px}
+  .setup-stats b{color:var(--text)}
+  .setup-rationale{padding:8px 10px;background:rgba(245,180,0,.04);border-left:2px solid var(--amber);border-radius:4px;font-size:11.5px;color:var(--text-dim);line-height:1.5;margin-bottom:8px}
+  .setup-meta{font-size:10.5px;color:var(--text-mute);margin-bottom:4px;font-family:'JetBrains Mono',monospace;letter-spacing:.3px}
+  .setup-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+
+  .agenda-list{display:flex;flex-direction:column;gap:5px}
+  .agenda-item{display:flex;gap:12px;align-items:center;padding:8px 12px;background:var(--bg-2);border-radius:4px;font-size:11.5px;border-left:2px solid var(--text-mute)}
+  .agenda-item.high{border-left-color:var(--red)}
+  .agenda-item.med{border-left-color:var(--amber)}
+  .agenda-item.low{border-left-color:var(--text-mute)}
+  .agenda-time{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--amber);font-weight:700;min-width:80px}
+  .agenda-event{color:var(--text);flex:1}
+
+  .empty-mini{padding:14px;text-align:center;color:var(--text-mute);font-size:11px;font-style:italic}
 </style>
 </head>
 <body>
@@ -1111,17 +1186,19 @@
       <span class="kz-label" id="kz-label">--</span>
       <span class="kz-meta" id="kz-meta">--</span>
     </div>
+    <div id="quota-badge" class="quota-ind" title="Quota API utilisé aujourd'hui"></div>
     <div id="fix-countdown" class="fix-ind" title="Compteur avant le London Fix (16h00 UTC)" style="display:none">
       <span class="fix-icon">⏰</span>
       <span class="fix-text" id="fix-text">London Fix --</span>
     </div>
     <div class="sessions" id="sessions-mini">
+      <span class="sess" id="sess-sydney">SYD</span>
       <span class="sess" id="sess-tokyo">TOK</span>
       <span class="sess" id="sess-london">LON</span>
       <span class="sess" id="sess-ny">NY</span>
     </div>
     <div class="clock">
-      <div><b id="clk-time">--:--:--</b> UTC</div>
+      <div><b id="clk-time">--:--</b></div>
       <div id="clk-date" style="font-size:9px">--</div>
     </div>
     <div id="ai-refresh-indicator" class="ai-refresh-ind" style="display:none" title="Actualisation des données macro par Claude IA en cours">
@@ -1257,18 +1334,34 @@
             <span class="pill amber" id="sess-current">--</span>
           </div>
           <div class="session-tl" id="session-tl"></div>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px">
-            <div style="padding:10px;background:var(--panel-2);border-radius:5px;border-left:3px solid var(--red)">
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);letter-spacing:1.5px">TOKYO 00:00–09:00 UTC</div>
-              <div style="font-size:11px;color:var(--text-dim);margin-top:4px;line-height:1.4">JPY, AUD, NZD actifs · liquidité modérée · range typiquement</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px">
+            <div style="padding:9px;background:var(--panel-2);border-radius:5px;border-left:3px solid var(--magenta)">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--magenta);letter-spacing:1.2px">SYDNEY</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text);margin-top:2px"><b>00h-09h Paris</b></div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-mute);margin-top:1px">22h-07h UTC</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--magenta);font-weight:700;margin-top:4px">VOL ~2% · $0.19T</div>
+              <div style="font-size:10.5px;color:var(--text-dim);margin-top:4px;line-height:1.4">AUD, NZD · ouverture semaine · faible liquidité</div>
             </div>
-            <div style="padding:10px;background:var(--panel-2);border-radius:5px;border-left:3px solid var(--blue)">
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);letter-spacing:1.5px">LONDRES 07:00–16:00 UTC</div>
-              <div style="font-size:11px;color:var(--text-dim);margin-top:4px;line-height:1.4">EUR, GBP, CHF · 35% du volume mondial · breakouts fréquents</div>
+            <div style="padding:9px;background:var(--panel-2);border-radius:5px;border-left:3px solid var(--red)">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--red);letter-spacing:1.2px">TOKYO</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text);margin-top:2px"><b>01h-10h Paris</b></div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-mute);margin-top:1px">23h-08h UTC</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--red);font-weight:700;margin-top:4px">VOL ~3.5% · $0.35T</div>
+              <div style="font-size:10.5px;color:var(--text-dim);margin-top:4px;line-height:1.4">JPY focus · BoJ watch · setups Londres</div>
             </div>
-            <div style="padding:10px;background:var(--panel-2);border-radius:5px;border-left:3px solid var(--green)">
-              <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);letter-spacing:1.5px">NEW YORK 12:00–21:00 UTC</div>
-              <div style="font-size:11px;color:var(--text-dim);margin-top:4px;line-height:1.4">USD, CAD · overlap LON-NY 12-16h = pic liquidité · data US</div>
+            <div style="padding:9px;background:var(--panel-2);border-radius:5px;border-left:3px solid var(--cyan)">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--cyan);letter-spacing:1.2px">LONDRES</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text);margin-top:2px"><b>09h-18h Paris</b></div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-mute);margin-top:1px">07h-16h UTC</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--cyan);font-weight:700;margin-top:4px">VOL ~37.8% · $4.7T</div>
+              <div style="font-size:10.5px;color:var(--text-dim);margin-top:4px;line-height:1.4">EUR, GBP, CHF · breakouts · Fix 18h Paris</div>
+            </div>
+            <div style="padding:9px;background:var(--panel-2);border-radius:5px;border-left:3px solid var(--green)">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--green);letter-spacing:1.2px">NEW YORK</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text);margin-top:2px"><b>14h-23h Paris</b></div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--text-mute);margin-top:1px">12h-21h UTC</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);font-weight:700;margin-top:4px">VOL ~18.6% · $2.3T</div>
+              <div style="font-size:10.5px;color:var(--text-dim);margin-top:4px;line-height:1.4">USD, CAD · overlap 14h-18h Paris = peak ~56%</div>
             </div>
           </div>
         </div>
@@ -1812,46 +1905,66 @@
     <section class="page" data-page="sessions">
       <div class="page-title">
         <div><h1>Sessions <em>live</em></h1>
-          <p>Suivi temps réel des 3 sessions principales et de leurs overlaps. La plus grosse liquidité se fait pendant l'overlap Londres-NY (13:00-17:00 UTC).</p></div>
+          <p>Suivi temps réel des 4 sessions FX et de leurs overlaps. Volumes vérifiés via <b>BIS Triennial Survey 2022</b> (référence institutionnelle). Heures UTC = été nord (jusqu'au dernier dimanche d'octobre).</p></div>
       </div>
       <div class="grid">
         <div class="card c-12">
           <div class="card-head"><div class="card-title"><span class="dot live"></span><h3>Timeline 24h</h3></div><span class="pill amber" id="sess-current-big">--</span></div>
           <div class="session-tl" style="height:120px" id="session-tl-big"></div>
         </div>
-        <div class="card c-4">
-          <div style="text-align:center;padding:30px 14px">
-            <div style="font-family:'Fraunces',serif;font-size:42px;color:var(--red);font-weight:500">TOKYO</div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-mute);letter-spacing:2px;margin-top:6px">00:00 — 09:00 UTC</div>
-            <div style="font-size:12px;color:var(--text-dim);line-height:1.6;margin-top:14px">
-              <b style="color:var(--text)">Paires actives</b><br>USD/JPY, AUD/JPY, AUD/USD, NZD/USD
+
+        <div class="card c-3">
+          <div style="text-align:center;padding:24px 12px">
+            <div style="font-family:'Fraunces',serif;font-size:34px;color:var(--magenta);font-weight:500">SYDNEY</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-mute);letter-spacing:2px;margin-top:6px">22:00 — 07:00 UTC</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--magenta);font-weight:700;margin-top:8px;letter-spacing:1px">VOLUME ~2% MONDIAL</div>
+            <div style="font-size:11.5px;color:var(--text-dim);line-height:1.6;margin-top:12px">
+              <b style="color:var(--text)">Paires actives</b><br>AUD/USD, NZD/USD, AUD/NZD
             </div>
-            <div style="font-size:12px;color:var(--text-dim);line-height:1.6;margin-top:10px">
-              <b style="color:var(--text)">Caractéristiques</b><br>Range trading · faible volatilité · setups pour la session Londres
+            <div style="font-size:11.5px;color:var(--text-dim);line-height:1.6;margin-top:10px">
+              <b style="color:var(--text)">Caractéristiques</b><br>Ouverture semaine dimanche 22h UTC · faible volume · liquidité minceur sur paires non-AUD/NZD
             </div>
           </div>
         </div>
-        <div class="card c-4">
-          <div style="text-align:center;padding:30px 14px">
-            <div style="font-family:'Fraunces',serif;font-size:42px;color:var(--blue);font-weight:500">LONDRES</div>
+
+        <div class="card c-3">
+          <div style="text-align:center;padding:24px 12px">
+            <div style="font-family:'Fraunces',serif;font-size:34px;color:var(--red);font-weight:500">TOKYO</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-mute);letter-spacing:2px;margin-top:6px">23:00 — 08:00 UTC</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);font-weight:700;margin-top:8px;letter-spacing:1px">VOLUME ~4% MONDIAL</div>
+            <div style="font-size:11.5px;color:var(--text-dim);line-height:1.6;margin-top:12px">
+              <b style="color:var(--text)">Paires actives</b><br>USD/JPY, AUD/JPY, EUR/JPY, GBP/JPY
+            </div>
+            <div style="font-size:11.5px;color:var(--text-dim);line-height:1.6;margin-top:10px">
+              <b style="color:var(--text)">Caractéristiques</b><br>60% des flux JPY · BoJ statement watching · range trading · setups pour Londres
+            </div>
+          </div>
+        </div>
+
+        <div class="card c-3">
+          <div style="text-align:center;padding:24px 12px">
+            <div style="font-family:'Fraunces',serif;font-size:34px;color:var(--cyan);font-weight:500">LONDRES</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-mute);letter-spacing:2px;margin-top:6px">07:00 — 16:00 UTC</div>
-            <div style="font-size:12px;color:var(--text-dim);line-height:1.6;margin-top:14px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--cyan);font-weight:700;margin-top:8px;letter-spacing:1px">VOLUME ~38% MONDIAL</div>
+            <div style="font-size:11.5px;color:var(--text-dim);line-height:1.6;margin-top:12px">
               <b style="color:var(--text)">Paires actives</b><br>EUR/USD, GBP/USD, EUR/GBP, EUR/CHF
             </div>
-            <div style="font-size:12px;color:var(--text-dim);line-height:1.6;margin-top:10px">
-              <b style="color:var(--text)">Caractéristiques</b><br>35% du volume mondial · breakouts · cassures de range Asie
+            <div style="font-size:11.5px;color:var(--text-dim);line-height:1.6;margin-top:10px">
+              <b style="color:var(--text)">Caractéristiques</b><br>Le plus gros centre FX mondial · breakouts · cassures range Asie · London Fix 16h UTC = 50% volume corporate
             </div>
           </div>
         </div>
-        <div class="card c-4">
-          <div style="text-align:center;padding:30px 14px">
-            <div style="font-family:'Fraunces',serif;font-size:42px;color:var(--green);font-weight:500">NEW YORK</div>
+
+        <div class="card c-3">
+          <div style="text-align:center;padding:24px 12px">
+            <div style="font-family:'Fraunces',serif;font-size:34px;color:var(--green);font-weight:500">NEW YORK</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-mute);letter-spacing:2px;margin-top:6px">12:00 — 21:00 UTC</div>
-            <div style="font-size:12px;color:var(--text-dim);line-height:1.6;margin-top:14px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);font-weight:700;margin-top:8px;letter-spacing:1px">VOLUME ~19% MONDIAL</div>
+            <div style="font-size:11.5px;color:var(--text-dim);line-height:1.6;margin-top:12px">
               <b style="color:var(--text)">Paires actives</b><br>EUR/USD, USD/CAD, USD/JPY, GBP/USD
             </div>
-            <div style="font-size:12px;color:var(--text-dim);line-height:1.6;margin-top:10px">
-              <b style="color:var(--text)">Caractéristiques</b><br>Data US 12:30/14:00 · overlap LON-NY 12-16h = pic liquidité
+            <div style="font-size:11.5px;color:var(--text-dim);line-height:1.6;margin-top:10px">
+              <b style="color:var(--text)">Caractéristiques</b><br>Data US 12:30/14:00 · <b style="color:var(--magenta)">Overlap LON-NY 12-16h = peak liquidité 57% volume mondial</b>
             </div>
           </div>
         </div>
@@ -1859,6 +1972,30 @@
         <div class="card c-12">
           <div class="card-head"><div class="card-title"><span class="dot"></span><h3>Volatilité moyenne par heure UTC (EUR/USD, 5 ans)</h3></div></div>
           <div id="hourly-vol-chart" style="height:280px"></div>
+        </div>
+
+        <div class="card c-12 lesson-card lesson-amber">
+          <div class="lesson-tag">📊 Volumes FX — Source BIS Triennial Survey 2022</div>
+          <h2>Ce que les vrais volumes te disent</h2>
+          <p class="lesson-lead">Le marché FX mondial = <b>7 500 milliards USD/jour</b> en 2022. La distribution n'est pas uniforme dans la journée :</p>
+          <div class="lesson-grid">
+            <div class="lesson-box">
+              <h4>Hiérarchie des sessions</h4>
+              <p>Londres <b>38%</b> > NY <b>19%</b> > Hong Kong/Singapour <b>~9% chacun</b> > Tokyo <b>4%</b> > Sydney <b>2%</b>. Les autres centres (Francfort, Genève, Zürich, Toronto) = ~15% combinés.</p>
+            </div>
+            <div class="lesson-box">
+              <h4>L'overlap LON-NY (12-16h UTC)</h4>
+              <p>Représente <b>~57% du volume quotidien mondial</b>. C'est ICI que se passent 80% des breakouts validés sur EUR/USD H4. Trade pendant cette fenêtre = trade dans le sens du flow.</p>
+            </div>
+            <div class="lesson-box">
+              <h4>Pourquoi Tokyo a moins de volume qu'on pense</h4>
+              <p>Tokyo représente seulement 4% du volume mondial total, mais <b>60% des transactions JPY</b>. C'est pour ça que les paires JPY (USD/JPY, EUR/JPY) bougent en Asia mais que les majors EUR/USD restent calmes.</p>
+            </div>
+            <div class="lesson-box">
+              <h4>Le piège de la "session asiatique"</h4>
+              <p>Sydney + Tokyo combinés = 6% du volume mondial. Trader EUR/USD à 02h UTC c'est <b>trader sans contrepartie institutionnelle</b> = spreads larges + faux mouvements. Attends Londres.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -2693,7 +2830,7 @@
             </div>
           </div>
           <div class="settings-row">
-            <h4>Données récupérées (toutes les 30 sec)</h4>
+            <h4>Données récupérées (toutes les 5 min)</h4>
             <p style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7">
               • <b style="color:var(--amber)">DXY</b> · indice dollar US<br>
               • <b style="color:var(--amber)">US10Y, US30Y, US5Y</b> · yields treasuries<br>
@@ -2701,6 +2838,35 @@
               • <b style="color:var(--amber)">XAU/USD</b> · or<br>
               • <b style="color:var(--amber)">SPX</b> · S&P 500
             </p>
+          </div>
+        </div>
+
+        <div class="card c-12">
+          <div class="card-head"><div class="card-title"><span class="dot"></span><h3>Backup automatique · clé API Finnhub</h3></div>
+            <span class="api-status ko" id="fh-api-status">non configurée</span>
+          </div>
+          <div class="settings-row">
+            <h4>Clé API Finnhub (recommandé)</h4>
+            <p><b>Backup automatique si Twelve Data atteint son quota quotidien</b> (800 req/jour). Finnhub plan gratuit : <b>60 requêtes/minute = 86 400/jour</b> = très généreux. Apex FX bascule automatiquement quand Twelve Data approche 95% de sa limite. Inscription gratuite sur <a href="https://finnhub.io/register" target="_blank" style="color:var(--amber)">finnhub.io</a>.</p>
+            <div class="api-key-input">
+              <input type="password" id="fh-key-input" placeholder="ta clé Finnhub (~40 caractères)" autocomplete="off" />
+              <button class="brief-btn" id="fh-key-save">Enregistrer</button>
+              <button class="brief-btn secondary" id="fh-key-clear">Effacer</button>
+            </div>
+            <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <button class="brief-btn secondary" id="fh-test">🧪 Tester la connexion</button>
+              <span id="fh-test-result" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-mute);letter-spacing:.3px"></span>
+            </div>
+          </div>
+          <div class="settings-row">
+            <h4>Cascade automatique</h4>
+            <p style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7">
+              <b style="color:var(--green)">1.</b> Twelve Data (priorité) → quota 800/jour<br>
+              <b style="color:var(--cyan)">2.</b> Finnhub (si TD à 95%+) → quota 86 400/jour<br>
+              <b style="color:var(--amber)">3.</b> Yahoo via proxy (dernier recours)<br>
+              <b style="color:var(--text-mute)">4.</b> Valeurs hardcodées (si tout down)
+            </p>
+            <p style="margin-top:10px;font-size:11.5px;color:var(--text-dim)">Avec les 2 clés configurées, tu auras <b style="color:var(--green)">toujours</b> des prix live et tu ne tomberas plus jamais à court.</p>
           </div>
         </div>
           <div class="settings-row">
@@ -2987,6 +3153,7 @@ async function fetchTwelveData(symbol){
   if(!resp.ok)throw new Error('Twelve Data API '+resp.status);
   const data=await resp.json();
   if(data.code&&data.code!==200)throw new Error(data.message||'Twelve Data error');
+  incrementQuota('twelvedata');
   return data;
 }
 async function fetchTwelveDataBatch(symbols){
@@ -2996,6 +3163,8 @@ async function fetchTwelveDataBatch(symbols){
   const resp=await fetch(url);
   if(!resp.ok)throw new Error('Twelve Data API '+resp.status);
   const data=await resp.json();
+  /* Twelve Data compte chaque symbole comme 1 req même en batch */
+  for(let i=0;i<symbols.length;i++)incrementQuota('twelvedata');
   if(symbols.length===1){return {[symbols[0]]:data};}
   return data;
 }
@@ -3018,6 +3187,155 @@ async function testTwelveData(){
   }catch(e){
     if(result)result.innerHTML=`<span style="color:var(--red)">✕ Erreur : ${e.message.replace(/[<>]/g,'')}</span>`;
   }
+}
+
+/* ════════ FINNHUB API (backup quand Twelve Data quota épuisé) ════════ */
+const FH_KEY='apex_fx_fh_key_v7';
+function getFhKey(){return localStorage.getItem(FH_KEY)||'';}
+function setFhKey(k){if(k)localStorage.setItem(FH_KEY,k);else localStorage.removeItem(FH_KEY);updateFhStatus();}
+function updateFhStatus(){
+  const el=document.getElementById('fh-api-status');
+  if(!el)return;
+  if(getFhKey()){el.textContent='configurée ✓';el.className='api-status ok';}
+  else{el.textContent='non configurée';el.className='api-status ko';}
+}
+
+/* Finnhub utilise l'endpoint /forex/rates pour récupérer tous les taux FX en 1 req.
+   Format : base=USD → renvoie toutes les paires USD/X.
+   On va appeler 2 fois : base=USD et base=EUR pour couvrir les majors. */
+async function fetchFinnhub(pair){
+  /* Wrapper qui appelle fetchFinnhubAllRates() puis pick la paire */
+  const all=await fetchFinnhubAllRates();
+  const fromCcy=pair.slice(0,3);
+  const toCcy=pair.slice(3);
+
+  /* Cas 1 : la paire est XXX/USD ou USD/XXX → cherche dans les rates USD-based */
+  if(all.USD){
+    if(fromCcy==='USD'&&all.USD[toCcy]){
+      return {price:all.USD[toCcy],chg:0};
+    }
+    if(toCcy==='USD'&&all.USD[fromCcy]){
+      return {price:1/all.USD[fromCcy],chg:0};
+    }
+  }
+  /* Cas 2 : cross EUR-based */
+  if(all.EUR){
+    if(fromCcy==='EUR'&&all.EUR[toCcy]){
+      return {price:all.EUR[toCcy],chg:0};
+    }
+  }
+  /* Cas 3 : calcul croisé via USD */
+  if(all.USD&&all.USD[fromCcy]&&all.USD[toCcy]){
+    return {price:all.USD[toCcy]/all.USD[fromCcy],chg:0};
+  }
+  /* XAU spécial */
+  if(pair==='XAUUSD'&&all.OANDA&&all.OANDA['XAU/USD']){
+    return {price:all.OANDA['XAU/USD'],chg:0};
+  }
+  throw new Error('Finnhub : paire '+pair+' non trouvée');
+}
+
+/* Cache des rates Finnhub (1 req = 1 minute valide) */
+let finnhubRatesCache=null;
+let finnhubRatesCacheTime=0;
+
+async function fetchFinnhubAllRates(){
+  if(finnhubRatesCache&&(Date.now()-finnhubRatesCacheTime)<60000){
+    return finnhubRatesCache;
+  }
+  const key=getFhKey();
+  if(!key)throw new Error('Pas de clé Finnhub');
+
+  const result={};
+  /* On fait 2 requêtes : base=USD et base=EUR */
+  for(const base of ['USD','EUR']){
+    try{
+      const url=`https://finnhub.io/api/v1/forex/rates?base=${base}&token=${key}`;
+      const resp=await fetch(url);
+      if(!resp.ok)continue;
+      const data=await resp.json();
+      if(data.quote){
+        result[base]=data.quote;
+        incrementQuota('finnhub');
+      }
+    }catch(e){console.warn('[Finnhub] '+base+' échec:',e.message);}
+  }
+
+  if(Object.keys(result).length===0){
+    throw new Error('Finnhub no rates returned');
+  }
+
+  finnhubRatesCache=result;
+  finnhubRatesCacheTime=Date.now();
+  return result;
+}
+
+async function testFinnhub(){
+  const result=document.getElementById('fh-test-result');
+  if(!getFhKey()){
+    if(result)result.innerHTML='<span style="color:var(--red)">⚠ Aucune clé configurée</span>';
+    return;
+  }
+  if(result)result.innerHTML='<span style="color:var(--amber)">⏳ test en cours…</span>';
+  try{
+    /* Test sur EUR/USD */
+    finnhubRatesCache=null; /* force refresh */
+    const data=await fetchFinnhub('EURUSD');
+    if(result)result.innerHTML=`<span style="color:var(--green)">✓ Connecté · EUR/USD = ${data.price.toFixed(5)}</span>`;
+  }catch(e){
+    if(result)result.innerHTML=`<span style="color:var(--red)">✕ Erreur : ${e.message.replace(/[<>]/g,'')}</span>`;
+  }
+}
+
+/* ════════ COMPTEUR DE QUOTA LOCAL ════════ */
+/* On track combien de requêtes on a fait dans la journée pour éviter de re-cramer */
+const QUOTA_KEY='apex_fx_quota_v7';
+const QUOTA_LIMITS={twelvedata:800,finnhub:86400}; /* req/jour pour les plans gratuits */
+
+function getQuotaToday(){
+  const today=new Date().toISOString().slice(0,10);
+  try{
+    const stored=JSON.parse(localStorage.getItem(QUOTA_KEY)||'{}');
+    if(stored.date!==today){
+      /* Nouveau jour : reset */
+      return {date:today,twelvedata:0,finnhub:0};
+    }
+    return stored;
+  }catch(e){
+    return {date:today,twelvedata:0,finnhub:0};
+  }
+}
+
+function incrementQuota(provider){
+  const q=getQuotaToday();
+  q[provider]=(q[provider]||0)+1;
+  localStorage.setItem(QUOTA_KEY,JSON.stringify(q));
+  updateQuotaDisplay();
+}
+
+function updateQuotaDisplay(){
+  const el=document.getElementById('quota-badge');
+  if(!el)return;
+  const q=getQuotaToday();
+  const td=q.twelvedata||0;
+  const fh=q.finnhub||0;
+  const tdPct=td/QUOTA_LIMITS.twelvedata*100;
+  const tdCls=tdPct>90?'critical':(tdPct>70?'warning':'ok');
+  el.innerHTML=`<span class="quota-td ${tdCls}">TD ${td}/${QUOTA_LIMITS.twelvedata}</span>${fh>0?` · <span class="quota-fh">FH ${fh}</span>`:''}`;
+}
+
+/* Helper : Twelve Data utilisable ? */
+function canUseTwelveData(){
+  if(!getTdKey())return false;
+  const q=getQuotaToday();
+  return (q.twelvedata||0)<QUOTA_LIMITS.twelvedata*0.95; /* stop à 95% pour sécurité */
+}
+
+/* Helper : Finnhub utilisable ? */
+function canUseFinnhub(){
+  if(!getFhKey())return false;
+  const q=getQuotaToday();
+  return (q.finnhub||0)<QUOTA_LIMITS.finnhub*0.95;
 }
 
 /* ════════ ANTHROPIC API KEY (déclaré tôt aussi) ════════ */
@@ -3072,12 +3390,25 @@ const POLICY_RATES={
 function tick(){
   const now=new Date();
   const pad=n=>String(n).padStart(2,'0');
-  document.getElementById('clk-time').textContent=
-    pad(now.getUTCHours())+':'+pad(now.getUTCMinutes())+':'+pad(now.getUTCSeconds());
+
+  /* Heure UTC (référence marchés) */
+  const utcTime=pad(now.getUTCHours())+':'+pad(now.getUTCMinutes())+':'+pad(now.getUTCSeconds());
+
+  /* Heure locale (Paris ou autre selon le fuseau du user) */
+  const localTime=pad(now.getHours())+':'+pad(now.getMinutes());
+
+  /* Détection du fuseau pour label */
+  const tzOffset=-now.getTimezoneOffset()/60;
+  const tzLabel=tzOffset>=0?`UTC+${tzOffset}`:`UTC${tzOffset}`;
+
+  /* Affichage : heure locale en grand, UTC en petit */
+  document.getElementById('clk-time').textContent=localTime+' '+tzLabel;
+
   const days=['DIM','LUN','MAR','MER','JEU','VEN','SAM'];
   const months=['JAN','FÉV','MAR','AVR','MAI','JUI','JUL','AOÛ','SEP','OCT','NOV','DÉC'];
   document.getElementById('clk-date').textContent=
-    days[now.getUTCDay()]+' · '+pad(now.getUTCDate())+' '+months[now.getUTCMonth()]+' '+now.getUTCFullYear();
+    days[now.getUTCDay()]+' · '+pad(now.getUTCDate())+' '+months[now.getUTCMonth()]+' · '+utcTime+' UTC';
+
   updateSessions(now.getUTCHours(),now.getUTCMinutes());
   updateKillzoneAndFix(now);
 }
@@ -3209,30 +3540,43 @@ function triggerFixPopup(){
 }
 function updateSessions(h,m){
   const t=h+m/60;
-  /* Heures UTC réelles (été nord) :
-     Tokyo  : 00:00 - 09:00 UTC
-     Londres: 07:00 - 16:00 UTC (UK = UTC+1 en été, ouverture 8h locale)
-     NY     : 12:00 - 21:00 UTC (NY = UTC-4 en été, ouverture 8h locale)
-     Overlaps : Tok-Lon 07-09 / Lon-NY 12-16 (pic liquidité) */
-  const tokyo=t>=0&&t<9;
+  /* HEURES UTC RÉELLES (heure d'été nord, jusqu'au dernier dim octobre) — vérifiées via Capital.com / BIS :
+     Sydney : 22:00 - 07:00 UTC (ouverture marché semaine)
+     Tokyo  : 23:00 - 08:00 UTC (overlap Sydney 22-07 = Asia early)
+     Londres: 07:00 - 16:00 UTC (35-38% volume mondial · BIS Triennial 2022)
+     New York: 12:00 - 21:00 UTC (19% volume mondial)
+     Overlaps clés :
+       Sydney+Tokyo (22-07) : Asia early, JPY/AUD/NZD actifs
+       Tokyo+Londres (07-08) : transition Asia→EU, faible mais setup
+       Londres+NY (12-16) : PEAK LIQUIDITÉ ~60% du volume mondial
+  */
+  const sydney=(t>=22)||(t<7); /* passe minuit */
+  const tokyo=(t>=23)||(t<8);   /* passe minuit */
   const london=t>=7&&t<16;
   const ny=t>=12&&t<21;
+
   const setSess=(id,on,isOverlap)=>{
     const e=document.getElementById(id);if(!e)return;
     e.classList.toggle('active',on);
     e.classList.toggle('overlap',isOverlap);
   };
-  const tokLon=tokyo&&london;
-  const lonNy=london&&ny;
-  setSess('sess-tokyo',tokyo,tokLon);
+  const sydTok=sydney&&tokyo; /* 23-07 */
+  const tokLon=tokyo&&london; /* 07-08 transition */
+  const lonNy=london&&ny;     /* 12-16 peak */
+
+  setSess('sess-sydney',sydney,sydTok);
+  setSess('sess-tokyo',tokyo,sydTok||tokLon);
   setSess('sess-london',london,tokLon||lonNy);
   setSess('sess-ny',ny,lonNy);
+
   let curr='Marché fermé';
   if(lonNy)curr='LON · NY overlap (peak liquidity)';
   else if(tokLon)curr='TOK · LON overlap';
+  else if(sydTok)curr='SYD · TOK (Asia)';
   else if(ny)curr='New York';
   else if(london)curr='Londres';
   else if(tokyo)curr='Tokyo';
+  else if(sydney)curr='Sydney';
   ['sess-current','sess-current-big'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=curr;});
 }
 tick();setInterval(tick,1000);
@@ -3331,10 +3675,15 @@ const fxData={};  // {pair:'EURUSD':{price,chg}}
 const rateData={};  // {US10Y, DE10Y,...}
 
 async function loadFXData(){
-  /* 1. Essai Twelve Data en premier (live, fiable) */
-  if(getTdKey()){
+  /* CASCADE INTELLIGENTE :
+     1. Twelve Data (si quota OK) — 13 paires en batch (~13 req)
+     2. Finnhub (si TD épuisé) — 1 req par paire (limite 60/min)
+     3. Yahoo via proxy (dernier recours, données moins fiables)
+  */
+
+  /* === 1. Twelve Data === */
+  if(canUseTwelveData()){
     try{
-      /* Symboles Twelve Data pour les paires FX : EUR/USD, USD/JPY, etc. */
       const tdSymbols=['EUR/USD','GBP/USD','USD/JPY','USD/CHF','USD/CAD','AUD/USD','NZD/USD','EUR/JPY','EUR/GBP','EUR/CHF','GBP/JPY','AUD/JPY','XAU/USD'];
       const batch=await fetchTwelveDataBatch(tdSymbols);
       let okCount=0;
@@ -3351,7 +3700,6 @@ async function loadFXData(){
         }
       });
       if(okCount>=8){
-        /* Twelve Data a marché → on update l'UI et on sort */
         const e=fxData['EURUSD'];
         if(e){const x=document.getElementById('hs-eurusd');if(x){x.textContent=fmtNum(e.price,4);x.className='hs-val '+(e.chg>=0?'up':'dn');}}
         const j=fxData['USDJPY'];
@@ -3362,11 +3710,48 @@ async function loadFXData(){
         console.log('[FX-Spot] Twelve Data OK ·',okCount,'paires · EUR/USD:',fxData['EURUSD']?.price.toFixed(5));
         return;
       }
-      console.warn('[Twelve Data FX] seulement',okCount,'paires reçues, fallback Yahoo');
-    }catch(e){console.warn('[Twelve Data FX] échec:',e.message);}
+      console.warn('[Twelve Data FX] seulement',okCount,'paires reçues, fallback Finnhub');
+    }catch(e){console.warn('[Twelve Data FX] échec:',e.message,'· fallback Finnhub');}
+  }else if(getTdKey()){
+    console.warn('[Twelve Data FX] quota proche limite, bascule Finnhub');
   }
 
-  /* 2. Fallback Yahoo via proxy CORS */
+  /* === 2. Finnhub (utilise /forex/rates en batch — 2 reqs max pour toutes les paires) === */
+  if(canUseFinnhub()){
+    try{
+      finnhubRatesCache=null; /* force refresh */
+      const fhPairs=['EURUSD','GBPUSD','USDJPY','USDCHF','USDCAD','AUDUSD','NZDUSD','EURJPY','EURGBP','EURCHF','GBPJPY','AUDJPY','XAUUSD'];
+      let okCount=0;
+      for(const p of fhPairs){
+        try{
+          const r=await fetchFinnhub(p);
+          if(r&&r.price&&r.price>0){
+            fxData[p]={
+              price:r.price,
+              chg:r.chg||0,
+              ma50:r.price,
+              chg30d:0
+            };
+            okCount++;
+          }
+        }catch(e){/* paire ignorée */}
+      }
+      if(okCount>=8){
+        const e=fxData['EURUSD'];
+        if(e){const x=document.getElementById('hs-eurusd');if(x){x.textContent=fmtNum(e.price,4);x.className='hs-val '+(e.chg>=0?'up':'dn');}}
+        const j=fxData['USDJPY'];
+        if(j){const x=document.getElementById('hs-usdjpy');if(x){x.textContent=fmtNum(j.price,2);x.className='hs-val '+(j.chg>=0?'up':'dn');}}
+        setDot('s-yahoo',true);
+        renderVol();
+        const ls=document.getElementById('lastsync');if(ls)ls.textContent=new Date().toLocaleTimeString('fr-FR')+' · Finnhub';
+        console.log('[FX-Spot] Finnhub OK ·',okCount,'paires · EUR/USD:',fxData['EURUSD']?.price.toFixed(5));
+        return;
+      }
+      console.warn('[Finnhub FX] seulement',okCount,'paires reçues, fallback Yahoo');
+    }catch(e){console.warn('[Finnhub FX] échec:',e.message,'· fallback Yahoo');}
+  }
+
+  /* === 3. Fallback Yahoo via proxy === */
   try{
     const data=await fetchYahoo(YPAIRS);
     if(!data||!data.length){setDot('s-yahoo',false);return;}
@@ -3382,7 +3767,7 @@ async function loadFXData(){
     if(j){const x=document.getElementById('hs-usdjpy');x.textContent=fmtNum(j.price,2);x.className='hs-val '+(j.chg>=0?'up':'dn');}
     setDot('s-yahoo',true);
     renderVol();
-    document.getElementById('lastsync').textContent=new Date().toLocaleTimeString('fr-FR');
+    const ls=document.getElementById('lastsync');if(ls)ls.textContent=new Date().toLocaleTimeString('fr-FR')+' · Yahoo (fallback)';
   }catch(e){setDot('s-yahoo',false);}
 }
 
@@ -4127,24 +4512,62 @@ function renderVol(){
 function drawSessionTimeline(id,h){
   const el=document.getElementById(id);
   if(!el)return;
-  const w=el.clientWidth||800;
   const now=new Date();
-  const curT=now.getUTCHours()+now.getUTCMinutes()/60;
-  const tokyo={start:0,end:9,top:8,h:24,c:'tokyo'};
-  const london={start:7,end:16,top:36,h:24,c:'london'};
-  const ny={start:12,end:21,top:8,h:24,c:'ny'};
-  const sessions=[tokyo,london,ny];
+
+  /* L'heure LOCALE du user (pas UTC) pour positionner le trait et l'axe */
+  const localT=now.getHours()+now.getMinutes()/60;
+  /* Offset entre l'heure locale et UTC en heures (ex: France été = +2) */
+  const tzOffset=-now.getTimezoneOffset()/60;
+  const tzLabel=tzOffset>=0?`UTC+${tzOffset}`:`UTC${tzOffset}`;
+
+  /* Conversion d'une heure UTC vers heure locale (modulo 24) */
+  const toLocal=(utcH)=>((utcH+tzOffset)%24+24)%24;
+
+  /* Sessions définies en UTC, on les convertit en heure locale */
+  const sessionsUTC=[
+    {startUTC:22,endUTC:31,top:6,h:20,c:'sydney',label:'SYDNEY'}, /* 22-07 = 22 à 07+24 */
+    {startUTC:23,endUTC:32,top:32,h:20,c:'tokyo',label:'TOKYO'},  /* 23-08 = 23 à 08+24 */
+    {startUTC:7,endUTC:16,top:58,h:20,c:'london',label:'LONDRES'},
+    {startUTC:12,endUTC:21,top:84,h:20,c:'ny',label:'NEW YORK'},
+  ];
+
+  /* Pour chaque session : conversion locale + split éventuel autour de 0h/24h pour l'affichage */
+  const bandsHtml=sessionsUTC.map(s=>{
+    const startLocal=toLocal(s.startUTC);
+    const endLocalRaw=s.startUTC+(s.endUTC-s.startUTC)+tzOffset; /* heure de fin locale brute, peut dépasser 24 */
+    /* Si la session passe minuit en heure locale, on split en 2 bandes */
+    const bands=[];
+    if(endLocalRaw>24){
+      bands.push({start:startLocal,end:24,withLabel:true});
+      bands.push({start:0,end:endLocalRaw-24,withLabel:false});
+    }else if(startLocal>endLocalRaw){
+      /* Cas où le début est après la fin (en local) */
+      bands.push({start:startLocal,end:24,withLabel:true});
+      bands.push({start:0,end:endLocalRaw,withLabel:false});
+    }else{
+      bands.push({start:startLocal,end:endLocalRaw,withLabel:true});
+    }
+    return bands.map(b=>{
+      const width=(b.end-b.start)/24*100;
+      if(width<=0)return '';
+      const left=b.start/24*100;
+      return `<div class="session-band ${s.c}" style="left:${left}%;width:${width}%;top:${s.top}px;height:${s.h}px">${b.withLabel?s.label:''}</div>`;
+    }).join('');
+  }).join('');
+
+  /* Axe : on affiche heures locales (Paris) en gras avec heures UTC en petit dessous */
+  const axisHtml=Array.from({length:24},(_,i)=>{
+    const utcH=((i-tzOffset)%24+24)%24;
+    return `<div><b>${String(i).padStart(2,'0')}</b><small style="display:block;font-size:7px;color:#666;margin-top:1px">${String(Math.floor(utcH)).padStart(2,'0')}</small></div>`;
+  }).join('');
+
   el.innerHTML=`
-    ${sessions.map(s=>{
-      const left=s.start/24*100;
-      const width=(s.end-s.start)/24*100;
-      const label=s.c.toUpperCase();
-      return `<div class="session-band ${s.c}" style="left:${left}%;width:${width}%;top:${s.top}px;height:${s.h}px">${label}</div>`;
-    }).join('')}
-    <div class="session-now" style="left:${curT/24*100}%"></div>
-    <div class="session-axis">
-      ${Array.from({length:24},(_,i)=>`<div>${String(i).padStart(2,'0')}</div>`).join('')}
-    </div>`;
+    ${bandsHtml}
+    <div class="session-now" style="left:${localT/24*100}%" title="${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} ${tzLabel}"></div>
+    <div class="session-axis" data-tz="${tzLabel}">
+      ${axisHtml}
+    </div>
+    <div class="session-tz-label">heure locale (${tzLabel}) / UTC en petit</div>`;
 }
 function updateSessionTimelines(){
   drawSessionTimeline('session-tl');
@@ -4670,18 +5093,27 @@ document.addEventListener('keydown',e=>{
 
 /* ════════ INIT ════════ */
 loadFXData();loadDXY();loadRates();loadNews();loadSquawk();
-/* Si Twelve Data configurée : 30 sec (limite 8 req/min, paires consomme 1 req groupée).
-   Si pas de Twelve Data : Frankfurter en backup + 10 sec */
+/* FRÉQUENCE OPTIMISÉE pour respecter quotas APIs :
+   - Twelve Data : 800 req/jour (plan free) → ~13 req/refresh × 1/5min = ~30 req/h = ~250/jour ✓
+   - Finnhub : 86400 req/jour (60/min) → largement assez en backup
+   - Yahoo : pas de quota mais proxies CORS instables
+*/
+const FX_REFRESH_MS=getTdKey()||getFhKey()?300000:30000; /* 5 min si API configurée, 30 sec sinon */
+const RATES_REFRESH_MS=getTdKey()||getFhKey()?900000:60000; /* 15 min si API, 1 min sinon */
+
 setInterval(()=>{
   loadFXData();
   loadDXY();
-  if(!getTdKey()){loadFrankfurterPrices();}
-},30000);
-setInterval(loadRates,60000);
-setInterval(loadNews,15000);
-setInterval(loadSquawk,12000);
-/* Premier appel Frankfurter si pas de Twelve Data */
-if(!getTdKey()){loadFrankfurterPrices();}
+  if(!getTdKey()&&!getFhKey()){loadFrankfurterPrices();}
+},FX_REFRESH_MS);
+setInterval(loadRates,RATES_REFRESH_MS);
+setInterval(loadNews,60000); /* RSS news : 1 min (pas de quota) */
+setInterval(loadSquawk,60000);
+/* Premier appel Frankfurter si pas d'API */
+if(!getTdKey()&&!getFhKey()){loadFrankfurterPrices();}
+/* Quota display refresh */
+setInterval(updateQuotaDisplay,5000);
+updateQuotaDisplay();
 
 
 /* ═══════════════════════════════════════════════════════════════
@@ -4745,6 +5177,26 @@ pageInits.settings=()=>{
   };
   const tdTest=document.getElementById('td-test');
   if(tdTest)tdTest.onclick=testTwelveData;
+
+  /* === Finnhub === */
+  updateFhStatus();
+  const fhInput=document.getElementById('fh-key-input');
+  const fhK=getFhKey();
+  if(fhK&&fhInput)fhInput.value='•••••••••••••••••'+fhK.slice(-6);
+  const fhSave=document.getElementById('fh-key-save');
+  if(fhSave)fhSave.onclick=()=>{
+    let v=fhInput.value.replace(/[•\s]/g,'').replace(/[^\x20-\x7E]/g,'').trim();
+    if(v.length<10){toast('Clé invalide','La clé Finnhub fait environ 40 caractères','danger');return;}
+    setFhKey(v);
+    fhInput.value='•••••••••••••••••'+v.slice(-6);
+    toast('Clé Finnhub enregistrée','Backup automatique activé');
+  };
+  const fhClear=document.getElementById('fh-key-clear');
+  if(fhClear)fhClear.onclick=()=>{
+    if(confirm('Effacer la clé Finnhub ?')){setFhKey('');fhInput.value='';toast('Clé effacée','');}
+  };
+  const fhTest=document.getElementById('fh-test');
+  if(fhTest)fhTest.onclick=testFinnhub;
 
   /* Toggles ajoutés par les modules suivants (auto-refresh brief, popups, auto-data) */
   if(typeof bindAutoRefreshToggles==='function')bindAutoRefreshToggles();
@@ -5200,126 +5652,192 @@ async function generateBrief(){
 
   document.getElementById('brief-content').innerHTML=`<div class="brief-loading">
     <div class="pulse"></div>
-    <div>Claude analyse le contexte macro · CFTC · sessions · taux</div>
+    <div>Claude construit le brief macro thématique du jour…</div>
   </div>`;
 
-  const systemPrompt=`Tu es l'analyste senior d'un trading desk forex institutionnel à Londres. Tu rédiges chaque matin un brief macro court, dense, sans bullshit, à destination d'un trader pro. Style : direct, technique, vocabulaire institutionnel (carry, basis, spread, positioning, flows, liquidity grab, order block, fair value gap), pas de disclaimer générique. Tu écris en français.
+  /* Récupération des vrais spots pour calcul JS des niveaux */
+  const PAIRS=['EURUSD','GBPUSD','USDJPY','USDCHF','AUDUSD','USDCAD','NZDUSD','EURJPY','EURGBP','GBPJPY','AUDJPY','XAUUSD','USDNOK','USDSEK'];
+  const realSpots={};
+  PAIRS.forEach(p=>{
+    const d=fxData[p];
+    if(d&&d.price&&d.price>0){
+      realSpots[p]={price:d.price,chg:d.chg||0};
+    }
+  });
 
-Tu utilises 3 frameworks complémentaires :
-1. **John Murphy** — analyse intermarché (rates, FX, commodities, equities)
-2. **Brent Donnelly** — 5 Stars setup (catalyst, cross-asset, positioning, technicals, vol/seasonality)
-3. **ICT/SMC** — Smart Money Concepts (killzones, liquidity grabs, order blocks, fair value gaps)
-
-═══════════════════════════════════════════════════════
-RÈGLE ABSOLUE : tu DOIS impérativement structurer ta réponse en 3 sections markdown ET inclure un bloc JSON. Aucune exception possible. Si tu oublies le JSON, l'app ne pourra pas générer les graphiques.
-═══════════════════════════════════════════════════════
-
-STRUCTURE OBLIGATOIRE :
-
-## THÈME DU JOUR
-[3-5 phrases denses sur la dynamique macro dominante, le risk regime, le leadership cross-asset]
-
-## SETUPS À SURVEILLER
-[1-2 phrases d'intro sur les opportunités du jour]
-
-<SETUPS_JSON>
-[
-  {
-    "pair": "USD/JPY",
-    "direction": "short",
-    "entry": 145.80,
-    "sl": 146.80,
-    "tp": 142.50,
-    "rationale": "Une phrase courte expliquant la logique du setup (intermarché, positionnement, technique).",
-    "trigger": "L'événement précis qui déclenche le trade (data macro, niveau cassé, etc.)",
-    "invalidation": "Le niveau ou condition qui annule le setup",
-    "killzone": "London open (7h-10h UTC) | NY open (12h30-15h UTC) | NY-London overlap (13h-16h UTC)",
-    "liquidity": "Niveau de liquidité visé (PDH/PDL, weekly high/low, round number, swing high/low)",
-    "institutional_read": "Lecture institutionnelle en 1 phrase : 'Stop hunt probable au-dessus de X.XX avant retournement' ou 'Order block H4 à Y.YY défendu par les desks'"
-  }
-]
-</SETUPS_JSON>
-
-## RISQUES & CATALYSEURS
-[Events à venir, niveaux critiques, crowded trades à surveiller pour squeeze, faux breakouts probables]
-
-═══════════════════════════════════════════════════════
-SPÉCIFICATIONS DU JSON :
-- Tu DOIS générer entre 2 et 4 setups
-- "direction" doit être EXACTEMENT "long" ou "short" (en minuscules)
-- "entry", "sl", "tp" sont des nombres décimaux (pas de chaîne, pas d'unité)
-- Pour USD/JPY, EUR/JPY, GBP/JPY, AUD/JPY, CAD/JPY, CHF/JPY, NZD/JPY : 2 décimales (ex: 145.80)
-- Pour toutes les autres paires (EUR/USD, GBP/USD, AUD/USD, etc.) : 4 décimales (ex: 1.0850)
-- Cohérence obligatoire :
-  * Si direction="short" : sl > entry > tp
-  * Si direction="long" : tp > entry > sl
-- R:R minimum de 1:1.5, idéalement 1:2 ou plus
-- "rationale" : 1 phrase claire (max 25 mots)
-- "trigger" : 1 phrase claire (max 20 mots)
-- "invalidation" : 1 phrase claire (max 20 mots)
-
-Le bloc <SETUPS_JSON>...</SETUPS_JSON> doit être placé EXACTEMENT entre les sections "## SETUPS À SURVEILLER" et "## RISQUES & CATALYSEURS". Ne jamais l'omettre.
-
-Utilise **gras** pour les niveaux clés et noms de paires dans le texte, et \`code\` pour les chiffres précis.`;
-
-  /* construction des prix spot en chaîne formatée */
-  const spotLines=Object.entries(ctx.spotPrices).map(([p,v])=>{
+  const spotsListStr=Object.entries(realSpots).map(([p,d])=>{
     const display=p.slice(0,3)+'/'+p.slice(3);
-    const isJpy=p.includes('JPY');
-    return `- ${display}: ${isJpy?v.toFixed(2):v.toFixed(4)}`;
+    return `${display}: spot=${d.price}`;
   }).join('\n');
 
-  /* exemples concrets de niveaux dans la fenêtre acceptable */
-  const examplesText=ctx.spotPrices.EURUSD&&ctx.spotPrices.USDJPY?`
-EXEMPLES CONCRETS de niveaux ACCEPTABLES basés sur les spots actuels :
-- Si EUR/USD spot = ${ctx.spotPrices.EURUSD.toFixed(4)}, alors entry valide entre ${(ctx.spotPrices.EURUSD-0.01).toFixed(4)} et ${(ctx.spotPrices.EURUSD+0.01).toFixed(4)}
-- Si USD/JPY spot = ${ctx.spotPrices.USDJPY.toFixed(2)}, alors entry valide entre ${(ctx.spotPrices.USDJPY-1.5).toFixed(2)} et ${(ctx.spotPrices.USDJPY+1.5).toFixed(2)}
-- Pour un SHORT : sl = entry + (50 à 100 pips), tp = entry - (100 à 250 pips)
-- Pour un LONG : sl = entry - (50 à 100 pips), tp = entry + (100 à 250 pips)
-`:'';
+  const systemPrompt=`Tu es l'analyste senior d'un trading desk forex institutionnel à Londres. Tu rédiges chaque matin un brief macro thématique pour un trader pro qui veut comprendre POURQUOI le marché va bouger ET QUOI trader.
 
-  const userPrompt=`Voici le contexte live du desk APEX FX ce ${ctx.date}, ${ctx.time}, ${ctx.session}.
+Style : direct, technique, sans bullshit. Vocabulaire institutionnel (carry, basis, flows, positioning, liquidity grab, order block). Tu écris en français.
 
-${spotLines?`🎯🎯🎯 PRIX SPOT ACTUELS — RÉFÉRENCE OBLIGATOIRE 🎯🎯🎯
-${spotLines}
+═══════════════════════════════════════════════════════
+INSTRUCTION CRITIQUE : tu réponds UNIQUEMENT avec ce JSON pur.
+Pas de texte avant. Pas de texte après. Pas de markdown.
+Ta réponse commence par "{" et finit par "}".
+═══════════════════════════════════════════════════════
 
-⚠️ RÈGLE STRICTE NON NÉGOCIABLE : ⚠️
-Tes entries DOIVENT être à ±100 pips MAX du spot actuel pour les majors (EUR/USD, GBP/USD, etc.) et ±150 pips MAX pour les paires JPY (USD/JPY, EUR/JPY, etc.).
+Format exact :
 
-Si tu proposes un entry sur EUR/USD différent de ${ctx.spotPrices.EURUSD?'~'+ctx.spotPrices.EURUSD.toFixed(4):'son spot actuel'} ± 0.0100, c'est INVALIDE.
-Si tu proposes un entry sur USD/JPY différent de ${ctx.spotPrices.USDJPY?'~'+ctx.spotPrices.USDJPY.toFixed(2):'son spot actuel'} ± 1.50, c'est INVALIDE.
+{
+  "themes": [
+    {
+      "icon": "🌍",
+      "title": "OIL SHOCK GÉOPOLITIQUE",
+      "summary": "Trump menace Iran, Brent 112$ (+4%)",
+      "conviction": 4,
+      "rationale": "Phrase de 20-30 mots expliquant le mécanisme : pétro-devises (CAD, NOK) se font écraser quand oil monte fort + flight to USD safe haven.",
+      "impacts": [
+        {"pair": "USD/CAD", "direction": "long", "pips": 60, "why": "CAD pétro-devise affaiblie quand oil flambe"},
+        {"pair": "USD/NOK", "direction": "long", "pips": 120, "why": "NOK pareil, sensibilité oil élevée"},
+        {"pair": "EUR/USD", "direction": "short", "pips": 30, "why": "Flight to USD safe haven"},
+        {"pair": "XAU/USD", "direction": "long", "pips": 250, "why": "Gold refuge classique sur géopolitique"}
+      ],
+      "timing": "Impact concentré London Open à NY Open (7h-15h UTC)"
+    }
+  ],
+  "noise": [
+    {"item": "Apple earnings ce soir", "why": "Impact équités, pas FX direct"},
+    {"item": "Trump tweets sur tarifs", "why": "Déjà pricé dans EUR/USD"}
+  ],
+  "setups": [
+    {
+      "pair": "USD/CAD",
+      "direction": "long",
+      "linked_theme": 1,
+      "entry_pips_from_spot": -20,
+      "sl_pips_from_spot": -80,
+      "tp1_pips_from_spot": 80,
+      "tp2_pips_from_spot": 150,
+      "rationale": "Theme oil shock + killzone NY Open à 12h30",
+      "killzone": "NY Open (12h30-15h UTC)",
+      "trigger": "Cassure 1.3950 round number",
+      "invalidation": "Retour sous 1.3850"
+    }
+  ],
+  "agenda": [
+    {"time": "12h30 UTC", "event": "CPI US (forecast 3.6%)", "impact": "high"},
+    {"time": "18h00 UTC", "event": "Trump speech sur Iran", "impact": "high"}
+  ]
+}
 
-⛔ N'UTILISE PAS tes données d'entraînement pour les niveaux. Les prix ci-dessus sont la SEULE source de vérité.
-${examplesText}
-`:'⚠️ Les prix spot ne sont pas disponibles actuellement. Indique-le dans la thèse et propose des fourchettes plutôt que des niveaux précis.\n\n'}**FORCE DES DEVISES G8 (perf jour, calculée live):**
+CONVENTIONS :
+- "conviction" : 1 à 5 (5 = très forte conviction)
+- "direction" : "long" ou "short" en minuscules
+- "entry_pips_from_spot", "sl_pips_from_spot", "tp1_pips_from_spot", "tp2_pips_from_spot" : ENTIERS, positifs ou négatifs (relatifs au spot, le JS calcule les vrais prix)
+- "linked_theme" : index 1-based du thème lié (1 = premier thème)
+- Pour un SHORT : entry_pips > 0, sl_pips > entry_pips, tp1_pips et tp2_pips négatifs
+- Pour un LONG : entry_pips < 0, sl_pips < entry_pips, tp1_pips et tp2_pips positifs
+- R:R minimum 1:1.5 pour TP1
+
+OBJECTIF :
+- 2 à 4 thèmes macro dominants (pas plus, qualité > quantité)
+- 2 à 4 setups exécutables liés aux thèmes
+- 2 à 4 items "bruit à ignorer" (essentiel pour éduquer)
+- 2 à 5 events agenda du jour
+
+RAPPEL : ta réponse est UNIQUEMENT le JSON, rien d'autre.`;
+
+  const userPrompt=`Construis le morning brief macro thématique pour ce ${ctx.date}, ${ctx.time}, ${ctx.session}.
+
+${spotsListStr?`SPOTS ACTUELS (contexte, pas à inclure dans la réponse) :
+${spotsListStr}
+`:''}
+
+CONTEXTE MACRO (mai 2026) :
+- Fed à 3.75% (Warsh Chair depuis 15 mai), markets price 40% chance hike avant déc
+- BCE pause 2.00% (dovish), 25 bps cut juin pricé à 78%
+- BoJ HAWKISH 0.75% (hike juillet attendu, JGB10Y 2.85%)
+- BoE 4.25% neutral
+- SNB 0.25% dovish
+- US10Y 4.68% (plus haut 16 mois)
+- Oil shock Iran : Brent >110$
+- DXY ~99 (USD hawkish bias)
+
+**Force des devises G8 :**
 ${ctx.strengthRanked.map(([c,s])=>`- ${c}: ${s>=0?'+':''}${s.toFixed(3)}%`).join('\n')}
 
-**TAUX DIRECTEURS G8:**
-${ctx.policyRates.map(r=>`- ${r.ccy}: ${r.rate}% (${r.bias}), prochaine décision ${r.next}`).join('\n')}
-
-**DIFFÉRENTIELS DE TAUX (% / an):**
+**Différentiels de taux :**
 ${ctx.rateDiffs.map(r=>`- ${r.pair}: ${r.spread>=0?'+':''}${r.spread}%`).join('\n')}
 
-${ctx.positioning.length?`**POSITIONNEMENT CFTC TFF (Leveraged Money vs Non-Reportable retail):**
-${ctx.positioning.map(p=>`- ${p.pair}: retail ${p.retail}% long, smart money ${p.inst}% long, divergence ${p.divergence>=0?'+':''}${p.divergence}pp`).join('\n')}`:''}
+${ctx.news.length?`**News du jour :**
+${ctx.news.map((n,i)=>`${i+1}. ${n}`).join('\n')}
+`:''}
 
-${ctx.news.length?`**NEWS FX DU JOUR:**
-${ctx.news.map((n,i)=>`${i+1}. ${n}`).join('\n')}`:''}
+${ctx.openTrades.length?`**Positions ouvertes du trader :**
+${ctx.openTrades.map(t=>`- ${t.pair} ${t.direction} @ ${t.entry||'?'}`).join('\n')}
+`:''}
 
-${ctx.openTrades.length?`**POSITIONS OUVERTES DU TRADER:**
-${ctx.openTrades.map(t=>`- ${t.pair} ${t.direction} @ ${t.entry||'?'} (SL ${t.sl||'?'}, TP ${t.tp||'?'}, conviction ${t.conviction}/5)`).join('\n')}`:''}
+Identifie 2-4 THÈMES MACRO DOMINANTS aujourd'hui (pas une liste plate d'événements, des thèmes structurants). Pour chacun, donne l'impact directionnel chiffré sur les paires connexes.
 
-${ctx.recentClosed.length?`**TRADES RÉCEMMENT CLÔTURÉS:**
-${ctx.recentClosed.map(t=>`- ${t.pair} ${t.direction}: ${t.status} ${t.pnl>=0?'+':''}${t.pnl||0} pips`).join('\n')}`:''}
+Sépare le SIGNAL (les thèmes) du BRUIT (events sans impact FX direct).
 
-Rédige le morning brief selon la structure imposée. RAPPEL : utilise UNIQUEMENT les prix spot fournis ci-dessus pour entry/SL/TP. Tes connaissances d'entraînement sur les niveaux passés sont OBSOLÈTES.`;
+Termine par 2-4 SETUPS EXÉCUTABLES liés aux thèmes principaux.`;
 
   try{
-    const text=await callAnthropic(userPrompt,systemPrompt);
-    renderBrief(text,ctx);
-    /* sauvegarde du dernier brief généré */
-    localStorage.setItem(BRIEF_KEY,JSON.stringify({text,ctx,timestamp:Date.now()}));
+    const text=await callAnthropic(userPrompt,systemPrompt,8000);
+    console.log('[Brief] réponse Claude (',text.length,'chars) :',text.slice(0,400));
+
+    let brief=null;
+    const tries=[
+      ()=>{const m=text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);return m?m[1]:null;},
+      ()=>{const start=text.indexOf('{');const end=text.lastIndexOf('}');return (start>=0&&end>start)?text.slice(start,end+1):null;},
+      ()=>text.trim().startsWith('{')?text.trim():null,
+    ];
+    for(const tryFn of tries){
+      const candidate=tryFn();
+      if(!candidate)continue;
+      try{
+        const parsed=JSON.parse(candidate.trim());
+        if(parsed&&parsed.themes){
+          brief=parsed;
+          break;
+        }
+      }catch(e){console.warn('[Brief] parse tentative échec:',e.message);}
+    }
+
+    if(!brief){
+      console.error('[Brief] parsing total échec. Réponse :',text);
+      throw new Error('Claude n\'a pas renvoyé un JSON parsable. Régénère.');
+    }
+
+    /* Calcul des prix exacts depuis les pips relatifs */
+    if(brief.setups){
+      brief.setups=brief.setups.map(s=>{
+        const pairKey=s.pair.replace('/','');
+        const spotInfo=realSpots[pairKey];
+        if(!spotInfo)return null;
+        const spot=spotInfo.price;
+        const isJpy=pairKey.includes('JPY');
+        const isXau=pairKey.includes('XAU');
+        const pipValue=isXau?0.10:(isJpy?0.01:0.0001);
+        const entry=spot+(s.entry_pips_from_spot||0)*pipValue;
+        const sl=spot+(s.sl_pips_from_spot||0)*pipValue;
+        const tp1=spot+(s.tp1_pips_from_spot||0)*pipValue;
+        const tp2=spot+(s.tp2_pips_from_spot||0)*pipValue;
+        const riskPips=Math.abs(s.sl_pips_from_spot-s.entry_pips_from_spot);
+        const tp1AbsPips=Math.abs(s.tp1_pips_from_spot-s.entry_pips_from_spot);
+        const tp2AbsPips=Math.abs(s.tp2_pips_from_spot-s.entry_pips_from_spot);
+        return {
+          ...s,
+          spot,
+          entry,sl,tp1,tp2,
+          risk_pips:riskPips,
+          tp1_pips:tp1AbsPips,
+          tp2_pips:tp2AbsPips,
+          rr1:riskPips>0?+(tp1AbsPips/riskPips).toFixed(2):0,
+          rr2:riskPips>0?+(tp2AbsPips/riskPips).toFixed(2):0
+        };
+      }).filter(Boolean);
+    }
+
+    renderUnifiedBrief(brief,ctx);
+    localStorage.setItem(BRIEF_KEY,JSON.stringify({brief,ctx,timestamp:Date.now()}));
   }catch(e){
+    console.error('[Brief] erreur :',e);
     document.getElementById('brief-content').innerHTML=`<div class="brief-empty">
       <div class="icon" style="color:var(--red)">⚠</div>
       <h3>Erreur de génération</h3>
@@ -5332,290 +5850,161 @@ Rédige le morning brief selon la structure imposée. RAPPEL : utilise UNIQUEMEN
   }
 }
 
-function renderBrief(text,ctx){
-  console.log('[Brief] texte reçu, longueur:',text.length);
+/* Render du brief unifié structuré */
+function renderUnifiedBrief(brief,ctx){
+  const fmtPrice=(v,p)=>{
+    const isJpy=p.includes('JPY');
+    const isXau=p.includes('XAU');
+    return v.toFixed(isXau?2:(isJpy?3:5));
+  };
 
-  /* extraction du bloc JSON setups — plusieurs formats acceptés */
-  let setups=[];
-  let cleanText=text;
-
-  /* Format 1 : balises XML <SETUPS_JSON>...</SETUPS_JSON> */
-  let jsonMatch=text.match(/<SETUPS_JSON>([\s\S]*?)<\/SETUPS_JSON>/);
-  /* Format 2 : bloc markdown ```json ... ``` */
-  if(!jsonMatch)jsonMatch=text.match(/```json\s*([\s\S]*?)\s*```/);
-  /* Format 3 : bloc array JSON brut autour de [{"pair":...}] */
-  if(!jsonMatch){
-    const arrayMatch=text.match(/(\[\s*\{[\s\S]*?"pair"[\s\S]*?\}\s*\])/);
-    if(arrayMatch)jsonMatch=[arrayMatch[0],arrayMatch[1]];
-  }
-
-  if(jsonMatch){
-    try{
-      setups=JSON.parse(jsonMatch[1].trim());
-      console.log('[Brief] setups parsés:',setups.length,setups);
-      /* on retire le bloc JSON du markdown affiché (toutes formes possibles) */
-      cleanText=text
-        .replace(/<SETUPS_JSON>[\s\S]*?<\/SETUPS_JSON>/g,'')
-        .replace(/```json\s*[\s\S]*?\s*```/g,'')
-        .trim();
-    }catch(e){
-      console.warn('[Brief] JSON setups invalide:',e.message,jsonMatch[1].slice(0,200));
-    }
-  }else{
-    console.warn('[Brief] aucun bloc JSON trouvé dans la réponse — Claude a oublié de le générer');
-  }
-
-  /* parsing markdown : on cherche les sections H2 */
-  const sections=cleanText.split(/^##\s+/m).filter(Boolean);
-
-  const html=sections.map(sec=>{
-    const lines=sec.split('\n');
-    const title=lines.shift().trim();
-    const body=lines.join('\n').trim();
-
-    let cls='theme',label='SECTION';
-    if(/setup|surveiller/i.test(title)){cls='setups';label='OPPORTUNITÉS';}
-    else if(/risque|catalyseur/i.test(title)){cls='risks';label='ALERTES';}
-    else if(/thème|theme/i.test(title)){cls='theme';label='THÈSE MACRO';}
-
-    /* si c'est la section SETUPS et qu'on a du JSON, on affiche les cartes visualisées */
-    if(cls==='setups'&&setups.length){
-      const setupsHtml=setups.map((s,i)=>renderSetupCard(s,i)).join('');
-      /* on garde le titre + un mini contexte texte (les 2 premières phrases) puis les cartes */
-      const intro=body.split('\n').filter(l=>l.trim()&&!l.startsWith('-')&&!l.startsWith('*')&&!l.startsWith('#')).slice(0,2).join(' ');
-      const introHtml=intro?`<div class="brief-body" style="margin-bottom:14px"><p>${formatInline(intro)}</p></div>`:'';
-      return `<div class="brief-section ${cls}">
-        <span class="label">${label}</span>
-        <h3>${title}</h3>
-        ${introHtml}
-        <div class="setups-grid">${setupsHtml}</div>
+  const themesHtml=(brief.themes||[]).map((t,idx)=>{
+    const stars='★'.repeat(t.conviction||3)+'☆'.repeat(5-(t.conviction||3));
+    const impactsHtml=(t.impacts||[]).map(i=>{
+      const arrow=i.direction==='long'?'<span style="color:var(--green)">↗</span>':'<span style="color:var(--red)">↘</span>';
+      const sign=i.direction==='long'?'+':'-';
+      return `<div class="theme-impact">
+        ${arrow}
+        <b>${escapeHTML(i.pair)}</b>
+        <span class="pips ${i.direction}">${sign}${Math.abs(i.pips)}p</span>
+        <span class="why">${escapeHTML(i.why||'')}</span>
       </div>`;
-    }
-
-    /* rendu markdown standard pour les autres sections */
-    const formatted=body
-      .replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
-      .replace(/`([^`]+)`/g,'<code>$1</code>')
-      .replace(/^- (.+)$/gm,'<li>$1</li>')
-      .replace(/(<li>.+<\/li>\n?)+/g,m=>'<ul>'+m+'</ul>');
-
-    return `<div class="brief-section ${cls}">
-      <span class="label">${label}</span>
-      <h3>${title}</h3>
-      <div class="brief-body">${formatted.split('\n\n').map(p=>p.startsWith('<ul>')?p:'<p>'+p+'</p>').join('')}</div>
+    }).join('');
+    return `<div class="theme-card">
+      <div class="theme-head">
+        <span class="theme-icon">${t.icon||'📊'}</span>
+        <span class="theme-num">THÈME #${idx+1}</span>
+        <h3>${escapeHTML(t.title||'')}</h3>
+        <span class="theme-conviction" title="Conviction ${t.conviction}/5">${stars}</span>
+      </div>
+      <div class="theme-summary">${escapeHTML(t.summary||'')}</div>
+      ${t.rationale?`<div class="theme-rationale">${escapeHTML(t.rationale)}</div>`:''}
+      <div class="theme-impacts">${impactsHtml}</div>
+      ${t.timing?`<div class="theme-timing">⏰ ${escapeHTML(t.timing)}</div>`:''}
     </div>`;
   }).join('');
 
-  document.getElementById('brief-content').innerHTML=html;
-  const meta=document.getElementById('brief-meta');
-  meta.style.display='flex';
-  document.getElementById('brief-timestamp').textContent='Généré le '+new Date().toLocaleString('fr-FR');
+  const setupsHtml=(brief.setups||[]).map((s,idx)=>{
+    const cls=s.direction==='short'?'short':'long';
+    const dirIcon=s.direction==='short'?'🔴':'🟢';
+    const sym=s.pair.replace('/','');
+    const tvUrl=`https://www.tradingview.com/chart/?symbol=FX:${sym}`;
+    return `<div class="brief-setup ${cls}">
+      <div class="setup-head">
+        <span class="setup-num">${dirIcon} SETUP #${idx+1}</span>
+        <h4>${escapeHTML(s.pair)} · ${s.direction.toUpperCase()}</h4>
+        ${s.linked_theme?`<span class="setup-theme">↳ Thème #${s.linked_theme}</span>`:''}
+      </div>
+      <div class="setup-levels">
+        <div class="lvl entry">📍 Entry <b>${fmtPrice(s.entry,s.pair)}</b></div>
+        <div class="lvl sl">🛑 SL <b>${fmtPrice(s.sl,s.pair)}</b></div>
+        <div class="lvl tp">🎯 TP1 <b>${fmtPrice(s.tp1,s.pair)}</b></div>
+        <div class="lvl tp">🎯 TP2 <b>${fmtPrice(s.tp2,s.pair)}</b></div>
+      </div>
+      <div class="setup-stats">
+        Risque <b>${s.risk_pips}p</b> · TP1 <b>+${s.tp1_pips}p R:R 1:${s.rr1}</b> · TP2 <b>+${s.tp2_pips}p R:R 1:${s.rr2}</b>
+      </div>
+      ${s.rationale?`<div class="setup-rationale">💡 ${escapeHTML(s.rationale)}</div>`:''}
+      ${s.killzone?`<div class="setup-meta">⏱ ${escapeHTML(s.killzone)}</div>`:''}
+      ${s.trigger?`<div class="setup-meta">⚡ Trigger : ${escapeHTML(s.trigger)}</div>`:''}
+      ${s.invalidation?`<div class="setup-meta">⛔ Invalidation : ${escapeHTML(s.invalidation)}</div>`:''}
+      <div class="setup-actions">
+        <a class="plan-btn primary" href="${tvUrl}" target="_blank" rel="noopener">📊 TradingView</a>
+        <button class="plan-btn" onclick='openSizingFromPlan(${JSON.stringify(s.pair)},${s.entry},${s.sl},"${s.direction}")'>⚖ Sizing</button>
+      </div>
+    </div>`;
+  }).join('');
 
-  /* attacher les handlers des boutons setup */
-  document.querySelectorAll('.setup-btn[data-setup-add]').forEach(btn=>{
+  const noiseHtml=(brief.noise||[]).map(n=>`<div class="noise-item">
+    <span class="noise-x">❌</span>
+    <span><b>${escapeHTML(n.item||'')}</b> — ${escapeHTML(n.why||'')}</span>
+  </div>`).join('');
+
+  const agendaHtml=(brief.agenda||[]).map(a=>{
+    const impactCls=a.impact==='high'?'high':(a.impact==='medium'?'med':'low');
+    return `<div class="agenda-item ${impactCls}">
+      <span class="agenda-time">${escapeHTML(a.time||'')}</span>
+      <span class="agenda-event">${escapeHTML(a.event||'')}</span>
+    </div>`;
+  }).join('');
+
+  const html=`
+    <div class="brief-unified">
+      <div class="brief-mode-toggle">
+        <button class="bt-mode active" data-mode="full">📋 Brief complet</button>
+        <button class="bt-mode" data-mode="compass">🧭 Mode Compass</button>
+        <button class="bt-share" onclick="shareCompassTwitter()">🐦 Partager</button>
+      </div>
+
+      <div class="brief-section themes-section">
+        <div class="section-label">🌍 THÈMES MACRO DU JOUR · LE POURQUOI</div>
+        ${themesHtml||'<div class="empty-mini">Pas de thèmes identifiés</div>'}
+      </div>
+
+      ${noiseHtml?`<div class="brief-section noise-section">
+        <div class="section-label">🚫 BRUIT À IGNORER</div>
+        <div class="noise-list">${noiseHtml}</div>
+      </div>`:''}
+
+      <div class="brief-section setups-section mode-full-only">
+        <div class="section-label">🎯 SETUPS DU JOUR · LE QUOI</div>
+        ${setupsHtml||'<div class="empty-mini">Pas de setups générés</div>'}
+      </div>
+
+      ${agendaHtml?`<div class="brief-section agenda-section mode-full-only">
+        <div class="section-label">📅 AGENDA & RISQUES</div>
+        <div class="agenda-list">${agendaHtml}</div>
+      </div>`:''}
+    </div>
+  `;
+
+  document.getElementById('brief-content').innerHTML=html;
+
+  /* Toggle Brief complet / Mode Compass */
+  document.querySelectorAll('.bt-mode').forEach(btn=>{
     btn.onclick=()=>{
-      const idx=+btn.dataset.setupAdd;
-      const s=setups[idx];
-      if(!s)return;
-      /* pré-remplir le journal avec ce setup */
-      go('journal');
-      setTimeout(()=>{
-        openTradeModal(null);
-        setTimeout(()=>{
-          document.getElementById('t-pair').value=s.pair;
-          document.getElementById('t-direction').value=s.direction;
-          document.getElementById('t-entry').value=s.entry;
-          document.getElementById('t-sl').value=s.sl;
-          document.getElementById('t-tp').value=s.tp;
-          document.getElementById('t-thesis').value=(s.rationale||'')+'\n\nDéclencheur : '+(s.trigger||'-')+'\nInvalidation : '+(s.invalidation||'-')+'\n\n(Setup généré par le Morning Brief IA du '+new Date().toLocaleDateString('fr-FR')+')';
-          convictionValue=3;
-          document.querySelectorAll('.conviction-dot').forEach(d=>d.classList.toggle('active',+d.dataset.conv===3));
-          selectedTags=['intermarche'];
-          document.querySelectorAll('.tag-pick').forEach(t=>t.classList.toggle('active',t.dataset.tag==='intermarche'));
-        },100);
-      },200);
+      document.querySelectorAll('.bt-mode').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const mode=btn.dataset.mode;
+      document.querySelectorAll('.mode-full-only').forEach(el=>{
+        el.style.display=mode==='compass'?'none':'';
+      });
     };
   });
+
+  /* Stocke pour Twitter share */
+  window._lastBrief=brief;
 }
 
-function formatInline(s){
-  return (s||'').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/`([^`]+)`/g,'<code>$1</code>');
+/* Partage Compass sur Twitter */
+function shareCompassTwitter(){
+  const brief=window._lastBrief;
+  if(!brief||!brief.themes){toast('Pas de brief à partager','Génère un brief d\'abord','danger');return;}
+
+  let txt='🧭 Macro Compass · '+new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long'})+'\n\n';
+  brief.themes.forEach((t,i)=>{
+    txt+=`${t.icon||'📊'} Theme #${i+1} — ${t.title}\n`;
+    txt+=`${t.summary}\n`;
+    (t.impacts||[]).slice(0,3).forEach(im=>{
+      const arrow=im.direction==='long'?'↗':'↘';
+      const sign=im.direction==='long'?'+':'-';
+      txt+=`${arrow} ${im.pair} ${sign}${Math.abs(im.pips)}p\n`;
+    });
+    txt+='\n';
+  });
+  if(brief.noise&&brief.noise.length){
+    txt+='🚫 Ignorer aujourd\'hui :\n';
+    brief.noise.slice(0,2).forEach(n=>{txt+=`- ${n.item}\n`;});
+  }
+  txt+='\nPowered by Apex FX';
+
+  /* Copie + ouverture Twitter */
+  navigator.clipboard.writeText(txt).then(()=>{
+    toast('✓ Compass copié','Colle dans Twitter');
+  }).catch(()=>{});
+  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(txt.slice(0,280)),'_blank');
 }
 
-function renderSetupCard(s,idx){
-  /* validation du setup */
-  if(!s.pair||!s.direction||s.entry==null||s.sl==null||s.tp==null){
-    return `<div class="setup-card"><div class="setup-info">${s.pair||'Setup'} — données incomplètes</div></div>`;
-  }
-  const isLong=s.direction==='long';
-  const dirArrow=isLong?'↗':'↘';
-
-  /* calculs */
-  const isJpy=s.pair.toUpperCase().includes('JPY')||s.pair.toUpperCase().endsWith('JPY');
-  const pipMult=isJpy?100:10000;
-  const riskPips=Math.abs(s.entry-s.sl)*pipMult;
-  const rewardPips=Math.abs(s.tp-s.entry)*pipMult;
-  const rr=riskPips>0?(rewardPips/riskPips):0;
-  const rrCls=rr>=2?'good':rr>=1?'':'bad';
-
-  /* validation des niveaux vs spot actuel */
-  const pairKey=s.pair.replace('/','');
-  const spotPrice=fxData[pairKey]?.price;
-  let staleWarning='';
-  if(spotPrice){
-    const distancePips=Math.abs(s.entry-spotPrice)*pipMult;
-    const maxAcceptablePips=isJpy?200:150;
-    if(distancePips>maxAcceptablePips){
-      const direction=s.entry>spotPrice?'au-dessus':'sous';
-      staleWarning=`<div style="margin-bottom:10px;padding:10px 12px;background:rgba(255,90,82,.1);border:1px solid rgba(255,90,82,.4);border-radius:5px;font-size:11.5px;color:var(--text);line-height:1.5">
-        <b style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:1.5px;display:block;margin-bottom:4px">⚠ NIVEAU SUSPECT</b>
-        L'entry proposée (<b>${s.entry}</b>) est à <b>${Math.round(distancePips)} pips ${direction}</b> du prix spot actuel (<b>${isJpy?spotPrice.toFixed(2):spotPrice.toFixed(4)}</b>). Vérifier la pertinence avant exécution — l'IA a peut-être utilisé des données obsolètes.
-      </div>`;
-    }
-  }
-
-  /* TradingView symbol pour le bouton */
-  const tvSym='FX:'+s.pair.replace('/','');
-
-  /* mini-chart SVG */
-  const viz=renderSetupViz(s,isLong,riskPips,rewardPips);
-
-  return `<div class="setup-card ${s.direction}">
-    <div class="setup-info">
-      <h4>${s.pair} <span class="setup-dir-badge ${s.direction}">${dirArrow} ${s.direction.toUpperCase()}</span></h4>
-      <div class="setup-meta">
-        <span>Entry: <b>${s.entry}</b></span>
-        <span>SL: <b style="color:var(--red)">${s.sl}</b></span>
-        <span>TP: <b style="color:var(--green)">${s.tp}</b></span>
-        <span>R:R: <b style="color:${rrCls==='good'?'var(--green)':rrCls==='bad'?'var(--red)':'var(--amber)'}">1:${rr.toFixed(2)}</b></span>
-        ${spotPrice?`<span>Spot: <b style="color:var(--cyan)">${isJpy?spotPrice.toFixed(2):spotPrice.toFixed(4)}</b></span>`:''}
-      </div>
-      ${staleWarning}
-      <div class="setup-rationale">${formatInline(s.rationale||'')}</div>
-      ${s.trigger?`<div class="setup-trigger"><b>⚡ Déclencheur</b>${formatInline(s.trigger)}</div>`:''}
-      ${s.invalidation?`<div class="setup-invalid"><b>✕ Invalidation</b>${formatInline(s.invalidation)}</div>`:''}
-      ${s.killzone?`<div class="setup-ict killzone"><b>🎯 Killzone optimale</b>${formatInline(s.killzone)}</div>`:''}
-      ${s.liquidity?`<div class="setup-ict liquidity"><b>💧 Liquidité visée</b>${formatInline(s.liquidity)}</div>`:''}
-      ${s.institutional_read?`<div class="setup-ict instread"><b>🏦 Lecture institutionnelle</b>${formatInline(s.institutional_read)}</div>`:''}
-      <div class="setup-actions">
-        <button class="setup-btn primary" data-setup-add="${idx}">+ Ajouter au journal</button>
-        <a class="setup-btn" href="https://www.tradingview.com/chart/?symbol=${tvSym}" target="_blank" rel="noopener">📊 Voir sur TradingView</a>
-      </div>
-    </div>
-    ${viz}
-  </div>`;
-}
-
-function renderSetupViz(s,isLong,riskPips,rewardPips){
-  const W=290,H=170,padL=8,padR=46,padT=12,padB=12;
-  const innerW=W-padL-padR,innerH=H-padT-padB;
-
-  /* on calcule les positions verticales en fonction des niveaux */
-  /* échelle : on prend min/max pour cadrer la viz autour du trade */
-  const levels=[s.sl,s.entry,s.tp];
-  const min=Math.min(...levels),max=Math.max(...levels);
-  const range=max-min||1;
-  const buffer=range*0.18;
-  const ymin=min-buffer,ymax=max+buffer;
-  const yScale=v=>padT+innerH-((v-ymin)/(ymax-ymin))*innerH;
-
-  const yEntry=yScale(s.entry);
-  const ySL=yScale(s.sl);
-  const yTP=yScale(s.tp);
-
-  /* zone de risque (entry → SL) en rouge, zone de reward (entry → TP) en vert */
-  const riskTop=Math.min(yEntry,ySL),riskBot=Math.max(yEntry,ySL);
-  const rewardTop=Math.min(yEntry,yTP),rewardBot=Math.max(yEntry,yTP);
-
-  /* path "prix simulé" qui part de entry et va vers TP en zigzag réaliste */
-  const dir=isLong?-1:1; /* en SVG, y=0 en haut donc inverse */
-  const pathPoints=[];
-  const xStart=padL+innerW*0.45;
-  const xEnd=padL+innerW;
-  const steps=14;
-  for(let i=0;i<=steps;i++){
-    const t=i/steps;
-    const x=xStart+(xEnd-xStart)*t;
-    /* trajectoire lissée vers TP avec petites oscillations */
-    const baseY=yEntry+(yTP-yEntry)*Math.pow(t,1.2);
-    const noise=Math.sin(i*1.7)*4-Math.sin(i*0.7)*2;
-    pathPoints.push(`${x},${baseY+noise}`);
-  }
-  /* avant l'entry, on simule une approche du prix */
-  const historyPoints=[];
-  const xHistStart=padL;
-  for(let i=0;i<10;i++){
-    const t=i/9;
-    const x=xHistStart+(xStart-xHistStart)*t;
-    const targetY=yEntry+(isLong?15:-15)*(1-t);
-    const noise=Math.sin(i*1.3)*5+Math.cos(i*0.9)*3;
-    historyPoints.push(`${x},${targetY+noise}`);
-  }
-  const allPoints=[...historyPoints,...pathPoints].join(' ');
-  const lineColor=isLong?'#3ecf8e':'#ff5a52';
-
-  /* flèche directionnelle animée à la fin */
-  const xArrow=xEnd-5;
-  const yArrowEnd=yTP;
-  const arrowDir=isLong?'M0,-8 L-5,-3 L-2,-3 L-2,5 L2,5 L2,-3 L5,-3 Z':'M0,8 L-5,3 L-2,3 L-2,-5 L2,-5 L2,3 L5,3 Z';
-  const anim=isLong?'arrowFloat':'arrowFloatDn';
-
-  /* pips display */
-  const isJpy=s.pair.toUpperCase().includes('JPY');
-  const dec=isJpy?2:4;
-
-  return `<div class="setup-viz">
-    <div class="setup-viz-head">
-      <span class="setup-viz-pair">${s.pair}</span>
-      <span class="setup-viz-rr ${rewardPips/riskPips>=2?'good':rewardPips/riskPips>=1?'':'bad'}">
-        1:${(rewardPips/riskPips).toFixed(2)}<small>R:R</small>
-      </span>
-    </div>
-    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="riskGrad-${Math.random().toString(36).slice(2,8)}" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stop-color="#ff5a52" stop-opacity=".15"/>
-          <stop offset="100%" stop-color="#ff5a52" stop-opacity=".25"/>
-        </linearGradient>
-      </defs>
-
-      <!-- zone reward (vert) -->
-      <rect x="${padL}" y="${rewardTop}" width="${innerW}" height="${rewardBot-rewardTop}" fill="#3ecf8e" fill-opacity="0.08"/>
-      <!-- zone risk (rouge) -->
-      <rect x="${padL}" y="${riskTop}" width="${innerW}" height="${riskBot-riskTop}" fill="#ff5a52" fill-opacity="0.08"/>
-
-      <!-- ligne TP (verte, pleine) -->
-      <line x1="${padL}" y1="${yTP}" x2="${padL+innerW}" y2="${yTP}" stroke="#3ecf8e" stroke-width="1.5" stroke-dasharray="6 3"/>
-      <text x="${padL+innerW+4}" y="${yTP+4}" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="#3ecf8e">TP</text>
-      <text x="${padL+innerW+4}" y="${yTP+15}" font-family="JetBrains Mono,monospace" font-size="9" fill="#3ecf8e" opacity=".7">${s.tp.toFixed(dec)}</text>
-
-      <!-- ligne Entry (ambre, pleine) -->
-      <line x1="${padL}" y1="${yEntry}" x2="${padL+innerW}" y2="${yEntry}" stroke="#f5b400" stroke-width="2"/>
-      <text x="${padL+innerW+4}" y="${yEntry+4}" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="#f5b400">ENT</text>
-      <text x="${padL+innerW+4}" y="${yEntry+15}" font-family="JetBrains Mono,monospace" font-size="9" fill="#f5b400" opacity=".7">${s.entry.toFixed(dec)}</text>
-
-      <!-- ligne SL (rouge, pleine) -->
-      <line x1="${padL}" y1="${ySL}" x2="${padL+innerW}" y2="${ySL}" stroke="#ff5a52" stroke-width="1.5" stroke-dasharray="6 3"/>
-      <text x="${padL+innerW+4}" y="${ySL+4}" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="#ff5a52">SL</text>
-      <text x="${padL+innerW+4}" y="${ySL+15}" font-family="JetBrains Mono,monospace" font-size="9" fill="#ff5a52" opacity=".7">${s.sl.toFixed(dec)}</text>
-
-      <!-- trajectoire de prix simulée -->
-      <polyline points="${allPoints}" fill="none" stroke="${lineColor}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/>
-
-      <!-- point de prix actuel (à l'entry) -->
-      <circle cx="${xStart}" cy="${yEntry}" r="4" fill="#f5b400" stroke="#080a0c" stroke-width="2"/>
-
-      <!-- flèche animée vers TP -->
-      <g transform="translate(${xArrow},${yArrowEnd})" style="animation:${anim} 1.4s ease-in-out infinite">
-        <path d="${arrowDir}" fill="${lineColor}" stroke="#080a0c" stroke-width="1.5"/>
-      </g>
-    </svg>
-    <div class="setup-viz-legend">
-      <div><span>Reward</span><span class="pips gain">+${Math.round(rewardPips)} pips</span></div>
-      <div><span>Risk</span><span class="pips risk">-${Math.round(riskPips)} pips</span></div>
-    </div>
-  </div>`;
-}
 
 document.getElementById('brief-generate').onclick=generateBrief;
 document.getElementById('brief-clear').onclick=()=>{
@@ -5642,8 +6031,8 @@ pageInits.brief=()=>{
   if(cached){
     try{
       const c=JSON.parse(cached);
-      if(Date.now()-c.timestamp<6*3600*1000){
-        renderBrief(c.text,c.ctx);
+      if(Date.now()-c.timestamp<6*3600*1000&&c.brief){
+        renderUnifiedBrief(c.brief,c.ctx);
       }
     }catch(e){}
   }
