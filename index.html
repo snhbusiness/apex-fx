@@ -1146,6 +1146,54 @@
   .agenda-event{color:var(--text);flex:1}
 
   .empty-mini{padding:14px;text-align:center;color:var(--text-mute);font-size:11px;font-style:italic}
+
+  /* ═══ RÉCAP DU JOUR ═══ */
+  .recap-unified{display:flex;flex-direction:column;gap:18px}
+  .recap-section{background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:14px;display:flex;flex-direction:column;gap:10px}
+  .recap-section.recap-tomorrow{border-left:3px solid var(--amber);background:linear-gradient(180deg,rgba(245,180,0,.03) 0%,transparent 100%)}
+
+  .recap-theme{padding:10px 12px;border-radius:5px;display:flex;flex-direction:column;gap:6px}
+  .recap-theme.validated{background:rgba(62,207,142,.06);border-left:2px solid var(--green)}
+  .recap-theme.invalidated{background:rgba(255,90,82,.06);border-left:2px solid var(--red)}
+  .rt-head{display:flex;align-items:center;gap:8px}
+  .rt-icon{font-size:14px}
+  .rt-head b{color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.5px;flex:1}
+  .rt-rating{color:var(--amber);font-size:11px;letter-spacing:1.5px}
+  .rt-evidence{font-size:11.5px;color:var(--text-dim);line-height:1.5;padding-left:22px}
+
+  .recap-moves-list{display:flex;flex-direction:column;gap:5px}
+  .recap-move{display:grid;grid-template-columns:30px 80px 65px 130px 1fr;gap:10px;align-items:center;padding:7px 10px;background:var(--bg-2);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px}
+  .rm-rank{color:var(--text-mute);font-size:9.5px;letter-spacing:1px}
+  .rm-pair{color:var(--text);font-weight:700}
+  .rm-pips{font-weight:700}
+  .rm-pips.up{color:var(--green)}
+  .rm-pips.down{color:var(--red)}
+  .rm-session{color:var(--amber);font-size:10px}
+  .rm-driver{color:var(--text-dim);font-size:10.5px;font-family:Manrope,sans-serif}
+
+  .recap-perso-summary{padding:9px 12px;background:var(--bg-2);border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text);font-weight:600}
+  .recap-trade-group{display:flex;flex-direction:column;gap:5px;margin-top:6px}
+  .recap-trade-group h4{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--text-mute);margin:0 0 4px 0}
+  .recap-trade-item{padding:6px 10px;border-radius:4px;font-size:11.5px;line-height:1.5}
+  .recap-trade-item.aligned{background:rgba(62,207,142,.06);border-left:2px solid var(--green);color:var(--text-dim)}
+  .recap-trade-item.against{background:rgba(255,90,82,.06);border-left:2px solid var(--red);color:var(--text-dim)}
+  .recap-lesson{padding:10px 12px;background:rgba(245,180,0,.06);border-left:3px solid var(--amber);border-radius:4px;font-size:12px;line-height:1.55;color:var(--text);margin-top:8px}
+  .recap-lesson b{color:var(--amber)}
+
+  .recap-stats{padding:9px 12px;background:var(--bg-2);border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);letter-spacing:.3px}
+  .recap-insight{padding:7px 10px;background:rgba(93,214,224,.04);border-left:2px solid var(--cyan);border-radius:4px;font-size:11.5px;color:var(--text-dim);line-height:1.5;margin-top:5px}
+  .recap-rule{padding:10px 12px;background:rgba(93,214,224,.06);border:1px solid var(--cyan);border-radius:5px;font-size:12px;color:var(--text);margin-top:8px}
+  .recap-rule b{color:var(--cyan)}
+
+  .recap-block{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+  .recap-block h4{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--text-mute);margin:0 0 4px 0}
+  .recap-block ul{margin:0;padding-left:20px;font-size:11.5px;line-height:1.7;color:var(--text-dim)}
+  .recap-watch-list{display:flex;gap:6px;flex-wrap:wrap}
+  .recap-watch-pair{padding:5px 11px;background:rgba(245,180,0,.08);border:1px solid var(--amber);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);font-weight:700;letter-spacing:.5px}
+  .recap-risk{display:grid;grid-template-columns:80px 1fr;gap:10px;padding:7px 10px;background:var(--bg-2);border-radius:4px;font-size:11.5px;border-left:2px solid var(--red)}
+  .rr-time{font-family:'JetBrains Mono',monospace;color:var(--amber);font-weight:700;font-size:10.5px}
+  .rr-event{color:var(--text);font-size:11.5px}
+  .recap-advice{padding:11px 14px;background:rgba(245,180,0,.08);border:1px solid var(--amber);border-radius:5px;font-size:12.5px;color:var(--text);font-weight:600;margin-top:10px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -1272,6 +1320,7 @@
     <h6>Trading desk</h6>
     <nav class="nav">
       <a class="nav-link" data-page="brief"><span class="ico">☀</span> Morning brief IA</a>
+      <a class="nav-link" data-page="recap"><span class="ico">📋</span> Récap du jour <span class="badge new">NEW</span></a>
       <a class="nav-link" data-page="journal"><span class="ico">✎</span> Journal de trading <span class="badge" id="journal-count">0</span></a>
       <a class="nav-link" data-page="stats"><span class="ico">▤</span> Stats performance</a>
       <a class="nav-link" data-page="sizing"><span class="ico">⚖</span> Position sizing</a>
@@ -2112,6 +2161,45 @@
       </div>
     </section>
 
+    <!-- ═══════════════ RÉCAP DU JOUR ═══════════════ -->
+    <section class="page" data-page="recap">
+      <div class="page-title">
+        <div>
+          <h1>Récap du <em>jour</em></h1>
+          <p>Bilan complet de la journée : ce qui s'est passé (macro), tes trades (perso), patterns détectés sur 30 jours et plan pour demain.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card c-12">
+          <div class="card-head">
+            <div class="card-title">
+              <span class="dot live"></span>
+              <h3>Récap quotidien · <span id="recap-date">--</span></h3>
+              <span class="card-sub">— Apex compare ton brief du matin avec les vrais mouvements + tes trades</span>
+            </div>
+            <button class="brief-btn primary" id="recap-generate">
+              <span id="recap-gen-icon">📋</span> <span id="recap-gen-text">Générer le récap</span>
+            </button>
+          </div>
+          <div class="recap-content" id="recap-content">
+            <div class="brief-empty">
+              <div class="icon">📋</div>
+              <h3>Aucun récap généré</h3>
+              <p>Clique sur « Générer le récap » à la fin de ta journée de trading (idéalement après 21h UTC = 23h Paris) pour obtenir une analyse complète :</p>
+              <ul style="text-align:left;max-width:520px;margin:14px auto;font-size:12.5px;color:var(--text-dim);line-height:1.8">
+                <li>🌍 <b>Ce qui s'est passé</b> — comparaison brief vs réalité du marché</li>
+                <li>📈 <b>Top mouvements</b> — les 5 plus gros moves du jour</li>
+                <li>💼 <b>Tes trades</b> — alignés vs contre le brief</li>
+                <li>🎯 <b>Pattern détecté</b> — sur tes 30 derniers jours</li>
+                <li>📅 <b>Plan demain</b> — thèmes qui persistent + risques</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ═══════════════ JOURNAL DE TRADING ═══════════════ -->
     <section class="page" data-page="journal">
       <div class="page-title">
@@ -2869,6 +2957,47 @@
             <p style="margin-top:10px;font-size:11.5px;color:var(--text-dim)">Avec les 2 clés configurées, tu auras <b style="color:var(--green)">toujours</b> des prix live et tu ne tomberas plus jamais à court.</p>
           </div>
         </div>
+
+        <div class="card c-12">
+          <div class="card-head"><div class="card-title"><span class="dot"></span><h3>Données macro vérifiées · clé API FRED</h3></div>
+            <span class="api-status ko" id="fred-api-status">non configurée</span>
+          </div>
+          <div class="settings-row">
+            <h4>Clé API FRED (Federal Reserve of St. Louis) · <span style="color:var(--green)">CRITIQUE</span></h4>
+            <p>Apex récupère désormais les <b>vrais taux directeurs et yields</b> directement via l'API FRED (la référence mondiale, utilisée par Goldman/JPM). Cela élimine les hallucinations IA qui pouvaient afficher Fed 4.50% au lieu de 3.75%. Gratuit, illimité.</p>
+            <p style="margin-top:8px;font-size:11.5px;color:var(--text-dim)">Crée ta clé gratuite sur <a href="https://fredaccount.stlouisfed.org/apikeys" target="_blank" style="color:var(--amber)">fredaccount.stlouisfed.org/apikeys</a> (compte gratuit, 2 min).</p>
+            <div class="api-key-input">
+              <input type="password" id="fred-key-input" placeholder="ta clé FRED (32 caractères alphanumériques)" autocomplete="off" />
+              <button class="brief-btn" id="fred-key-save">Enregistrer</button>
+              <button class="brief-btn secondary" id="fred-key-clear">Effacer</button>
+            </div>
+            <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <button class="brief-btn secondary" id="fred-test">🧪 Tester la connexion</button>
+              <button class="brief-btn secondary" id="fred-refresh">↻ Rafraîchir les données macro</button>
+              <span id="fred-test-result" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-mute);letter-spacing:.3px"></span>
+            </div>
+          </div>
+          <div class="settings-row">
+            <h4>Données récupérées automatiquement</h4>
+            <p style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7">
+              <b style="color:var(--green)">Taux directeurs :</b><br>
+              • Fed Funds Rate (USD)<br>
+              • ECB Deposit Rate (EUR)<br>
+              • Bank of England Bank Rate (GBP)<br>
+              • Bank of Japan Policy Rate (JPY)<br>
+              • SNB Policy Rate (CHF)<br>
+              <br>
+              <b style="color:var(--cyan)">Yields :</b><br>
+              • US Treasury 2Y, 5Y, 10Y, 30Y<br>
+              • German Bund 10Y<br>
+              <br>
+              <b style="color:var(--amber)">Indicateurs :</b><br>
+              • VIX (volatilité S&P 500)<br>
+              • US CPI (inflation)
+            </p>
+            <p style="margin-top:10px;font-size:11.5px;color:var(--text-dim)">Refresh automatique <b>toutes les 6 heures</b>. Les données alimentent le Morning Brief IA pour <b>éliminer les hallucinations</b> sur les taux directeurs.</p>
+          </div>
+        </div>
           <div class="settings-row">
             <h4>Génération automatique du Morning Brief</h4>
             <p>Le brief sera régénéré automatiquement aux horaires clés des sessions FX, sans que tu aies à cliquer. Coût estimé : ~0,03 €/jour si tu actives tous les créneaux.</p>
@@ -3199,6 +3328,189 @@ function updateFhStatus(){
   if(getFhKey()){el.textContent='configurée ✓';el.className='api-status ok';}
   else{el.textContent='non configurée';el.className='api-status ko';}
 }
+
+/* ════════ FRED API (St. Louis Fed) ════════
+   La référence pour les taux directeurs et yields. Gratuit, illimité.
+   Source : https://fred.stlouisfed.org/docs/api/fred/
+   On évite définitivement les hallucinations IA en récupérant les vraies données. */
+const FRED_KEY='apex_fx_fred_key_v7';
+const FRED_DATA_KEY='apex_fx_fred_data_v7';
+
+function getFredKey(){return localStorage.getItem(FRED_KEY)||'';}
+function setFredKey(k){if(k)localStorage.setItem(FRED_KEY,k);else localStorage.removeItem(FRED_KEY);updateFredStatus();}
+function updateFredStatus(){
+  const el=document.getElementById('fred-api-status');
+  if(!el)return;
+  if(getFredKey()){el.textContent='configurée ✓';el.className='api-status ok';}
+  else{el.textContent='non configurée';el.className='api-status ko';}
+}
+
+/* Mapping séries FRED → identifiants Apex.
+   Sources vérifiées sur fred.stlouisfed.org */
+const FRED_SERIES={
+  /* Taux directeurs */
+  USD_RATE:'DFEDTARU',   /* Federal Funds Target Rate - Upper Limit */
+  EUR_RATE:'ECBDFR',     /* ECB Deposit Facility Rate */
+  GBP_RATE:'IUDSOIA',    /* Bank of England Bank Rate */
+  JPY_RATE:'IRSTCI01JPM156N', /* Bank of Japan Policy Rate */
+  CHF_RATE:'IRSTCI01CHM156N', /* SNB Policy Rate */
+  /* Yields */
+  US10Y:'DGS10',         /* 10-Year Treasury Constant Maturity Rate */
+  US30Y:'DGS30',         /* 30-Year Treasury Constant Maturity Rate */
+  US5Y:'DGS5',           /* 5-Year Treasury Constant Maturity Rate */
+  US2Y:'DGS2',           /* 2-Year Treasury Constant Maturity Rate */
+  DE10Y:'IRLTLT01DEM156N', /* Germany Long-Term Government Bond Yield */
+  /* Volatilité */
+  VIX:'VIXCLS',          /* CBOE VIX */
+  /* Inflation */
+  CPI_US:'CPIAUCSL',     /* US CPI All Items */
+};
+
+/* Récupère la dernière observation d'une série FRED */
+async function fetchFredSeries(seriesId){
+  const key=getFredKey();
+  if(!key)throw new Error('Pas de clé FRED');
+  /* file_type=json + limit=1 + sort_order=desc → on chope juste la dernière valeur */
+  const url=`https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${key}&file_type=json&limit=1&sort_order=desc`;
+  const resp=await fetch(url);
+  if(!resp.ok)throw new Error('FRED API '+resp.status);
+  const data=await resp.json();
+  if(!data.observations||!data.observations.length)throw new Error('FRED no data for '+seriesId);
+  const obs=data.observations[0];
+  return {
+    value:parseFloat(obs.value),
+    date:obs.date,
+    seriesId
+  };
+}
+
+/* Récupère TOUTES les séries macro en batch et met en cache */
+async function refreshFredData(){
+  const key=getFredKey();
+  if(!key){console.warn('[FRED] pas de clé configurée');return null;}
+
+  const results={};
+  const errors=[];
+
+  /* Pour chaque série, on fetch en parallèle (limit 1 req par série, ~13 reqs total) */
+  const entries=Object.entries(FRED_SERIES);
+  const promises=entries.map(async([id,seriesId])=>{
+    try{
+      const r=await fetchFredSeries(seriesId);
+      if(!isNaN(r.value))results[id]={value:r.value,date:r.date};
+    }catch(e){errors.push(id+':'+e.message);}
+  });
+  await Promise.all(promises);
+
+  if(Object.keys(results).length===0){
+    console.error('[FRED] aucune donnée récupérée:',errors);
+    return null;
+  }
+
+  results._timestamp=Date.now();
+  localStorage.setItem(FRED_DATA_KEY,JSON.stringify(results));
+  console.log('[FRED] OK ·',Object.keys(results).length-1,'séries récupérées',errors.length?'· erreurs: '+errors.join(', '):'');
+
+  /* Met à jour POLICY_RATES et autres données dérivées */
+  applyFredToMacroData(results);
+
+  return results;
+}
+
+/* Applique les données FRED au système macro d'Apex */
+function applyFredToMacroData(fred){
+  if(!fred)return;
+
+  /* Taux directeurs (FRED renvoie en %, on garde tel quel) */
+  if(fred.USD_RATE&&POLICY_RATES.USD){POLICY_RATES.USD.rate=fred.USD_RATE.value;POLICY_RATES.USD.source='FRED '+fred.USD_RATE.date;}
+  if(fred.EUR_RATE&&POLICY_RATES.EUR){POLICY_RATES.EUR.rate=fred.EUR_RATE.value;POLICY_RATES.EUR.source='FRED '+fred.EUR_RATE.date;}
+  if(fred.GBP_RATE&&POLICY_RATES.GBP){POLICY_RATES.GBP.rate=fred.GBP_RATE.value;POLICY_RATES.GBP.source='FRED '+fred.GBP_RATE.date;}
+  if(fred.JPY_RATE&&POLICY_RATES.JPY){POLICY_RATES.JPY.rate=fred.JPY_RATE.value;POLICY_RATES.JPY.source='FRED '+fred.JPY_RATE.date;}
+  if(fred.CHF_RATE&&POLICY_RATES.CHF){POLICY_RATES.CHF.rate=fred.CHF_RATE.value;POLICY_RATES.CHF.source='FRED '+fred.CHF_RATE.date;}
+
+  /* Yields */
+  if(typeof RATES_DATA!=='undefined'){
+    if(fred.US10Y)RATES_DATA['US10Y']={...(RATES_DATA['US10Y']||{}),value:fred.US10Y.value,source:'FRED'};
+    if(fred.US30Y)RATES_DATA['US30Y']={...(RATES_DATA['US30Y']||{}),value:fred.US30Y.value,source:'FRED'};
+    if(fred.US5Y) RATES_DATA['US5Y'] ={...(RATES_DATA['US5Y'] ||{}),value:fred.US5Y.value,source:'FRED'};
+    if(fred.US2Y) RATES_DATA['US2Y'] ={...(RATES_DATA['US2Y'] ||{}),value:fred.US2Y.value,source:'FRED'};
+  }
+
+  /* Re-rend les pages affichant ces données si elles sont actives */
+  if(typeof renderBanksPage==='function'&&document.querySelector('.page[data-page="cb"].active')){
+    try{renderBanksPage();}catch(e){}
+  }
+  if(typeof renderRatesPage==='function'&&document.querySelector('.page[data-page="rates"].active')){
+    try{renderRatesPage();}catch(e){}
+  }
+}
+
+/* Récupère les données FRED en cache (synchrone, sans appel API) */
+function getFredCached(){
+  try{
+    const raw=localStorage.getItem(FRED_DATA_KEY);
+    if(!raw)return null;
+    return JSON.parse(raw);
+  }catch(e){return null;}
+}
+
+/* Construit le contexte macro pour le prompt brief, basé sur les données FRED si dispo, sinon hardcoded fallback */
+function buildFredContextForPrompt(){
+  const fred=getFredCached();
+  if(!fred){
+    /* Fallback : données hardcoded mai 2026 (avec avertissement à Claude) */
+    return `⚠️ FRED non configuré (données hardcoded fallback, peuvent être périmées) :
+- Fed à 3.75% (à vérifier)
+- BCE à 2.00%
+- BoJ HAWKISH 0.75%
+- BoE 4.25%
+- SNB 0.25%
+- US10Y ~4.68%
+
+⚠️ Le trader devrait configurer FRED API pour avoir les vraies données.`;
+  }
+
+  const lines=[];
+  const dt=fred._timestamp?new Date(fred._timestamp).toLocaleString('fr-FR'):'?';
+  lines.push(`✓ Données FRED vérifiées (dernière sync : ${dt})`);
+  lines.push('');
+  lines.push('TAUX DIRECTEURS RÉELS :');
+  if(fred.USD_RATE)lines.push(`- Fed Funds Rate : ${fred.USD_RATE.value.toFixed(2)}% (${fred.USD_RATE.date})`);
+  if(fred.EUR_RATE)lines.push(`- ECB Deposit Rate : ${fred.EUR_RATE.value.toFixed(2)}% (${fred.EUR_RATE.date})`);
+  if(fred.GBP_RATE)lines.push(`- BoE Bank Rate : ${fred.GBP_RATE.value.toFixed(2)}% (${fred.GBP_RATE.date})`);
+  if(fred.JPY_RATE)lines.push(`- BoJ Policy Rate : ${fred.JPY_RATE.value.toFixed(2)}%`);
+  if(fred.CHF_RATE)lines.push(`- SNB Policy Rate : ${fred.CHF_RATE.value.toFixed(2)}%`);
+  lines.push('');
+  lines.push('YIELDS US (FRED) :');
+  if(fred.US2Y) lines.push(`- US2Y  : ${fred.US2Y.value.toFixed(2)}%`);
+  if(fred.US5Y) lines.push(`- US5Y  : ${fred.US5Y.value.toFixed(2)}%`);
+  if(fred.US10Y)lines.push(`- US10Y : ${fred.US10Y.value.toFixed(2)}%`);
+  if(fred.US30Y)lines.push(`- US30Y : ${fred.US30Y.value.toFixed(2)}%`);
+  if(fred.DE10Y)lines.push(`- Bund 10Y (Allemagne) : ${fred.DE10Y.value.toFixed(2)}%`);
+  if(fred.VIX)  lines.push(`- VIX : ${fred.VIX.value.toFixed(2)}`);
+  lines.push('');
+  lines.push('🎯 INSTRUCTION CRITIQUE : utilise ces vraies données FRED pour construire ton analyse. Ne mentionne pas d\'autres taux (Fed 4.50%, etc.). Ces chiffres sont la VÉRITÉ d\'aujourd\'hui.');
+  return lines.join('\n');
+}
+
+/* Test connexion FRED depuis Settings */
+async function testFred(){
+  const result=document.getElementById('fred-test-result');
+  if(!getFredKey()){
+    if(result)result.innerHTML='<span style="color:var(--red)">⚠ Aucune clé configurée</span>';
+    return;
+  }
+  if(result)result.innerHTML='<span style="color:var(--amber)">⏳ test en cours…</span>';
+  try{
+    const r=await fetchFredSeries(FRED_SERIES.USD_RATE);
+    if(result)result.innerHTML=`<span style="color:var(--green)">✓ Connecté · Fed Funds Rate = ${r.value.toFixed(2)}% au ${r.date}</span>`;
+    /* On en profite pour rafraîchir tout */
+    refreshFredData();
+  }catch(e){
+    if(result)result.innerHTML=`<span style="color:var(--red)">✕ Erreur : ${e.message.replace(/[<>]/g,'')}</span>`;
+  }
+}
+
 
 /* Finnhub utilise l'endpoint /forex/rates pour récupérer tous les taux FX en 1 req.
    Format : base=USD → renvoie toutes les paires USD/X.
@@ -5200,6 +5512,41 @@ pageInits.settings=()=>{
   const fhTest=document.getElementById('fh-test');
   if(fhTest)fhTest.onclick=testFinnhub;
 
+  /* === FRED API === */
+  updateFredStatus();
+  const fredInput=document.getElementById('fred-key-input');
+  const fredK=getFredKey();
+  if(fredK&&fredInput)fredInput.value='•••••••••••••••••'+fredK.slice(-6);
+  const fredSave=document.getElementById('fred-key-save');
+  if(fredSave)fredSave.onclick=()=>{
+    let v=fredInput.value.replace(/[•\s]/g,'').replace(/[^\x20-\x7E]/g,'').trim();
+    if(v.length<20){toast('Clé invalide','La clé FRED fait 32 caractères','danger');return;}
+    setFredKey(v);
+    fredInput.value='•••••••••••••••••'+v.slice(-6);
+    toast('Clé FRED enregistrée','Données macro vérifiées activées');
+    /* Refresh immédiat */
+    refreshFredData();
+  };
+  const fredClear=document.getElementById('fred-key-clear');
+  if(fredClear)fredClear.onclick=()=>{
+    if(confirm('Effacer la clé FRED ?')){setFredKey('');fredInput.value='';toast('Clé effacée','');}
+  };
+  const fredTest=document.getElementById('fred-test');
+  if(fredTest)fredTest.onclick=testFred;
+  const fredRefresh=document.getElementById('fred-refresh');
+  if(fredRefresh)fredRefresh.onclick=async()=>{
+    const r=document.getElementById('fred-test-result');
+    if(r)r.innerHTML='<span style="color:var(--amber)">⏳ refresh en cours…</span>';
+    const data=await refreshFredData();
+    if(data){
+      const count=Object.keys(data).filter(k=>k!=='_timestamp').length;
+      if(r)r.innerHTML=`<span style="color:var(--green)">✓ ${count} séries macro à jour</span>`;
+      toast('✓ Données FRED rafraîchies',count+' séries récupérées');
+    }else{
+      if(r)r.innerHTML='<span style="color:var(--red)">✕ Échec refresh</span>';
+    }
+  };
+
   /* Toggles ajoutés par les modules suivants (auto-refresh brief, popups, auto-data) */
   if(typeof bindAutoRefreshToggles==='function')bindAutoRefreshToggles();
   if(typeof bindPopupToggles==='function')bindPopupToggles();
@@ -5751,15 +6098,8 @@ ${spotsListStr?`SPOTS ACTUELS (contexte, pas à inclure dans la réponse) :
 ${spotsListStr}
 `:''}
 
-CONTEXTE MACRO (mai 2026) :
-- Fed à 3.75% (Warsh Chair depuis 15 mai), markets price 40% chance hike avant déc
-- BCE pause 2.00% (dovish), 25 bps cut juin pricé à 78%
-- BoJ HAWKISH 0.75% (hike juillet attendu, JGB10Y 2.85%)
-- BoE 4.25% neutral
-- SNB 0.25% dovish
-- US10Y 4.68% (plus haut 16 mois)
-- Oil shock Iran : Brent >110$
-- DXY ~99 (USD hawkish bias)
+CONTEXTE MACRO VÉRIFIÉ (source FRED + données live) :
+${buildFredContextForPrompt()}
 
 **Force des devises G8 :**
 ${ctx.strengthRanked.map(([c,s])=>`- ${c}: ${s>=0?'+':''}${s.toFixed(3)}%`).join('\n')}
@@ -6042,6 +6382,355 @@ pageInits.brief=()=>{
     }catch(e){}
   }
 };
+
+/* ════════ DAILY RECAP — Récap du jour ════════ */
+const RECAP_KEY='apex_fx_recap_v7';
+
+pageInits.recap=()=>{
+  const now=new Date();
+  document.getElementById('recap-date').textContent=
+    now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  /* Restore last recap if same day */
+  const cached=localStorage.getItem(RECAP_KEY);
+  if(cached){
+    try{
+      const c=JSON.parse(cached);
+      const today=now.toISOString().slice(0,10);
+      const cachedDay=new Date(c.timestamp).toISOString().slice(0,10);
+      if(today===cachedDay&&c.recap){
+        renderRecap(c.recap);
+      }
+    }catch(e){}
+  }
+};
+
+/* Build le contexte du recap : brief du matin + mouvements actuels + trades du jour */
+function buildRecapContext(){
+  const ctx={
+    date:new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),
+    todayKey:new Date().toISOString().slice(0,10)
+  };
+
+  /* 1. Brief du matin */
+  try{
+    const briefCache=localStorage.getItem(BRIEF_KEY);
+    if(briefCache){
+      const b=JSON.parse(briefCache);
+      const briefDay=new Date(b.timestamp).toISOString().slice(0,10);
+      if(b.brief&&briefDay===ctx.todayKey){
+        ctx.morningBrief=b.brief;
+      }
+    }
+  }catch(e){}
+
+  /* 2. Mouvements actuels (depuis fxData) */
+  ctx.movements=[];
+  const PAIRS=['EURUSD','GBPUSD','USDJPY','USDCHF','AUDUSD','USDCAD','NZDUSD','EURJPY','GBPJPY','AUDJPY','XAUUSD'];
+  PAIRS.forEach(p=>{
+    const d=fxData[p];
+    if(d&&d.price){
+      ctx.movements.push({
+        pair:p.slice(0,3)+'/'+p.slice(3),
+        price:d.price,
+        chg:d.chg||0,
+        high:d.high,
+        low:d.low
+      });
+    }
+  });
+  /* tri par |chg| décroissant pour les plus gros mouvements */
+  ctx.movements.sort((a,b)=>Math.abs(b.chg)-Math.abs(a.chg));
+
+  /* 3. Trades du jour (depuis journal) */
+  ctx.todayTrades=journal.filter(t=>{
+    if(!t.date)return false;
+    const tDay=new Date(t.date).toISOString().slice(0,10);
+    return tDay===ctx.todayKey;
+  });
+
+  /* 4. Trades des 30 derniers jours (pour pattern recognition) */
+  const thirtyDaysAgo=Date.now()-30*24*3600*1000;
+  ctx.last30Trades=journal.filter(t=>{
+    if(!t.date)return false;
+    return new Date(t.date).getTime()>=thirtyDaysAgo;
+  });
+
+  return ctx;
+}
+
+/* Fonction principale : génère le récap via Claude */
+async function generateDailyRecap(){
+  const key=getApiKey();
+  if(!key){
+    toast('Clé API manquante','Configure ta clé Anthropic dans Paramètres','danger');
+    go('settings');return;
+  }
+
+  const btn=document.getElementById('recap-generate');
+  btn.disabled=true;
+  document.getElementById('recap-gen-text').textContent='Génération…';
+  document.getElementById('recap-gen-icon').innerHTML='<span class="loader"></span>';
+
+  document.getElementById('recap-content').innerHTML=`<div class="brief-loading">
+    <div class="pulse"></div>
+    <div>Claude compare ton brief, les mouvements du marché et tes trades…</div>
+  </div>`;
+
+  const ctx=buildRecapContext();
+
+  /* Construction du prompt */
+  const briefSummary=ctx.morningBrief
+    ?ctx.morningBrief.themes.map((t,i)=>`Thème #${i+1} ${t.title} (conv ${t.conviction}/5): ${t.summary}\n  Impacts prévus: ${(t.impacts||[]).map(im=>`${im.pair} ${im.direction==='long'?'+':'-'}${im.pips}p`).join(', ')}`).join('\n')
+    :'Aucun brief généré ce matin';
+
+  const movementsSummary=ctx.movements.slice(0,10).map(m=>
+    `${m.pair}: ${m.chg>=0?'+':''}${m.chg.toFixed(2)}% (spot ${m.price})`
+  ).join('\n');
+
+  const tradesSummary=ctx.todayTrades.length>0
+    ?ctx.todayTrades.map(t=>{
+      const pnl=t.pnl||0;
+      return `${t.pair} ${t.direction} @ ${t.entry} → ${pnl>0?'+':''}${pnl}p`;
+    }).join('\n')
+    :'Aucun trade dans le journal aujourd\'hui';
+
+  /* Pattern data sur 30j */
+  const last30=ctx.last30Trades;
+  const wins=last30.filter(t=>(t.pnl||0)>0).length;
+  const losses=last30.filter(t=>(t.pnl||0)<0).length;
+  const winRate=last30.length>0?Math.round(wins/last30.length*100):0;
+  const totalPnl=last30.reduce((s,t)=>s+(t.pnl||0),0);
+
+  const systemPrompt=`Tu es l'analyste senior d'un trading desk forex institutionnel à Londres. Tu rédiges chaque soir un récap quotidien pour un trader pro : ce qui s'est passé sur le marché, ce qu'il a fait, et ce qu'il doit retenir pour demain.
+
+Style : direct, technique, sans bullshit. Vocabulaire institutionnel. Tu écris en français.
+
+═══════════════════════════════════════════════════════
+INSTRUCTION CRITIQUE : tu réponds UNIQUEMENT avec ce JSON pur.
+Pas de texte avant. Pas de texte après. Pas de markdown.
+Ta réponse commence par "{" et finit par "}".
+═══════════════════════════════════════════════════════
+
+Format exact :
+
+{
+  "macro": {
+    "themes_validated": [
+      {"theme": "Fed Hawkish", "verdict": "CONFIRMÉ", "evidence": "EUR/USD -45p réel vs -50p prévu, USD/JPY +62p vs +55p prévu", "rating": 5}
+    ],
+    "themes_invalidated": [
+      {"theme": "Oil Shock", "verdict": "INVALIDÉ", "reason": "CPI Canada softer than expected a annulé le mouvement attendu sur CAD"}
+    ]
+  },
+  "top_movements": [
+    {"pair": "USD/JPY", "move_pips": 62, "session": "NY Open 14h30", "driver": "Yields US push"},
+    {"pair": "EUR/USD", "move_pips": -45, "session": "Overlap 15h", "driver": "Fed hawkish + BCE dovish"}
+  ],
+  "personal": {
+    "summary": "3 trades aujourd'hui, 2W 1L, P&L +60p net",
+    "aligned_brief": ["EUR/USD short cohérent thème Fed Hawkish"],
+    "against_brief": ["AUD/USD long alors que AUD n'était pas dans le brief"],
+    "lesson": "Tu as bien respecté la macro sur EUR. Tu as tradé l'AUD par FOMO contre le brief."
+  },
+  "pattern_30d": {
+    "stats_summary": "Sur 30 jours: ${last30.length} trades, ${wins}W/${losses}L, WR ${winRate}%, P&L cumul ${totalPnl}p",
+    "insights": [
+      "Tu gagnes 78% quand tu trades dans le brief",
+      "Tu perds 65% des trades hors killzone London-NY"
+    ],
+    "key_rule": "Pas de trade hors brief OU hors killzone"
+  },
+  "tomorrow_plan": {
+    "themes_persistent": [
+      "Fed Hawkish reste structurel jusqu'aux Minutes",
+      "BCE Dovish jusqu'au cut juin"
+    ],
+    "watch_pairs": ["EUR/USD", "USD/JPY"],
+    "risks": [
+      {"time": "19h UTC", "event": "Fed Minutes"},
+      {"time": "09h UTC", "event": "PMI Eurozone"}
+    ],
+    "advice": "Garder focus EUR & JPY, éviter AUD sauf si data Australie."
+  }
+}
+
+RAPPEL : ta réponse est UNIQUEMENT le JSON, rien d'autre.`;
+
+  const userPrompt=`Récap pour ${ctx.date}.
+
+═══ BRIEF DU MATIN (à comparer avec la réalité) ═══
+${briefSummary}
+
+═══ MOUVEMENTS RÉELS DU MARCHÉ AUJOURD'HUI ═══
+${movementsSummary}
+
+═══ TRADES DU TRADER AUJOURD'HUI ═══
+${tradesSummary}
+
+═══ STATS 30 DERNIERS JOURS (pour pattern recognition) ═══
+Total trades : ${last30.length}
+Wins : ${wins} (${winRate}%)
+Losses : ${losses}
+P&L cumul : ${totalPnl}p
+
+═══ CONTEXTE MACRO (mai 2026) ═══
+- Fed 3.75% (Warsh Chair), markets price hike avant déc
+- BCE 2.00% dovish, cut juin pricé 78%
+- BoJ 0.75% hawkish (hike juillet attendu)
+- Oil Iran tension : Brent >110$
+
+Construis le récap en JSON pur. Si le brief n'a pas été généré ce matin (champs vides), indique-le dans "personal.lesson". Si pas de trades aujourd'hui, indique "personal.summary" = "Pas de trade aujourd'hui — journée d'observation".`;
+
+  try{
+    const text=await callAnthropic(userPrompt,systemPrompt,8000);
+    console.log('[Recap] réponse Claude (',text.length,'chars) :',text.slice(0,400));
+
+    let recap=null;
+    const tries=[
+      ()=>{const m=text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);return m?m[1]:null;},
+      ()=>{const start=text.indexOf('{');const end=text.lastIndexOf('}');return (start>=0&&end>start)?text.slice(start,end+1):null;},
+      ()=>text.trim().startsWith('{')?text.trim():null,
+    ];
+    for(const tryFn of tries){
+      const candidate=tryFn();
+      if(!candidate)continue;
+      try{
+        const parsed=JSON.parse(candidate.trim());
+        if(parsed&&(parsed.macro||parsed.personal||parsed.tomorrow_plan)){
+          recap=parsed;break;
+        }
+      }catch(e){console.warn('[Recap] parse tentative échec:',e.message);}
+    }
+
+    if(!recap){
+      console.error('[Recap] parsing total échec. Réponse :',text);
+      throw new Error('Claude n\'a pas renvoyé un JSON parsable. Régénère.');
+    }
+
+    renderRecap(recap);
+    localStorage.setItem(RECAP_KEY,JSON.stringify({recap,timestamp:Date.now()}));
+    toast('✓ Récap généré','Bilan du jour prêt');
+  }catch(e){
+    console.error('[Recap] erreur :',e);
+    document.getElementById('recap-content').innerHTML=`<div class="brief-empty">
+      <div class="icon" style="color:var(--red)">⚠</div>
+      <h3>Erreur de génération</h3>
+      <p>${escapeHTML(e.message)}</p>
+    </div>`;
+  }finally{
+    btn.disabled=false;
+    document.getElementById('recap-gen-text').textContent='Régénérer';
+    document.getElementById('recap-gen-icon').textContent='📋';
+  }
+}
+
+/* Render visuel du récap */
+function renderRecap(recap){
+  const m=recap.macro||{};
+  const tm=recap.top_movements||[];
+  const p=recap.personal||{};
+  const pat=recap.pattern_30d||{};
+  const tp=recap.tomorrow_plan||{};
+
+  /* Section MACRO : validés et invalidés */
+  const themesValidatedHtml=(m.themes_validated||[]).map(t=>{
+    const stars='★'.repeat(t.rating||3)+'☆'.repeat(5-(t.rating||3));
+    return `<div class="recap-theme validated">
+      <div class="rt-head">
+        <span class="rt-icon">✅</span>
+        <b>${escapeHTML(t.theme||'')}</b>
+        <span class="rt-rating">${stars}</span>
+      </div>
+      <div class="rt-evidence">${escapeHTML(t.evidence||'')}</div>
+    </div>`;
+  }).join('');
+
+  const themesInvalidatedHtml=(m.themes_invalidated||[]).map(t=>{
+    return `<div class="recap-theme invalidated">
+      <div class="rt-head">
+        <span class="rt-icon">❌</span>
+        <b>${escapeHTML(t.theme||'')}</b>
+      </div>
+      <div class="rt-evidence">${escapeHTML(t.reason||'')}</div>
+    </div>`;
+  }).join('');
+
+  /* Section TOP MOUVEMENTS */
+  const movementsHtml=tm.map((mv,i)=>{
+    const cls=mv.move_pips>=0?'up':'down';
+    const sign=mv.move_pips>=0?'+':'';
+    return `<div class="recap-move">
+      <span class="rm-rank">#${i+1}</span>
+      <b class="rm-pair">${escapeHTML(mv.pair||'')}</b>
+      <span class="rm-pips ${cls}">${sign}${mv.move_pips}p</span>
+      <span class="rm-session">${escapeHTML(mv.session||'')}</span>
+      <span class="rm-driver">${escapeHTML(mv.driver||'')}</span>
+    </div>`;
+  }).join('');
+
+  /* Section PERSONNEL */
+  const alignedHtml=(p.aligned_brief||[]).map(t=>`<div class="recap-trade-item aligned">✅ ${escapeHTML(t)}</div>`).join('');
+  const againstHtml=(p.against_brief||[]).map(t=>`<div class="recap-trade-item against">❌ ${escapeHTML(t)}</div>`).join('');
+
+  /* Section PATTERN */
+  const insightsHtml=(pat.insights||[]).map(i=>`<div class="recap-insight">👉 ${escapeHTML(i)}</div>`).join('');
+
+  /* Section PLAN DEMAIN */
+  const watchHtml=(tp.watch_pairs||[]).map(p=>`<span class="recap-watch-pair">${escapeHTML(p)}</span>`).join('');
+  const persistentHtml=(tp.themes_persistent||[]).map(t=>`<li>${escapeHTML(t)}</li>`).join('');
+  const risksHtml=(tp.risks||[]).map(r=>`<div class="recap-risk">
+    <span class="rr-time">${escapeHTML(r.time||'')}</span>
+    <span class="rr-event">${escapeHTML(r.event||'')}</span>
+  </div>`).join('');
+
+  const html=`
+    <div class="recap-unified">
+
+      <div class="recap-section">
+        <div class="section-label">🌍 CE QUI S'EST PASSÉ · MACRO</div>
+        ${themesValidatedHtml||'<div class="empty-mini">Aucun thème validé</div>'}
+        ${themesInvalidatedHtml}
+      </div>
+
+      <div class="recap-section">
+        <div class="section-label">📈 TOP MOUVEMENTS DU JOUR</div>
+        <div class="recap-moves-list">
+          ${movementsHtml||'<div class="empty-mini">Pas de mouvements significatifs</div>'}
+        </div>
+      </div>
+
+      <div class="recap-section">
+        <div class="section-label">💼 TES TRADES · PERSO</div>
+        <div class="recap-perso-summary">${escapeHTML(p.summary||'')}</div>
+        ${alignedHtml?`<div class="recap-trade-group"><h4>✅ Alignés brief</h4>${alignedHtml}</div>`:''}
+        ${againstHtml?`<div class="recap-trade-group"><h4>❌ Contre brief</h4>${againstHtml}</div>`:''}
+        ${p.lesson?`<div class="recap-lesson">💡 <b>Leçon :</b> ${escapeHTML(p.lesson)}</div>`:''}
+      </div>
+
+      <div class="recap-section">
+        <div class="section-label">🎯 PATTERN DÉTECTÉ · 30 JOURS</div>
+        <div class="recap-stats">${escapeHTML(pat.stats_summary||'')}</div>
+        ${insightsHtml}
+        ${pat.key_rule?`<div class="recap-rule">📏 <b>Règle clé :</b> ${escapeHTML(pat.key_rule)}</div>`:''}
+      </div>
+
+      <div class="recap-section recap-tomorrow">
+        <div class="section-label">📅 PLAN POUR DEMAIN</div>
+        ${persistentHtml?`<div class="recap-block"><h4>Thèmes qui persistent</h4><ul>${persistentHtml}</ul></div>`:''}
+        ${watchHtml?`<div class="recap-block"><h4>Paires à surveiller</h4><div class="recap-watch-list">${watchHtml}</div></div>`:''}
+        ${risksHtml?`<div class="recap-block"><h4>Risques calendaires</h4>${risksHtml}</div>`:''}
+        ${tp.advice?`<div class="recap-advice">⚡ ${escapeHTML(tp.advice)}</div>`:''}
+      </div>
+
+    </div>
+  `;
+
+  document.getElementById('recap-content').innerHTML=html;
+}
+
+document.getElementById('recap-generate').onclick=generateDailyRecap;
+
 
 /* ════════ ANALYSE IA DES PATTERNS ════════ */
 
@@ -8992,6 +9681,24 @@ function bindAutoDataSettings(){
 
 /* ─── Démarrage : charger cache + check si refresh nécessaire ─── */
 loadCachedMacroData();
+
+/* === FRED : charger cache + refresh si data > 6h === */
+const fredCached=getFredCached();
+if(fredCached){
+  applyFredToMacroData(fredCached);
+  const age=Date.now()-(fredCached._timestamp||0);
+  if(age>6*3600*1000&&getFredKey()){
+    /* Cache vieux, refresh en arrière-plan */
+    refreshFredData();
+  }
+}else if(getFredKey()){
+  /* Pas de cache, fetch initial */
+  setTimeout(()=>refreshFredData(),2000);
+}
+/* Refresh auto toutes les 6h si clé configurée */
+setInterval(()=>{
+  if(getFredKey())refreshFredData();
+},6*3600*1000);
 
 /* auto-refresh IA DÉSACTIVÉ — trop risqué (hallucinations) */
 /* setInterval(checkAutoRefreshData,3600000); */
