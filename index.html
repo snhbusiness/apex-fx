@@ -1154,6 +1154,9 @@
   .brief-spotref .spotref-label{color:var(--green);letter-spacing:.4px}
   .brief-spotref .spotref-pair{color:var(--text-dim)}
   .brief-spotref .spotref-pair b{color:var(--text);font-weight:600}
+  .brief-spotref.spotref-fallback{background:rgba(245,180,0,.06);border-color:rgba(245,180,0,.3)}
+  .brief-spotref.spotref-fallback .spotref-label{color:var(--amber)}
+  .brief-spotref .spotref-warn{flex-basis:100%;color:var(--amber);font-size:10px;margin-top:4px;letter-spacing:.3px}
 
   .theme-history{padding:8px 12px;background:rgba(245,180,0,.05);border-left:2px solid var(--amber);border-radius:4px;font-size:11.5px;color:var(--text-dim);margin:8px 0;line-height:1.5;font-style:italic}
 
@@ -4321,7 +4324,7 @@ async function loadFXData(){
   /* === 3. Fallback Yahoo via proxy === */
   try{
     const data=await fetchYahoo(YPAIRS);
-    if(!data||!data.length){setDot('s-yahoo',false);return;}
+    if(!data||!data.length)throw new Error('Yahoo vide');
     data.forEach(q=>{
       const p=q.symbol.replace('=X','');
       fxData[p]={price:q.regularMarketPrice,chg:q.regularMarketChangePercent,
@@ -4329,13 +4332,33 @@ async function loadFXData(){
         chg30d:((q.regularMarketPrice-(q.fiftyDayAverage||q.regularMarketPrice))/(q.fiftyDayAverage||q.regularMarketPrice))*100};
     });
     const e=fxData['EURUSD'];
-    if(e){const x=document.getElementById('hs-eurusd');x.textContent=fmtNum(e.price,4);x.className='hs-val '+(e.chg>=0?'up':'dn');}
+    if(e){const x=document.getElementById('hs-eurusd');if(x){x.textContent=fmtNum(e.price,4);x.className='hs-val '+(e.chg>=0?'up':'dn');}}
     const j=fxData['USDJPY'];
-    if(j){const x=document.getElementById('hs-usdjpy');x.textContent=fmtNum(j.price,2);x.className='hs-val '+(j.chg>=0?'up':'dn');}
+    if(j){const x=document.getElementById('hs-usdjpy');if(x){x.textContent=fmtNum(j.price,2);x.className='hs-val '+(j.chg>=0?'up':'dn');}}
     setDot('s-yahoo',true);
     renderVol();
     const ls=document.getElementById('lastsync');if(ls)ls.textContent=new Date().toLocaleTimeString('fr-FR')+' · Yahoo (fallback)';
-  }catch(e){setDot('s-yahoo',false);}
+    return;
+  }catch(e){console.warn('[Yahoo FX] échec:',e.message,'· fallback Frankfurter');}
+
+  /* === 4. Secours final : Frankfurter / ExchangeRate-API (gratuit, sans clé, sans quota) ===
+     Sert quand Twelve Data est épuisé et que Finnhub/Yahoo échouent. Prix du jour (pas
+     temps réel à la seconde) mais suffisant pour débloquer le brief sans inventer de niveau. */
+  try{
+    await loadFrankfurterPrices();
+    const e=fxData['EURUSD'];
+    if(e&&e.price>0){
+      const x=document.getElementById('hs-eurusd');if(x){x.textContent=fmtNum(e.price,4);x.className='hs-val';}
+      const j=fxData['USDJPY'];
+      if(j){const xj=document.getElementById('hs-usdjpy');if(xj){xj.textContent=fmtNum(j.price,2);xj.className='hs-val';}}
+      setDot('s-yahoo',true);
+      renderVol();
+      const ls=document.getElementById('lastsync');if(ls)ls.textContent=new Date().toLocaleTimeString('fr-FR')+' · Frankfurter (secours, prix du jour)';
+      console.log('[FX-Spot] secours Frankfurter OK · EUR/USD:',e.price.toFixed(5));
+    }else{
+      setDot('s-yahoo',false);
+    }
+  }catch(e){setDot('s-yahoo',false);console.warn('[FX-Spot] toutes les sources ont échoué:',e.message);}
 }
 
 /* Frankfurter API — backup pour les prix spot quand Yahoo/proxies sont bloqués
@@ -6403,10 +6426,13 @@ async function generateBrief(){
   }).join('\n');
 
   /* Horodatage du spot de référence, affiché dans le brief pour vérification visuelle */
+  const lastSyncTxt=(document.getElementById('lastsync')?.textContent)||'';
+  const isFallbackPrices=/Frankfurter|secours/i.test(lastSyncTxt);
   const briefSpotStamp={
     time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),
     eurusd:realSpots['EURUSD']?realSpots['EURUSD'].price:null,
-    spots:Object.fromEntries(Object.entries(realSpots).map(([p,d])=>[p,d.price]))
+    spots:Object.fromEntries(Object.entries(realSpots).map(([p,d])=>[p,d.price])),
+    fallback:isFallbackPrices
   };
 
   const systemPrompt=`Tu es l'analyste senior d'un trading desk forex institutionnel à Londres (style Brevan Howard / Bridgewater). Tu rédiges chaque matin un brief macro MULTI-FRAMEWORK pour un trader pro qui veut savoir :
@@ -6940,13 +6966,14 @@ function renderUnifiedBrief(brief,ctx){
   /* Bandeau prix de référence : les vrais spots Twelve Data au moment du brief.
      Permet de vérifier d'un coup d'œil que l'IA n'a pas inventé de niveau. */
   const sref=brief._spot_ref;
-  const spotRefHtml=sref&&sref.spots?`<div class="brief-spotref">
-    <span class="spotref-label">📍 Prix de référence (Twelve Data, ${escapeHTML(sref.time||'')}) :</span>
+  const spotRefHtml=sref&&sref.spots?`<div class="brief-spotref${sref.fallback?' spotref-fallback':''}">
+    <span class="spotref-label">📍 Prix de référence (${sref.fallback?'secours · prix du jour':'Twelve Data'}, ${escapeHTML(sref.time||'')}) :</span>
     ${Object.entries(sref.spots).slice(0,8).map(([p,v])=>{
       const disp=p.slice(0,3)+'/'+p.slice(3);
       const dec=p.includes('JPY')?3:(p.includes('XAU')?2:5);
       return `<span class="spotref-pair"><b>${disp}</b> ${(+v).toFixed(dec)}</span>`;
     }).join('')}
+    ${sref.fallback?`<span class="spotref-warn">⚠ Prix approximatif (mise à jour quotidienne) — vérifie le prix exact sur ta plateforme avant tout trade.</span>`:''}
   </div>`:'';
 
   const html=`
