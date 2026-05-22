@@ -1183,12 +1183,21 @@
 
   /* Ce que le marché croit */
   .market-believes{margin:14px 0;padding:14px;background:var(--panel-2);border-radius:6px;border:1px solid var(--line)}
-  .wmb-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--cyan);font-weight:700;margin-bottom:10px}
-  .wmb-section{margin:10px 0}
+  .wmb-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--cyan);font-weight:700;margin-bottom:4px}
+  .wmb-sublabel{font-size:10.5px;color:var(--text-mute);margin-bottom:12px;font-style:italic;line-height:1.4}
+  .wmb-section{margin:10px 0;position:relative;padding-left:26px}
+  .wmb-section .wmb-step{position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--bg-2)}
+  .wmb-section.s-already .wmb-step{background:var(--green)}
+  .wmb-section.s-mispriced .wmb-step{background:var(--amber)}
+  .wmb-section.s-notyet .wmb-step{background:var(--magenta)}
   .wmb-section h5{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--text-mute);margin:0 0 6px 0;text-transform:uppercase;font-weight:600}
+  /* Le mal pricé = l'edge → mis en avant */
+  .wmb-section.s-mispriced{background:rgba(245,180,0,.06);border:1px solid rgba(245,180,0,.3);border-radius:6px;padding:10px 12px 10px 34px;margin:12px 0}
+  .wmb-section.s-mispriced h5{color:var(--amber);font-size:11px}
+  .wmb-section.s-mispriced .wmb-step{left:8px;top:10px}
   .wmb-item{display:flex;gap:9px;padding:7px 10px;margin:4px 0;border-radius:4px;align-items:flex-start}
   .wmb-item.already{background:rgba(62,207,142,.05);border-left:2px solid var(--green)}
-  .wmb-item.mispriced{background:rgba(245,180,0,.05);border-left:2px solid var(--amber)}
+  .wmb-item.mispriced{background:rgba(245,180,0,.08);border-left:3px solid var(--amber)}
   .wmb-item.not-yet{background:rgba(233,110,221,.05);border-left:2px solid var(--magenta)}
   .wmb-marker{font-size:14px;flex-shrink:0;line-height:1.2}
   .wmb-content{flex:1}
@@ -6632,12 +6641,19 @@ ${ctx.openTrades.map(t=>`- ${t.pair} ${t.direction} @ ${t.entry||'?'}`).join('\n
    - intermarket, geopolitics, technical, supply_demand
    - Avec source vérifiée et confidence level
 
-3. **Pour CHAQUE thème, "what_market_believes" est OBLIGATOIRE** :
-   - already_priced : ce que le consensus voit (avec sources)
-   - mispriced : ta thèse contrarian
-   - not_yet_priced : tail risk avec flag "🔮 Hypothèse non vérifiée"
+3. **Pour CHAQUE thème, "what_market_believes" est OBLIGATOIRE** — c'est le CŒUR de l'analyse.
+   PRINCIPE DIRECTEUR : le prix actuel reflète DÉJÀ les attentes, probabilités et scénarios du marché.
+   Une opportunité ("edge") n'existe QUE si une info nouvelle peut forcer le marché à réviser son
+   scénario (= repricing). Ton job : trouver cet écart entre ce qui est pricé et ce qui pourrait changer.
+   - already_priced : ce que le marché tient DÉJÀ pour acquis (consensus, dans le prix), avec sources
+   - mispriced : LE PLUS IMPORTANT — où le consensus est fragile ou faux, et POURQUOI (ta thèse).
+     Précise quel catalyseur déclencherait le repricing et dans quel sens (direction, pas chiffre de pips inventé)
+   - not_yet_priced : un risque réel mais ignoré du marché, flag "🔮 Hypothèse non vérifiée"
+   Ces 3 doivent se lire comme une chaîne : le marché croit X → il se trompe peut-être ici → repricing possible.
 
-4. **Pour CHAQUE thème, "tradable_edge" est OBLIGATOIRE** : où exploiter cet edge
+4. **Pour CHAQUE thème, "tradable_edge" est OBLIGATOIRE** : concrètement, comment se positionner pour
+   capter ce repricing (quelle paire, quelle direction, quel déclencheur). L'ampleur du mouvement dépend
+   de l'ampleur du repricing — ne donne pas un chiffre de pips faussement précis, raisonne en scénario.
 
 5. **3-5 setups exécutables** avec pips relatifs au spot
 
@@ -6833,10 +6849,11 @@ function renderUnifiedBrief(brief,ctx){
       </details>`:''}
 
       ${(alreadyHtml||mispricedHtml||notYetHtml)?`<div class="market-believes">
-        <div class="wmb-label">🧠 CE QUE LE MARCHÉ CROIT</div>
-        ${alreadyHtml?`<div class="wmb-section"><h5>✅ Déjà pricé</h5>${alreadyHtml}</div>`:''}
-        ${mispricedHtml?`<div class="wmb-section"><h5>⚠️ Mal pricé (opportunité contrarian)</h5>${mispricedHtml}</div>`:''}
-        ${notYetHtml?`<div class="wmb-section"><h5>🔮 Pas encore pricé (tail risk)</h5>${notYetHtml}</div>`:''}
+        <div class="wmb-label">🧠 CE QUE LE MARCHÉ CROIT → OÙ EST LE REPRICING</div>
+        <div class="wmb-sublabel">Le prix d'aujourd'hui = l'opinion du marché sur demain. L'edge naît quand une info force à revoir ce scénario.</div>
+        ${alreadyHtml?`<div class="wmb-section s-already"><span class="wmb-step">1</span><h5>Déjà pricé · ce que le marché tient pour acquis</h5>${alreadyHtml}</div>`:''}
+        ${mispricedHtml?`<div class="wmb-section s-mispriced"><span class="wmb-step">2</span><h5>⚠️ Mal pricé · TON EDGE — où le consensus se trompe</h5>${mispricedHtml}</div>`:''}
+        ${notYetHtml?`<div class="wmb-section s-notyet"><span class="wmb-step">3</span><h5>🔮 Pas encore pricé · le risque que personne ne voit</h5>${notYetHtml}</div>`:''}
       </div>`:''}
 
       ${edgeHtml}
