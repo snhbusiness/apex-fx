@@ -1150,6 +1150,10 @@
   /* ═══ BRIEF MULTI-FRAMEWORK ═══ */
   .brief-meta{display:flex;gap:14px;flex-wrap:wrap;padding:8px 12px;background:rgba(93,214,224,.04);border:1px solid rgba(93,214,224,.2);border-radius:5px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-mute);letter-spacing:.4px}
   .brief-meta span{display:flex;align-items:center;gap:4px}
+  .brief-spotref{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:9px 12px;background:rgba(62,207,142,.06);border:1px solid rgba(62,207,142,.28);border-radius:5px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text-dim)}
+  .brief-spotref .spotref-label{color:var(--green);letter-spacing:.4px}
+  .brief-spotref .spotref-pair{color:var(--text-dim)}
+  .brief-spotref .spotref-pair b{color:var(--text);font-weight:600}
 
   .theme-history{padding:8px 12px;background:rgba(245,180,0,.05);border-left:2px solid var(--amber);border-radius:4px;font-size:11.5px;color:var(--text-dim);margin:8px 0;line-height:1.5;font-style:italic}
 
@@ -6367,10 +6371,34 @@ async function generateBrief(){
     }
   });
 
+  /* GARDE-FOU ANTI-PRIX-HALLUCINÉ : on refuse de générer un brief si les vrais
+     spots ne sont pas chargés. Sans prix réel, Claude invente des niveaux
+     périmés (ex : "support 1.11" alors que le marché est à 1.16). */
+  if(Object.keys(realSpots).length<3 || !realSpots['EURUSD']){
+    toast('Prix non chargés','Va sur « Vue d\'ensemble » pour charger les prix du marché, puis régénère le brief.','danger');
+    document.getElementById('brief-content').innerHTML=`<div class="brief-empty">
+      <div class="icon" style="color:var(--amber)">📡</div>
+      <h3>Prix du marché non chargés</h3>
+      <p>Le brief a besoin des vrais prix (Twelve Data) pour ne pas inventer de niveaux.
+      Ouvre la page « Vue d'ensemble » pour charger les prix, puis reviens régénérer.</p>
+    </div>`;
+    btn.disabled=false;
+    document.getElementById('brief-gen-text').textContent='Régénérer';
+    document.getElementById('brief-gen-icon').textContent='☀';
+    return;
+  }
+
   const spotsListStr=Object.entries(realSpots).map(([p,d])=>{
     const display=p.slice(0,3)+'/'+p.slice(3);
     return `${display}: spot=${d.price}`;
   }).join('\n');
+
+  /* Horodatage du spot de référence, affiché dans le brief pour vérification visuelle */
+  const briefSpotStamp={
+    time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),
+    eurusd:realSpots['EURUSD']?realSpots['EURUSD'].price:null,
+    spots:Object.fromEntries(Object.entries(realSpots).map(([p,d])=>[p,d.price]))
+  };
 
   const systemPrompt=`Tu es l'analyste senior d'un trading desk forex institutionnel à Londres (style Brevan Howard / Bridgewater). Tu rédiges chaque matin un brief macro MULTI-FRAMEWORK pour un trader pro qui veut savoir :
 1. POURQUOI le marché va bouger
@@ -6560,9 +6588,15 @@ RAPPEL FINAL : ta réponse est UNIQUEMENT le JSON, rien d'autre.`;
 
   const userPrompt=`Construis le morning brief macro MULTI-FRAMEWORK pour ce ${ctx.date}, ${ctx.time}, ${ctx.session}.
 
-${spotsListStr?`═══ SPOTS ACTUELS (Twelve Data live) ═══
+═══ PRIX DU MARCHÉ MAINTENANT (Twelve Data live — SOURCE DE VÉRITÉ) ═══
 ${spotsListStr}
-`:''}
+
+⛔ RÈGLE PRIX ABSOLUE : Les prix ci-dessus sont les SEULS prix réels. Quand tu cites un
+niveau de prix dans une phrase (support, résistance, cible, "vers X", "sur X"), il DOIT être
+cohérent avec ces spots (à quelques dizaines de pips près). N'invente JAMAIS un niveau issu
+de ta mémoire. Exemple : si EUR/USD spot = 1.1606, tu ne dois PAS écrire "support 1.11" ni
+"cible 1.10" — ces niveaux sont périmés. Reste autour du spot fourni. En cas de doute sur un
+niveau, n'en cite pas et raisonne en pips relatifs au spot.
 
 ═══ CONTEXTE MACRO VÉRIFIÉ (FRED) ═══
 ${buildFredContextForPrompt()}
@@ -6673,6 +6707,9 @@ RAPPEL : JSON pur, rien d'autre.`;
         };
       }).filter(Boolean);
     }
+
+    /* On attache le spot de référence au brief pour affichage et vérification */
+    brief._spot_ref=briefSpotStamp;
 
     renderUnifiedBrief(brief,ctx);
     localStorage.setItem(BRIEF_KEY,JSON.stringify({brief,ctx,timestamp:Date.now()}));
@@ -6883,6 +6920,18 @@ function renderUnifiedBrief(brief,ctx){
     ${meta.data_sources_used?`<span>📡 Sources : ${(meta.data_sources_used||[]).join(', ')}</span>`:''}
   </div>`:'';
 
+  /* Bandeau prix de référence : les vrais spots Twelve Data au moment du brief.
+     Permet de vérifier d'un coup d'œil que l'IA n'a pas inventé de niveau. */
+  const sref=brief._spot_ref;
+  const spotRefHtml=sref&&sref.spots?`<div class="brief-spotref">
+    <span class="spotref-label">📍 Prix de référence (Twelve Data, ${escapeHTML(sref.time||'')}) :</span>
+    ${Object.entries(sref.spots).slice(0,8).map(([p,v])=>{
+      const disp=p.slice(0,3)+'/'+p.slice(3);
+      const dec=p.includes('JPY')?3:(p.includes('XAU')?2:5);
+      return `<span class="spotref-pair"><b>${disp}</b> ${(+v).toFixed(dec)}</span>`;
+    }).join('')}
+  </div>`:'';
+
   const html=`
     <div class="brief-unified">
       <div class="brief-mode-toggle">
@@ -6892,6 +6941,7 @@ function renderUnifiedBrief(brief,ctx){
       </div>
 
       ${metaHtml}
+      ${spotRefHtml}
 
       <div class="brief-section themes-section">
         <div class="section-label">🌍 THÈMES MACRO DU JOUR · LE POURQUOI</div>
