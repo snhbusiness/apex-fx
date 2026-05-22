@@ -5667,7 +5667,7 @@ loadFXData();loadDXY();loadRates();loadNews();loadSquawk();
    - Finnhub : 86400 req/jour (60/min) → largement assez en backup
    - Yahoo : pas de quota mais proxies CORS instables
 */
-const FX_REFRESH_MS=getTdKey()||getFhKey()?300000:30000; /* 5 min si API configurée, 30 sec sinon */
+const FX_REFRESH_MS=getTdKey()||getFhKey()?600000:30000; /* 10 min si API configurée (économie quota), 30 sec sinon */
 const RATES_REFRESH_MS=getTdKey()||getFhKey()?900000:60000; /* 15 min si API, 1 min sinon */
 
 setInterval(()=>{
