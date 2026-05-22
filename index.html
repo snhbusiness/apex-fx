@@ -7044,12 +7044,24 @@ document.getElementById('brief-clear').onclick=()=>{
   document.getElementById('brief-meta').style.display='none';
 };
 
-pageInits.brief=()=>{
+pageInits.brief=async ()=>{
   const now=new Date();
   document.getElementById('brief-date-text').textContent=
     now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
 
-  /* on affiche le contexte live tout de suite */
+  /* Auto-chargement des prix : si fxData est vide (l'utilisateur n'est pas passé
+     par Vue d'ensemble), on charge les prix ici pour éviter le blocage du garde-fou. */
+  const hasPrices=fxData&&fxData['EURUSD']&&fxData['EURUSD'].price>0;
+  if(!hasPrices){
+    const ctxBox=document.getElementById('brief-content');
+    if(ctxBox)ctxBox.innerHTML=`<div class="brief-loading">
+      <div class="pulse"></div>
+      <div>Chargement des prix du marché (Twelve Data)…</div>
+    </div>`;
+    try{ await loadFXData(); }catch(e){ console.warn('[Brief] loadFXData échec:',e.message); }
+  }
+
+  /* on affiche le contexte live (maintenant avec les prix chargés) */
   renderBriefContext(buildBriefContext());
 
   /* on rétablit le dernier brief si moins de 6h */
@@ -7059,8 +7071,20 @@ pageInits.brief=()=>{
       const c=JSON.parse(cached);
       if(Date.now()-c.timestamp<6*3600*1000&&c.brief){
         renderUnifiedBrief(c.brief,c.ctx);
+        return;
       }
     }catch(e){}
+  }
+
+  /* pas de brief en cache : message d'invite selon l'état des prix */
+  const ok=fxData&&fxData['EURUSD']&&fxData['EURUSD'].price>0;
+  const box=document.getElementById('brief-content');
+  if(box){
+    box.innerHTML=ok
+      ?`<div class="brief-empty"><div class="icon">☀</div><h3>Prêt à générer</h3>
+        <p>Prix chargés (EUR/USD ${fxData['EURUSD'].price.toFixed(5)}). Clique « Régénérer » pour le brief du jour.</p></div>`
+      :`<div class="brief-empty"><div class="icon" style="color:var(--amber)">📡</div><h3>Prix indisponibles</h3>
+        <p>Impossible de charger les prix automatiquement. Ouvre « Vue d'ensemble », vérifie ta clé Twelve Data dans Settings, puis reviens.</p></div>`;
   }
 };
 
