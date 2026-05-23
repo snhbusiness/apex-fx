@@ -10060,28 +10060,17 @@ function renderPlanCard(plan){
 function copyForPine(setup,btn){
   /* Direction sous forme acceptée par le Pine */
   const dirCap=setup.dir==='short'||setup.dir==='Short'?'Short':'Long';
-  /* Format de copie : key=value, 1 par ligne, prêt à lire à l'œil */
-  const txt=`APEX FX BRIEF TRACKER — Setup à copier dans le Pine
-═════════════════════════════════════════════════
-Paire     : ${setup.pair}
-Direction : ${dirCap}
-Label     : ${setup.label||'SETUP'}
-Thème     : ${setup.theme||'-'}
-Entry     : ${(+setup.entry).toFixed(setup.pair.includes('JPY')?3:setup.pair.includes('XAU')?2:5)}
-Stop Loss : ${(+setup.sl).toFixed(setup.pair.includes('JPY')?3:setup.pair.includes('XAU')?2:5)}
-TP1       : ${(+setup.tp1).toFixed(setup.pair.includes('JPY')?3:setup.pair.includes('XAU')?2:5)}
-TP2       : ${(+setup.tp2).toFixed(setup.pair.includes('JPY')?3:setup.pair.includes('XAU')?2:5)}
+  const dec=setup.pair.includes('JPY')?3:setup.pair.includes('XAU')?2:5;
+  const e=(+setup.entry).toFixed(dec), sl=(+setup.sl).toFixed(dec),
+        t1=(+setup.tp1).toFixed(dec), t2=(+setup.tp2).toFixed(dec);
 
-INSTRUCTIONS :
-1. Ouvre TradingView sur la paire ${setup.pair}
-2. Ajoute l'indicateur "APEX FX Brief Tracker"
-3. Clique sur ⚙ Paramètres
-4. Dans la section "${setup.scenario==='A'?'SCÉNARIO A (Recommandé)':'SCÉNARIO B (Alternatif)'}",
-   remplis Entry / SL / TP1 / TP2 avec les valeurs ci-dessus
-5. Direction : ${dirCap}
-6. Valide → le scénario apparaît tracé sur le chart`;
+  /* LIGNE DE COLLAGE UNIQUE : c'est ce qu'on met dans le presse-papier.
+     Format décodé par le champ "Setup (collage rapide)" du Pine :
+     Direction|Entry|SL|TP1|TP2  ex: Short|159.476|159.976|158.376|157.376 */
+  const compact=`${dirCap}|${e}|${sl}|${t1}|${t2}`;
+  setup._compact=compact;
 
-  navigator.clipboard.writeText(txt).then(()=>{
+  navigator.clipboard.writeText(compact).then(()=>{
     /* Feedback visuel */
     if(btn){
       const oldText=btn.textContent;
@@ -10115,7 +10104,7 @@ function showPineInstructions(setup){
       </div>
     </div>
 
-    <div style="background:var(--bg-2);padding:14px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.7;margin-bottom:18px">
+    <div style="background:var(--bg-2);padding:14px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.7;margin-bottom:14px">
       <div style="color:var(--amber);margin-bottom:8px;letter-spacing:1.5px;font-size:9px">SETUP À UTILISER</div>
       <div><span style="color:var(--text-mute)">Paire</span> · <b style="color:var(--text)">${setup.pair}</b></div>
       <div><span style="color:var(--text-mute)">Direction</span> · <b style="color:${dirCap==='Long'?'var(--green)':'var(--red)'}">${dirCap}</b></div>
@@ -10125,15 +10114,19 @@ function showPineInstructions(setup){
       <div><span style="color:var(--text-mute)">TP2</span> · <b style="color:var(--green)">${(+setup.tp2).toFixed(dec)}</b></div>
     </div>
 
+    <div style="background:rgba(62,207,142,.07);border:1px solid rgba(62,207,142,.3);padding:12px 14px;border-radius:6px;margin-bottom:18px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--green);margin-bottom:6px">✓ COPIÉ — COLLE CETTE LIGNE UNIQUE DANS LE PINE</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);word-break:break-all">${setup._compact||''}</div>
+    </div>
+
     <div style="background:rgba(245,180,0,.06);border-left:3px solid var(--amber);padding:14px;border-radius:5px;margin-bottom:18px">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--amber);margin-bottom:8px">ÉTAPES TRADINGVIEW</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--amber);margin-bottom:8px">ÉTAPES TRADINGVIEW (1 SEUL COLLER)</div>
       <ol style="margin:0;padding-left:20px;font-size:12.5px;line-height:1.7;color:var(--text-dim)">
         <li>Ouvre <b style="color:var(--text)">TradingView</b> sur <b style="color:var(--text)">${setup.pair}</b></li>
-        <li>Ajoute l'indicateur <b style="color:var(--text)">"APEX FX Brief Tracker"</b></li>
+        <li>Ajoute l'indicateur <b style="color:var(--text)">"APEX FX Brief Tracker"</b> (une seule fois)</li>
         <li>Clique sur l'icône <b>⚙ Settings</b> de l'indicateur</li>
-        <li>Dans la section <b style="color:var(--text)">"${setup.scenario==='A'?'SCÉNARIO A (Recommandé)':'SCÉNARIO B (Alternatif)'}"</b>, remplis les 4 prix</li>
-        <li>Choisis Direction : <b style="color:${dirCap==='Long'?'var(--green)':'var(--red)'}">${dirCap}</b></li>
-        <li>Valide → le scénario s'affiche sur ton chart avec alertes prêtes</li>
+        <li>Dans le champ <b style="color:var(--text)">"⚡ Collage rapide"</b>, colle la ligne verte (Cmd+V) et choisis le scénario <b>A</b></li>
+        <li>Valide → Entry/SL/TP/Direction se remplissent tout seuls, le scénario s'affiche</li>
       </ol>
     </div>
 
