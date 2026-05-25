@@ -7012,7 +7012,7 @@ function renderUnifiedBrief(brief,ctx){
       <div class="setup-actions">
         <a class="plan-btn primary" href="${tvUrl}" target="_blank" rel="noopener">📊 TradingView</a>
         <button class="plan-btn" onclick='openSizingFromPlan(${JSON.stringify(s.pair)},${s.entry},${s.sl},"${s.direction}")'>⚖ Sizing</button>
-        <button class="plan-btn" onclick='copyForPine(${JSON.stringify({pair:s.pair,dir:s.direction,label:s.label||'',theme:(brief.themes&&brief.themes[s.linked_theme-1]?brief.themes[s.linked_theme-1].title:''),entry:s.entry,sl:s.sl,tp1:s.tp1,tp2:s.tp2,scenario:"A"})}, this)'>📋 Copier pour Pine</button>
+        <button class="plan-btn" onclick="copyForPine('${encodeSetup({pair:s.pair,dir:s.direction,label:s.label||'',theme:(brief.themes&&brief.themes[s.linked_theme-1]?brief.themes[s.linked_theme-1].title:''),entry:s.entry,sl:s.sl,tp1:s.tp1,tp2:s.tp2,scenario:"A"})}', this)">📋 Copier pour Pine</button>
       </div>
     </div>`;
   }).join('');
@@ -10117,7 +10117,7 @@ function renderPlanCard(plan){
         <a class="plan-btn primary" href="${tvUrl}" target="_blank" rel="noopener">📊 Ouvrir TradingView</a>
         <button class="plan-btn" onclick='openSizingFromPlan(${JSON.stringify(plan.pair)},${sc.entry},${sc.sl},"${type}")'>⚖ Sizing</button>
         <button class="plan-btn" onclick='addPlanToJournal(${JSON.stringify(plan.pair)},${JSON.stringify(type)},${sc.entry},${sc.sl},${sc.tp1})'>+ Journal</button>
-        <button class="plan-btn" onclick='copyForPine(${JSON.stringify({pair:plan.pair,dir:type,label:sc.label||'',theme:plan.context||'',entry:sc.entry,sl:sc.sl,tp1:sc.tp1,tp2:sc.tp2,scenario:type==="short"?"A":"B"})}, this)'>📋 Pine</button>
+        <button class="plan-btn" onclick="copyForPine('${encodeSetup({pair:plan.pair,dir:type,label:sc.label||'',theme:plan.context||'',entry:sc.entry,sl:sc.sl,tp1:sc.tp1,tp2:sc.tp2,scenario:type==="short"?"A":"B"})}', this)">📋 Pine</button>
       </div>
     </div>`;
   };
@@ -10137,7 +10137,20 @@ function renderPlanCard(plan){
    Formate un setup pour le Pine Script "APEX FX Brief Tracker".
    Copie dans le presse-papier au format texte structuré.
    Le user colle ensuite dans les Settings du Pine. */
+/* Encode un objet en base64 sûr pour un attribut HTML (gère l'UTF-8 :
+   apostrophes, accents). Décodé par copyForPine. */
+function encodeSetup(obj){
+  try{ return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))); }
+  catch(e){ return ''; }
+}
+
 function copyForPine(setup,btn){
+  /* setup peut arriver soit comme objet, soit comme chaîne base64 encodée
+     (pour éviter que les apostrophes du texte FR cassent l'attribut onclick). */
+  if(typeof setup==='string'){
+    try{ setup=JSON.parse(decodeURIComponent(escape(atob(setup)))); }
+    catch(e){ console.error('[copyForPine] décodage échoué:',e); toast('Erreur','Setup illisible','danger'); return; }
+  }
   /* Direction sous forme acceptée par le Pine */
   const dirCap=setup.dir==='short'||setup.dir==='Short'?'Short':'Long';
   const dec=setup.pair.includes('JPY')?3:setup.pair.includes('XAU')?2:5;
