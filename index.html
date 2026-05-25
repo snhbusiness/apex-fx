@@ -6378,7 +6378,8 @@ async function callAnthropic(userPrompt,systemPrompt,maxTokens){
         model:'claude-sonnet-4-6',
         max_tokens:maxTokens||3000,
         system:systemPrompt,
-        messages:[{role:'user',content:userPrompt}]
+        messages:[{role:'user',content:userPrompt}],
+        tools:[{type:'web_search_20250305',name:'web_search',max_uses:5}]
       })
     });
   }catch(e){
@@ -6401,7 +6402,27 @@ async function callAnthropic(userPrompt,systemPrompt,maxTokens){
     throw new Error(msg);
   }
   const data=await resp.json();
-  return data.content[0].text;
+
+  /* Avec le web_search, data.content contient plusieurs blocs hétérogènes
+     (text, server_tool_use, web_search_tool_result...). On concatène TOUS
+     les blocs de type 'text' — pas seulement content[0] qui pourrait être
+     un bloc d'outil et non le texte final. */
+  let out='';
+  if(Array.isArray(data.content)){
+    out=data.content.filter(b=>b&&b.type==='text').map(b=>b.text).join('\n').trim();
+  }
+
+  /* Détection de troncature : si la réponse a été coupée par la limite de
+     tokens, le JSON sera incomplet (setups manquants, etc.). On le signale. */
+  if(data.stop_reason==='max_tokens'){
+    console.warn('[Anthropic] ⚠ réponse TRONQUÉE (max_tokens atteint). Le brief peut être incomplet. usage:',data.usage);
+  }
+  if(!out){
+    console.error('[Anthropic] aucun bloc texte dans la réponse:',data);
+    throw new Error('Réponse vide de l\'API (aucun texte). stop_reason: '+(data.stop_reason||'?'));
+  }
+  console.log('[Anthropic] réponse reçue ·',out.length,'chars · stop:',data.stop_reason,'· usage:',data.usage);
+  return out;
 }
 
 async function generateBrief(){
@@ -6656,6 +6677,13 @@ RAPPEL FINAL : ta réponse est UNIQUEMENT le JSON, rien d'autre.`;
     :'Pas d\'historique disponible (premier brief ou moins de 2 briefs en cache)';
 
   const userPrompt=`Construis le morning brief macro MULTI-FRAMEWORK pour ce ${ctx.date}, ${ctx.time}, ${ctx.session}.
+
+═══ RECHERCHE WEB OBLIGATOIRE AVANT DE RÉDIGER ═══
+Avant d'écrire le brief, utilise l'outil web_search pour vérifier l'actualité macro/FX la plus FRAÎCHE (dernières 24-72h) :
+1. Cherche les annonces ou déclarations majeures récentes (banques centrales, gouvernements, géopolitique) susceptibles de faire bouger le forex.
+2. Si on est lundi ou après un week-end/jour férié, cherche spécifiquement ce qui s'est passé pendant la fermeture du marché et tout GAP d'ouverture (clôture vendredi vs ouverture dimanche/lundi) sur les paires majeures.
+3. Vérifie les probabilités de marché à jour (ex: FedWatch, attentes de taux) si pertinent pour tes thèmes.
+Intègre ces infos dans ton analyse de repricing : un gap ou une annonce de week-end EST un repricing — c'est exactement l'edge à identifier. Cite tes sources dans les champs "source" du JSON.
 
 ═══ PRIX DU MARCHÉ MAINTENANT (Twelve Data live — SOURCE DE VÉRITÉ) ═══
 ${spotsListStr}
