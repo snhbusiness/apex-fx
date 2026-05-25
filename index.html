@@ -6877,10 +6877,16 @@ function renderUnifiedBrief(brief,ctx){
     const impactsHtml=(t.impacts||[]).map(i=>{
       const arrow=i.direction==='long'?'<span style="color:var(--green)">↗</span>':'<span style="color:var(--red)">↘</span>';
       const sign=i.direction==='long'?'+':'-';
+      /* i.pips peut être absent ou non-numérique (Claude raisonne souvent en
+         direction/scénario). On n'affiche un chiffre que s'il est vraiment un nombre. */
+      const pn=parseFloat(i.pips);
+      const pipsHtml=Number.isFinite(pn)
+        ?`<span class="pips ${i.direction}">${sign}${Math.abs(pn)}p</span>`
+        :`<span class="pips ${i.direction}">${i.direction==='long'?'haussier':'baissier'}</span>`;
       return `<div class="theme-impact">
         ${arrow}
         <b>${escapeHTML(i.pair)}</b>
-        <span class="pips ${i.direction}">${sign}${Math.abs(i.pips)}p</span>
+        ${pipsHtml}
         <span class="why">${escapeHTML(i.why||'')}</span>
       </div>`;
     }).join('');
@@ -7152,7 +7158,9 @@ function shareCompassTwitter(){
     (t.impacts||[]).slice(0,3).forEach(im=>{
       const arrow=im.direction==='long'?'↗':'↘';
       const sign=im.direction==='long'?'+':'-';
-      txt+=`${arrow} ${im.pair} ${sign}${Math.abs(im.pips)}p\n`;
+      const pn=parseFloat(im.pips);
+      const val=Number.isFinite(pn)?`${sign}${Math.abs(pn)}p`:(im.direction==='long'?'haussier':'baissier');
+      txt+=`${arrow} ${im.pair} ${val}\n`;
     });
     txt+='\n';
   });
