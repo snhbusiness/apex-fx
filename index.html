@@ -1173,6 +1173,14 @@
   .brief-spotref.spotref-fallback{background:rgba(245,180,0,.06);border-color:rgba(245,180,0,.3)}
   .brief-spotref.spotref-fallback .spotref-label{color:var(--amber)}
   .brief-spotref .spotref-warn{flex-basis:100%;color:var(--amber);font-size:10px;margin-top:4px;letter-spacing:.3px}
+  .brief-websearch{display:flex;flex-direction:column;gap:5px;padding:9px 12px;background:rgba(93,214,224,.05);border:1px solid rgba(93,214,224,.25);border-radius:5px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text-dim)}
+  .brief-websearch.nows{background:rgba(245,180,0,.06);border-color:rgba(245,180,0,.3)}
+  .brief-websearch .websearch-label{color:var(--cyan);font-weight:600;letter-spacing:.3px}
+  .brief-websearch.nows .websearch-label{color:var(--amber)}
+  .brief-websearch .websearch-q{color:var(--text-mute);font-size:10px;line-height:1.4}
+  .brief-websearch .websearch-src{font-size:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .brief-websearch .websrc-link{color:var(--cyan);text-decoration:none;border-bottom:1px dotted var(--cyan)}
+  .brief-websearch .websrc-link:hover{opacity:.8}
 
   .theme-history{padding:8px 12px;background:rgba(245,180,0,.05);border-left:2px solid var(--amber);border-radius:4px;font-size:11.5px;color:var(--text-dim);margin:8px 0;line-height:1.5;font-style:italic}
 
@@ -6412,6 +6420,27 @@ async function callAnthropic(userPrompt,systemPrompt,maxTokens){
     out=data.content.filter(b=>b&&b.type==='text').map(b=>b.text).join('\n').trim();
   }
 
+  /* Extraction des recherches web effectuées par Claude (pour affichage/vérif).
+     L'API renvoie des blocs server_tool_use (les requêtes) et
+     web_search_tool_result (les sources consultées). */
+  window._lastWebSearches=null;
+  if(Array.isArray(data.content)){
+    const queries=data.content
+      .filter(b=>b&&b.type==='server_tool_use'&&b.name==='web_search'&&b.input)
+      .map(b=>b.input.query).filter(Boolean);
+    const sources=[];
+    data.content.filter(b=>b&&b.type==='web_search_tool_result').forEach(b=>{
+      const arr=Array.isArray(b.content)?b.content:[];
+      arr.forEach(r=>{ if(r&&r.url){
+        let host=r.url; try{host=new URL(r.url).hostname.replace(/^www\./,'');}catch(_){}
+        sources.push({title:r.title||host,url:r.url,host});
+      }});
+    });
+    if(queries.length||sources.length){
+      window._lastWebSearches={queries,sources,count:queries.length};
+    }
+  }
+
   /* Détection de troncature : si la réponse a été coupée par la limite de
      tokens, le JSON sera incomplet (setups manquants, etc.). On le signale. */
   if(data.stop_reason==='max_tokens'){
@@ -6814,6 +6843,8 @@ RAPPEL : JSON pur, rien d'autre.`;
 
     /* On attache le spot de référence au brief pour affichage et vérification */
     brief._spot_ref=briefSpotStamp;
+    /* On attache les recherches web effectuées (preuve que l'actu a été vérifiée) */
+    brief._web_searches=window._lastWebSearches||null;
 
     renderUnifiedBrief(brief,ctx);
     localStorage.setItem(BRIEF_KEY,JSON.stringify({brief,ctx,timestamp:Date.now()}));
@@ -7038,6 +7069,23 @@ function renderUnifiedBrief(brief,ctx){
     ${sref.fallback?`<span class="spotref-warn">⚠ Prix approximatif (mise à jour quotidienne) — vérifie le prix exact sur ta plateforme avant tout trade.</span>`:''}
   </div>`:'';
 
+  /* Bandeau de vérification web : prouve que Claude a consulté l'actualité fraîche. */
+  const ws=brief._web_searches;
+  let webHtml='';
+  if(ws&&(ws.count>0||(ws.sources&&ws.sources.length))){
+    const uniqueHosts=[...new Set((ws.sources||[]).map(s=>s.host))].slice(0,6);
+    const srcLinks=(ws.sources||[]).slice(0,6).map(s=>`<a href="${s.url}" target="_blank" rel="noopener" class="websrc-link">${escapeHTML(s.host)}</a>`).join('');
+    webHtml=`<div class="brief-websearch">
+      <span class="websearch-label">🔍 Actualité vérifiée sur le web · ${ws.count||uniqueHosts.length} recherche(s)</span>
+      ${ws.queries&&ws.queries.length?`<span class="websearch-q">Requêtes : ${ws.queries.slice(0,4).map(q=>'« '+escapeHTML(q)+' »').join(', ')}</span>`:''}
+      ${srcLinks?`<span class="websearch-src">Sources : ${srcLinks}</span>`:''}
+    </div>`;
+  }else{
+    webHtml=`<div class="brief-websearch nows">
+      <span class="websearch-label">⚠ Aucune recherche web détectée — ce brief n'a pas vérifié l'actualité en ligne. Vérifie les news du jour toi-même.</span>
+    </div>`;
+  }
+
   const html=`
     <div class="brief-unified">
       <div class="brief-mode-toggle">
@@ -7048,6 +7096,7 @@ function renderUnifiedBrief(brief,ctx){
 
       ${metaHtml}
       ${spotRefHtml}
+      ${webHtml}
 
       <div class="brief-section themes-section">
         <div class="section-label">🌍 THÈMES MACRO DU JOUR · LE POURQUOI</div>
@@ -7153,6 +7202,10 @@ pageInits.brief=async ()=>{
   /* on affiche le contexte live (maintenant avec les prix chargés) */
   renderBriefContext(buildBriefContext());
 
+  /* le panneau de saisie manuelle doit être câblé dans TOUS les cas,
+     y compris quand on restaure un brief en cache (sinon le bouton est mort) */
+  initManualPricePanel();
+
   /* on rétablit le dernier brief si moins de 6h */
   const cached=localStorage.getItem(BRIEF_KEY);
   if(cached){
@@ -7175,7 +7228,6 @@ pageInits.brief=async ()=>{
       :`<div class="brief-empty"><div class="icon" style="color:var(--amber)">📡</div><h3>Prix indisponibles</h3>
         <p>Prix automatiques indisponibles (quota épuisé ou réseau). Clique <b>« ✎ saisie manuelle »</b> ci-dessus pour entrer les prix toi-même, ou ouvre « Vue d'ensemble ».</p></div>`;
   }
-  initManualPricePanel();
 };
 
 /* ════════ SAISIE MANUELLE DES PRIX (secours) ════════
