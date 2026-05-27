@@ -1152,6 +1152,12 @@
   .setup-levels .lvl.tp b{color:var(--green)}
   .setup-stats{padding:7px 10px;background:var(--bg-2);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text-dim);margin-bottom:9px}
   .setup-stats b{color:var(--text)}
+  .setup-tp-logic{margin:9px 0;padding:9px 11px;background:rgba(93,214,224,.04);border:1px solid rgba(93,214,224,.18);border-radius:5px}
+  .setup-tp-logic .stl-head{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--cyan);margin-bottom:7px;text-transform:uppercase}
+  .setup-tp-logic .stl-row{font-size:11.5px;color:var(--text-dim);line-height:1.6;margin:3px 0}
+  .setup-tp-logic .stl-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:3px;margin-right:6px}
+  .setup-tp-logic .stl-tag.sl{color:var(--red);background:rgba(229,72,77,.1)}
+  .setup-tp-logic .stl-tag.tp{color:var(--green);background:rgba(62,207,142,.1)}
   .setup-rationale{padding:8px 10px;background:rgba(245,180,0,.04);border-left:2px solid var(--amber);border-radius:4px;font-size:11.5px;color:var(--text-dim);line-height:1.5;margin-bottom:8px}
   .setup-meta{font-size:10.5px;color:var(--text-mute);margin-bottom:4px;font-family:'JetBrains Mono',monospace;letter-spacing:.3px}
   .setup-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
@@ -5619,10 +5625,102 @@ let watchlist=JSON.parse(localStorage.getItem(WL_KEY)||'["EURUSD","USDJPY","GBPU
 let alerts=JSON.parse(localStorage.getItem(ALERT_KEY)||'{}');
 const wlPrev={};
 
+/* ════════ HELPERS PIP/DÉCIMALES CENTRALISÉS (forex + commodities) ════════
+   Les "pips" sur commodities sont une convention liée à l'échelle de prix :
+   or ~3500 → pip 0.10 ; argent ~32 → 0.01 ; pétrole ~110 → 0.01 ;
+   cuivre ~4.5 → 0.001 ; gaz ~4 → 0.001. Centralisé pour éviter les
+   calculs dupliqués et incohérents. */
+function getPipValue(pair){
+  const p=(pair||'').toUpperCase().replace('/','');
+  if(p.includes('XAU'))return 0.10;          // or
+  if(p.includes('XAG'))return 0.01;          // argent
+  if(p.includes('WTI')||p.includes('BRENT')||p.includes('UKOIL')||p.includes('USOIL'))return 0.01; // pétrole
+  if(p.includes('XCU')||p.includes('COPPER'))return 0.001; // cuivre
+  if(p.includes('NG')||p.includes('NATGAS'))return 0.001;  // gaz naturel
+  if(p.includes('JPY'))return 0.01;          // paires yen
+  return 0.0001;                              // forex standard
+}
+function getDecimals(pair){
+  const p=(pair||'').toUpperCase().replace('/','');
+  if(p.includes('XAU'))return 2;             // or 3502.40
+  if(p.includes('WTI')||p.includes('BRENT')||p.includes('UKOIL')||p.includes('USOIL'))return 2; // pétrole 111.30
+  if(p.includes('XAG'))return 3;             // argent 32.150
+  if(p.includes('XCU')||p.includes('COPPER'))return 4; // cuivre 4.5230
+  if(p.includes('NG')||p.includes('NATGAS'))return 3;  // gaz 4.180
+  if(p.includes('JPY'))return 3;             // yen 159.476
+  return 5;                                   // forex standard
+}
+
+/* ════════ NIVEAUX TECHNIQUES RÉELS (depuis bougies Twelve Data) ════════
+   Calcule PDH/PDL, ATR(14), plus haut/bas semaine et mois, niveaux Fibo.
+   Ces niveaux sont CALCULÉS (pas hallucinés) → Claude pose des TP réalistes. */
+async function fetchTechnicalLevels(pair){
+  const key=getTdKey();
+  if(!key)return null;
+  const sym=pair.includes('/')?pair:pair.slice(0,3)+'/'+pair.slice(3);
+  const url=`https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(sym)}&interval=1day&outputsize=30&apikey=${key}`;
+  try{
+    const resp=await fetch(url);
+    if(!resp.ok)throw new Error('TD '+resp.status);
+    const data=await resp.json();
+    incrementQuota('twelvedata');
+    if(data.code&&data.code!==200)throw new Error(data.message||'TD error');
+    const v=data.values;
+    if(!Array.isArray(v)||v.length<5)return null;
+    /* v[0] = bougie la plus récente. Conversion en nombres. */
+    const c=v.map(b=>({h:+b.high,l:+b.low,c:+b.close,o:+b.open}));
+    const pdh=c[1].h, pdl=c[1].l;          // veille (J-1)
+    const dec=getDecimals(pair);
+    /* ATR(14) : moyenne des true ranges sur 14 jours */
+    let trSum=0,n=Math.min(14,c.length-1);
+    for(let i=0;i<n;i++){
+      const tr=Math.max(c[i].h-c[i].l, Math.abs(c[i].h-c[i+1].c), Math.abs(c[i].l-c[i+1].c));
+      trSum+=tr;
+    }
+    const atr=trSum/n;
+    const atrPips=atr/getPipValue(pair);
+    /* plus haut/bas semaine (5 dernières bougies) et mois (~22) */
+    const wk=c.slice(0,Math.min(5,c.length));
+    const mo=c.slice(0,Math.min(22,c.length));
+    const wkHigh=Math.max(...wk.map(b=>b.h)), wkLow=Math.min(...wk.map(b=>b.l));
+    const moHigh=Math.max(...mo.map(b=>b.h)), moLow=Math.min(...mo.map(b=>b.l));
+    /* Fibonacci sur le swing du mois (high↔low) */
+    const swingHi=moHigh, swingLo=moLow, range=swingHi-swingLo;
+    const fib={
+      '38.2':+(swingHi-range*0.382).toFixed(dec+1),
+      '50.0':+(swingHi-range*0.5).toFixed(dec+1),
+      '61.8':+(swingHi-range*0.618).toFixed(dec+1)
+    };
+    return {
+      pair,pdh:+pdh.toFixed(dec),pdl:+pdl.toFixed(dec),
+      atr:+atr.toFixed(dec),atrPips:Math.round(atrPips),
+      wkHigh:+wkHigh.toFixed(dec),wkLow:+wkLow.toFixed(dec),
+      moHigh:+moHigh.toFixed(dec),moLow:+moLow.toFixed(dec),
+      fib
+    };
+  }catch(e){console.warn('[TechLevels] '+pair+':',e.message);return null;}
+}
+
+/* Formate les niveaux techniques de plusieurs paires pour le prompt Claude. */
+function formatTechnicalLevels(levelsObj){
+  const lines=[];
+  Object.entries(levelsObj).forEach(([pair,L])=>{
+    if(!L)return;
+    const disp=pair.slice(0,3)+'/'+pair.slice(3);
+    lines.push(`${disp} : PDH ${L.pdh} · PDL ${L.pdl} · ATR(14) ${L.atrPips}p · Haut/bas semaine ${L.wkHigh}/${L.wkLow} · Haut/bas mois ${L.moHigh}/${L.moLow} · Fibo 38.2%=${L.fib['38.2']} 50%=${L.fib['50.0']} 61.8%=${L.fib['61.8']}`);
+  });
+  return lines.join('\n');
+}
+
 function mapSymbol(s){
   s=s.toUpperCase().trim();
   if(s==='DXY')return {type:'index',display:'DXY',yahoo:'DX-Y.NYB',ticker:'TVC:DXY'};
   if(s==='GOLD'||s==='XAU')return {type:'commo',display:'GOLD',yahoo:'GC=F',ticker:'TVC:GOLD'};
+  if(s==='SILVER'||s==='XAG')return {type:'commo',display:'SILVER',yahoo:'SI=F',ticker:'TVC:SILVER'};
+  if(s==='WTI'||s==='USOIL'||s==='OIL')return {type:'commo',display:'WTI',yahoo:'CL=F',ticker:'TVC:USOIL'};
+  if(s==='BRENT'||s==='UKOIL')return {type:'commo',display:'BRENT',yahoo:'BZ=F',ticker:'TVC:UKOIL'};
+  if(s==='COPPER'||s==='XCU')return {type:'commo',display:'COPPER',yahoo:'HG=F',ticker:'CAPITALCOM:COPPER'};
+  if(s==='NATGAS'||s==='NG')return {type:'commo',display:'NATGAS',yahoo:'NG=F',ticker:'CAPITALCOM:NATURALGAS'};
   /* paire forex 6 caractères */
   if(/^[A-Z]{6}$/.test(s)){
     return {type:'forex',display:s.slice(0,3)+'/'+s.slice(3),yahoo:s+'=X',ticker:'FX:'+s};
@@ -6510,6 +6608,23 @@ async function generateBrief(){
     return `${display}: spot=${d.price}`;
   }).join('\n');
 
+  /* NIVEAUX TECHNIQUES RÉELS : on les calcule pour les paires majeures
+     (depuis bougies Twelve Data) afin que Claude pose des TP/SL ancrés sur
+     des obstacles réels, pas des cibles inventées. Skip si prix manuels/fallback
+     (pas de clé TD active = pas de bougies). 6 req TD par génération. */
+  let techLevelsStr='';
+  if(getTdKey() && !(fxData['EURUSD']&&fxData['EURUSD'].manual)){
+    const techPairs=['EURUSD','GBPUSD','USDJPY','XAUUSD','AUDUSD','USDCAD'];
+    try{
+      const btn0=document.getElementById('brief-gen-text');
+      if(btn0)btn0.textContent='Calcul des niveaux techniques…';
+      const results=await Promise.all(techPairs.map(p=>fetchTechnicalLevels(p)));
+      const levelsObj={};
+      techPairs.forEach((p,i)=>{ if(results[i])levelsObj[p]=results[i]; });
+      techLevelsStr=formatTechnicalLevels(levelsObj);
+    }catch(e){console.warn('[Brief] niveaux techniques échec:',e.message);}
+  }
+
   /* Horodatage du spot de référence, affiché dans le brief pour vérification visuelle */
   const lastSyncTxt=(document.getElementById('lastsync')?.textContent)||'';
   const anyManual=Object.values(realSpots).length>0 && PAIRS.some(p=>fxData[p]&&fxData[p].manual);
@@ -6649,6 +6764,9 @@ Format JSON exact (RESPECTE CHAQUE CHAMP) :
       "sl_pips_from_spot": 80,
       "tp1_pips_from_spot": -50,
       "tp2_pips_from_spot": -120,
+      "tp1_logic": "TP1 sur PDL d'hier 1.1600 + round number",
+      "tp2_logic": "TP2 sur bas semaine 1.1570, dans la limite ATR (80p)",
+      "sl_logic": "SL au-dessus du swing high 1.1680, invalidation du thème",
       "rationale": "Convergence multi-framework : monetary + intermarket + technical",
       "killzone": "NY Open (12h30-15h UTC)",
       "trigger": "Rejet H1 sous 1.1650",
@@ -6731,6 +6849,16 @@ cohérent avec ces spots (à quelques dizaines de pips près). N'invente JAMAIS 
 de ta mémoire. Exemple : si EUR/USD spot = 1.1606, tu ne dois PAS écrire "support 1.11" ni
 "cible 1.10" — ces niveaux sont périmés. Reste autour du spot fourni. En cas de doute sur un
 niveau, n'en cite pas et raisonne en pips relatifs au spot.
+${techLevelsStr?`
+═══ NIVEAUX TECHNIQUES RÉELS (calculés depuis les bougies — PAS hallucinés) ═══
+${techLevelsStr}
+
+📐 RÈGLE TP/SL OBLIGATOIRE (ancrage technique) :
+- Chaque TP doit être posé sur un NIVEAU TECHNIQUE RÉEL ci-dessus (PDH, PDL, haut/bas semaine/mois, Fibo, round number proche), PAS sur une cible macro théorique.
+- TP1 = le PREMIER obstacle technique rencontré dans le sens du trade → atteignable, le trader sécurise tôt.
+- TP2 = l'obstacle suivant, mais l'amplitude totale NE DOIT PAS dépasser l'ATR(14) du jour (sinon irréaliste sur la séance). Si l'ATR d'une paire est 70p, ne propose pas un TP2 à +120p.
+- SL = derrière un niveau d'invalidation réel (au-delà d'un PDH/PDL ou swing), pas un chiffre rond arbitraire.
+- Pour CHAQUE setup, remplis "tp1_logic", "tp2_logic" et "sl_logic" : explique sur QUEL niveau repose chaque cible (ex: "TP1 sur PDL 1.1600", "TP2 sur bas semaine 1.1570, dans la limite ATR 80p", "SL au-dessus du swing high 1.1680").`:''}
 
 ═══ CONTEXTE MACRO VÉRIFIÉ (FRED) ═══
 ${buildFredContextForPrompt()}
@@ -7019,6 +7147,12 @@ function renderUnifiedBrief(brief,ctx){
       <div class="setup-stats">
         Risque <b>${s.risk_pips}p</b> · TP1 <b>+${s.tp1_pips}p R:R 1:${s.rr1}</b> · TP2 <b>+${s.tp2_pips}p R:R 1:${s.rr2}</b>
       </div>
+      ${(s.sl_logic||s.tp1_logic||s.tp2_logic)?`<div class="setup-tp-logic">
+        <div class="stl-head">📐 Sur quoi reposent les niveaux</div>
+        ${s.sl_logic?`<div class="stl-row"><span class="stl-tag sl">🛑 SL</span> ${escapeHTML(s.sl_logic)}</div>`:''}
+        ${s.tp1_logic?`<div class="stl-row"><span class="stl-tag tp">🎯 TP1</span> ${escapeHTML(s.tp1_logic)}</div>`:''}
+        ${s.tp2_logic?`<div class="stl-row"><span class="stl-tag tp">🏁 TP2</span> ${escapeHTML(s.tp2_logic)}</div>`:''}
+      </div>`:''}
       ${s.rationale?`<div class="setup-rationale">💡 ${escapeHTML(s.rationale)}</div>`:''}
       ${s.killzone?`<div class="setup-meta">⏱ ${escapeHTML(s.killzone)}</div>`:''}
       ${s.trigger?`<div class="setup-meta">⚡ Trigger : ${escapeHTML(s.trigger)}</div>`:''}
