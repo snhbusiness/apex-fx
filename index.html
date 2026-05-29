@@ -118,6 +118,122 @@
   .c-6{grid-column:span 6}.c-5{grid-column:span 5}.c-4{grid-column:span 4}.c-3{grid-column:span 3}
   @media (max-width:1100px){.c-3,.c-4,.c-5,.c-6,.c-7,.c-8,.c-9{grid-column:span 12}}
 
+  /* ════════════════════════════════════════════════════════════
+     MOBILE (≤768px) — focus Morning Brief lisible en déplacement
+     ════════════════════════════════════════════════════════════ */
+  @media (max-width:768px){
+    /* Layout principal : sidebar passe en dessous, contenu pleine largeur */
+    .app{grid-template-columns:1fr;min-height:auto}
+    .sidebar{position:relative;top:0;border-right:0;border-bottom:1px solid var(--line);
+      padding:10px;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+      white-space:nowrap;height:auto;max-height:none}
+    .sidebar > *{flex-shrink:0}
+    .sidebar a, .sidebar .nav-item, .sidebar button{padding:6px 10px;font-size:11px;white-space:nowrap}
+
+    /* Topbar compactée */
+    .topbar{grid-template-columns:1fr auto;gap:6px;padding:6px 8px}
+    .topbar > *:nth-child(2){display:none} /* le centre, souvent rempli de stats */
+
+    /* Conteneurs principaux */
+    body, .app, main{font-size:13px}
+    .grid{gap:10px}
+    .page{padding:10px}
+
+    /* Brief header et actions */
+    .brief-header{flex-direction:column;align-items:flex-start;gap:10px}
+    .brief-date{font-size:14px}
+    .brief-actions{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .brief-actions .brief-btn{width:100%;padding:11px 8px;font-size:11px;min-height:42px}
+    .brief-actions .brief-btn:first-child{grid-column:1 / -1}
+
+    /* Pills de contexte (session/fortes/faibles/news/positions/cot) */
+    #brief-context, .brief-context{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .brief-pill, .ctx-pill, .kpi{padding:8px 10px;font-size:10.5px}
+
+    /* Bandeaux info (spot, web search, meta) */
+    .brief-spotref, .brief-websearch, .brief-meta{gap:6px;padding:8px 10px;font-size:10px;flex-wrap:wrap}
+    .brief-spotref .spotref-pair{flex-basis:48%;min-width:0}
+    .brief-websearch .websearch-src{flex-direction:column;align-items:flex-start;gap:4px}
+
+    /* Thèmes du brief */
+    .theme-card{padding:12px 11px;margin-bottom:14px}
+    .theme-header{flex-wrap:wrap;gap:6px}
+    .theme-title{font-size:14px;line-height:1.3}
+    .theme-summary{font-size:12.5px;line-height:1.5}
+
+    /* Repricing : chaîne 1→2→3, garder lisible mais compact */
+    .market-believes{padding:11px 10px}
+    .wmb-section{padding-left:22px}
+    .wmb-section .wmb-step{width:16px;height:16px;font-size:9px}
+    .wmb-section.s-mispriced{padding:9px 10px 9px 28px}
+    .wmb-section.s-mispriced .wmb-step{left:6px;top:9px}
+    .wmb-section h5{font-size:10px;letter-spacing:.6px;line-height:1.3}
+    .wmb-item{padding:6px 8px;font-size:12px;line-height:1.5}
+
+    /* Cascade 8 points (accordéon) */
+    .cascade-grid{grid-template-columns:1fr;gap:8px}
+    .cascade-toggle{font-size:11px;padding:9px 10px}
+    .cascade-item{padding:9px 10px}
+
+    /* Setups (les niveaux Entry/SL/TP) */
+    .setup-card{grid-template-columns:1fr;padding:12px 10px;gap:10px}
+    .setup-header{flex-wrap:wrap;gap:6px}
+    .setup-levels{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .setup-levels .lvl{font-size:11.5px;padding:7px 9px}
+    .setup-stats{font-size:10.5px;line-height:1.6}
+    .setup-tp-logic{padding:8px 10px}
+    .setup-tp-logic .stl-row{font-size:11px;line-height:1.5}
+    .setup-meta{font-size:11px;line-height:1.4}
+    .setup-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .setup-actions .plan-btn{width:100%;text-align:center;padding:10px 8px;font-size:11px;min-height:40px}
+    .setup-actions .plan-btn.primary{grid-column:1 / -1}
+
+    /* Impacts directionnels */
+    .theme-impact{font-size:11.5px;flex-wrap:wrap;gap:6px;padding:6px 8px}
+    .theme-impact .why{flex-basis:100%;font-size:11px;color:var(--text-mute)}
+
+    /* Agenda */
+    .agenda-item{padding:9px 10px;font-size:11.5px;flex-wrap:wrap;gap:5px}
+    .agenda-forecast, .agenda-prev{font-size:10.5px}
+
+    /* Bruit à ignorer (avec badges date/source) */
+    .noise-item{font-size:11.5px;line-height:1.55;flex-wrap:wrap}
+    .noise-date, .noise-src{font-size:9.5px;display:inline-block;margin-top:3px}
+
+    /* Saisie manuelle */
+    .manual-price-panel{padding:11px 10px}
+    .mpp-row{flex-wrap:wrap;gap:6px}
+    .mpp-row .mpp-pair{min-width:70px;font-size:12px}
+    .mpp-row input{flex:1;min-width:120px;max-width:none;padding:9px 10px;font-size:14px} /* 14px évite le zoom auto iOS */
+    .mpp-add{flex-direction:column;align-items:stretch;gap:6px}
+    .mpp-add select{width:100%;padding:9px 10px;font-size:14px}
+
+    /* Modal du Pine (taille mobile) */
+    .modal-content, .pine-modal{max-width:94vw;max-height:90vh;overflow-y:auto;padding:14px;margin:8px}
+
+    /* Tableaux et grilles denses : scroll horizontal plutôt que cassage */
+    .strength-grid, .matrix-row{font-size:10px}
+
+    /* Headers de section */
+    h1{font-size:20px}
+    h2{font-size:16px}
+    h3{font-size:14px}
+    .section-label{font-size:9.5px;letter-spacing:1px}
+
+    /* Boutons tactiles : minimum 40px pour confort doigt */
+    button, .btn{min-height:38px}
+  }
+
+  /* Petit téléphone (≤380px) : ajustements supplémentaires */
+  @media (max-width:380px){
+    #brief-context, .brief-context{grid-template-columns:1fr}
+    .setup-levels{grid-template-columns:1fr}
+    .setup-actions{grid-template-columns:1fr}
+    .setup-actions .plan-btn.primary{grid-column:auto}
+    .brief-actions{grid-template-columns:1fr}
+    .brief-actions .brief-btn:first-child{grid-column:auto}
+  }
+
   .card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
   .card-title{display:flex;align-items:center;gap:9px}
   .card-title h3{font-family:'Fraunces',serif;font-weight:500;font-size:16px;letter-spacing:-.15px}
