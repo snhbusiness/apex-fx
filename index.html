@@ -7037,7 +7037,12 @@ ZÉRO HALLUCINATION : chaque fact doit avoir une source dans le champ "source". 
 RAPPEL : JSON pur, rien d'autre.`;
 
   try{
-    const text=await callAnthropic(userPrompt,systemPrompt,16000);
+    /* 32000 tokens : doubler la marge contre la troncature du JSON.
+       Sonnet 4.6 supporte jusqu'à 128k en sortie, donc 32k est très safe.
+       Si la troncature revient quand même, c'est que le prompt est devenu trop
+       riche (cascade 8pts + niveaux techniques + dates/sources + TP justifiés)
+       et il faudra alors diviser en 2 appels (themes puis setups). */
+    const text=await callAnthropic(userPrompt,systemPrompt,32000);
     console.log('[Brief] réponse Claude (',text.length,'chars) :',text.slice(0,400));
 
     let brief=null;
