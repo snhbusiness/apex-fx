@@ -6923,7 +6923,14 @@ OBJECTIF :
 - NE JAMAIS présenter comme "à venir", "cette semaine" ou "ce soir" un événement DÉJÀ PASSÉ. Vérifie la date réelle via web_search avant d'affirmer le timing. Exemple d'erreur à éviter : annoncer des résultats d'entreprise "cette semaine" alors qu'ils sont déjà sortis la semaine précédente.
 - Si tu n'es pas certain de la date d'un événement, écris "date": "à vérifier" plutôt que d'inventer un timing.
 
-RAPPEL FINAL : ta réponse est UNIQUEMENT le JSON, rien d'autre.`;
+RAPPEL FINAL CRITIQUE — FORMAT DE RÉPONSE :
+- Ta réponse commence DIRECTEMENT par "{" (le premier caractère de ta réponse).
+- Ta réponse se termine par "}" (le dernier caractère).
+- AUCUN texte avant le JSON (pas de "I'll search...", pas de "Voici le brief...", rien).
+- AUCUN balisage markdown autour (pas de \`\`\`json, pas de \`\`\`).
+- AUCUN commentaire après le JSON.
+- Tu PEUX utiliser web_search pour vérifier l'actualité (c'est OBLIGATOIRE), mais tes recherches sont des actions, pas du texte de réponse — la sortie écrite reste UNIQUEMENT le JSON.
+- Si tu réponds en français dans les contenus du JSON, parfait, mais la structure reste pur JSON valide.`;
 
   /* Construire les sections enrichies FMP + historique */
   const fmpCached=getFmpCached();
@@ -7037,30 +7044,75 @@ ZÉRO HALLUCINATION : chaque fact doit avoir une source dans le champ "source". 
 RAPPEL : JSON pur, rien d'autre.`;
 
   try{
-    /* 32000 tokens : doubler la marge contre la troncature du JSON.
-       Sonnet 4.6 supporte jusqu'à 128k en sortie, donc 32k est très safe.
-       Si la troncature revient quand même, c'est que le prompt est devenu trop
-       riche (cascade 8pts + niveaux techniques + dates/sources + TP justifiés)
-       et il faudra alors diviser en 2 appels (themes puis setups). */
-    const text=await callAnthropic(userPrompt,systemPrompt,32000);
+    /* 64000 tokens : large marge anti-troncature. Sonnet 4.6 supporte 128k en
+       sortie. Combiné avec le parseur de réparation ci-dessous, le brief
+       passera même si Claude met 50k+ de cascade analyse. Si on devait
+       quand même retomber sur des erreurs, passer en 2 appels (themes / setups). */
+    const text=await callAnthropic(userPrompt,systemPrompt,64000);
     console.log('[Brief] réponse Claude (',text.length,'chars) :',text.slice(0,400));
+
+    /* Tentative de réparation d'un JSON tronqué : on ferme les structures
+       ouvertes (chaînes, tableaux, objets) dans l'ordre inverse de leur ouverture.
+       Permet de récupérer un brief partiel plutôt que tout perdre. */
+    function repairTruncatedJson(s){
+      if(!s)return s;
+      let out=s.trim();
+      /* enlever virgule traînante éventuelle avant fermeture */
+      out=out.replace(/,\s*$/,'');
+      /* compter les structures ouvertes vs fermées */
+      let inStr=false, esc=false;
+      const stack=[];
+      for(let i=0;i<out.length;i++){
+        const c=out[i];
+        if(esc){esc=false;continue;}
+        if(c==='\\'){esc=true;continue;}
+        if(c==='"'){inStr=!inStr;continue;}
+        if(inStr)continue;
+        if(c==='{'||c==='[')stack.push(c);
+        else if(c==='}'){if(stack[stack.length-1]==='{')stack.pop();}
+        else if(c===']'){if(stack[stack.length-1]==='[')stack.pop();}
+      }
+      /* si on est encore dans une chaîne, la fermer */
+      if(inStr)out+='"';
+      /* enlever virgule traînante après fermeture de chaîne */
+      out=out.replace(/,\s*$/,'');
+      /* fermer les structures restantes dans l'ordre inverse */
+      while(stack.length){
+        const c=stack.pop();
+        out+=(c==='{')?'}':']';
+      }
+      return out;
+    }
 
     let brief=null;
     const tries=[
+      /* 1. bloc markdown ```json...``` complet */
       ()=>{const m=text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);return m?m[1]:null;},
+      /* 2. bloc markdown OUVERT mais pas refermé (cas troncature) */
+      ()=>{const m=text.match(/```(?:json)?\s*([\s\S]*)$/);return m?m[1]:null;},
+      /* 3. du premier { au dernier } */
       ()=>{const start=text.indexOf('{');const end=text.lastIndexOf('}');return (start>=0&&end>start)?text.slice(start,end+1):null;},
+      /* 4. du premier { jusqu'à la fin (cas troncature, à réparer) */
+      ()=>{const start=text.indexOf('{');return start>=0?text.slice(start):null;},
+      /* 5. tout le texte tel quel */
       ()=>text.trim().startsWith('{')?text.trim():null,
     ];
-    for(const tryFn of tries){
-      const candidate=tryFn();
+    for(let i=0;i<tries.length;i++){
+      let candidate=tries[i]();
       if(!candidate)continue;
-      try{
-        const parsed=JSON.parse(candidate.trim());
-        if(parsed&&parsed.themes){
-          brief=parsed;
-          break;
-        }
-      }catch(e){console.warn('[Brief] parse tentative échec:',e.message);}
+      candidate=candidate.trim();
+      /* tentative directe puis avec réparation si échec */
+      for(const variant of [candidate, repairTruncatedJson(candidate)]){
+        try{
+          const parsed=JSON.parse(variant);
+          if(parsed&&parsed.themes){
+            brief=parsed;
+            console.log('[Brief] JSON parsé (stratégie '+(i+1)+(variant===candidate?'':' + réparation')+')');
+            break;
+          }
+        }catch(e){/* on essaye la suivante */}
+      }
+      if(brief)break;
     }
 
     if(!brief){
